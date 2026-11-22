@@ -1,0 +1,1289 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<script>
+/* ======================================================
+   繳交連結（選用）：填入 Google 表單或 Padlet 網址後，
+   第三部分會多一個「前往繳交」按鈕。留空則不顯示。
+   （學習歷程本身會自動送到老師的 Google 試算表）
+   ====================================================== */
+const SUBMISSION_URL = "";
+</script>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>〈獵人〉山林旅程｜九年級國文</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;600;700&display=swap" rel="stylesheet">
+<script src="config.js?v=1"></script>
+<style>
+:root{
+  --paper:#f5f0e6; --paper2:#ebe3d3; --ink:#232b26; --mute:#6b706a; --line:#d8cdb8;
+  --moss:#4a6650; --moss-d:#34493a; --ember:#bf6b33; --ember-l:#f0c38f; --night:#0c110e; --warn:#a4462c;
+  --serif:"Noto Serif TC","Songti TC","PMingLiU",serif;
+  --sans:-apple-system,"PingFang TC","Noto Sans TC","Microsoft JhengHei",sans-serif;
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--sans);-webkit-text-size-adjust:100%}
+button{font-family:inherit;font-size:16px;cursor:pointer;-webkit-tap-highlight-color:transparent}
+input,textarea,select{font-family:inherit;font-size:17px;color:var(--ink)}
+a{color:var(--moss)}
+.wrap{max-width:980px;margin:0 auto;padding:0 20px 60px}
+
+/* 頁首 */
+.top{position:sticky;top:0;z-index:20;background:rgba(245,240,230,.95);backdrop-filter:blur(6px);border-bottom:1px solid var(--line)}
+.top .in{max-width:980px;margin:0 auto;padding:10px 20px;display:flex;align-items:center;gap:12px;min-height:52px}
+.top .ttl{font-family:var(--serif);font-weight:700;white-space:nowrap;margin-right:6px;color:var(--ink);text-decoration:none}
+.top .home{margin-left:auto;font-size:14px;text-decoration:none;white-space:nowrap}
+.leg{flex:1;display:flex;align-items:center;gap:8px;font-size:14px;color:var(--mute);min-width:0}
+.leg .bar{flex:1;height:4px;border-radius:2px;background:var(--line);position:relative;overflow:hidden}
+.leg .bar i{position:absolute;left:0;top:0;bottom:0;background:var(--moss);transition:width .4s}
+.leg.on{color:var(--ink);font-weight:600}
+.leg span{white-space:nowrap}
+@media (max-width:700px){.top .ttl.j{display:none}.leg span{font-size:12px}}
+
+h1,h2,h3{font-family:var(--serif);font-weight:700;letter-spacing:.02em}
+h1{font-size:40px;margin:44px 0 6px}
+h2{font-size:26px;margin:6px 0 4px}
+h3{font-size:19px}
+.kicker{font-size:14px;color:var(--moss);letter-spacing:.08em;margin-top:28px}
+.lead{font-family:var(--serif);font-size:18px;line-height:1.9;color:#3a413c}
+.mute{color:var(--mute)}
+.btn{border:1px solid var(--moss);background:var(--moss);color:#fff;border-radius:999px;padding:12px 26px;min-height:46px;font-weight:600;text-decoration:none;display:inline-flex;align-items:center;justify-content:center}
+.btn:disabled{opacity:.35;cursor:not-allowed}
+.btn.ghost{background:transparent;color:var(--moss)}
+.btn.ember{background:var(--ember);border-color:var(--ember)}
+.btn.big{font-size:19px;padding:16px 34px;min-height:60px}
+.btn.sm{padding:6px 14px;min-height:34px;font-size:14px;font-weight:500}
+.btn.danger{background:transparent;color:var(--warn);border-color:var(--warn)}
+.card{background:#fffdf8;border:1px solid var(--line);border-radius:14px;padding:20px}
+.field{display:flex;flex-direction:column;gap:6px;font-size:14px;color:var(--mute)}
+.field input,.field textarea,.field select{border:1px solid var(--line);border-radius:10px;padding:10px 12px;background:#fff}
+textarea{width:100%;border:1px solid var(--line);border-radius:10px;padding:12px 14px;background:#fff;line-height:1.8;resize:vertical;min-height:110px}
+input:focus,textarea:focus{outline:2px solid var(--ember-l);border-color:var(--ember)}
+.step-label{display:flex;align-items:center;gap:10px;margin:26px 0 10px;font-weight:600}
+.step-label b{display:inline-grid;place-items:center;width:28px;height:28px;border-radius:50%;background:var(--ink);color:var(--paper);font-size:14px}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin:8px 0}
+.chip{border:1px solid var(--line);background:#fff;border-radius:999px;padding:8px 14px;font-size:15px;color:var(--ink);min-height:40px;text-align:left}
+.chip:hover{border-color:var(--ember)}
+.tag{display:inline-block;border:1px solid var(--line);background:#fff;border-radius:999px;padding:4px 12px;font-size:14px;color:#4a514b;margin:0 6px 6px 0}
+.toast{position:fixed;left:50%;bottom:28px;transform:translateX(-50%);background:var(--ink);color:var(--paper);padding:10px 18px;border-radius:999px;font-size:15px;opacity:0;transition:opacity .25s;pointer-events:none;z-index:90;max-width:90vw;text-align:center}
+.toast.show{opacity:1}
+.note{font-size:14px;color:var(--mute);line-height:1.7}
+.err{color:var(--warn);font-size:15px;line-height:1.7}
+
+/* 主畫面 */
+.home-hero{padding:10px 0 6px}
+.home-btns{display:flex;flex-wrap:wrap;gap:14px;margin:26px 0}
+.welcome{background:#fffdf8;border:1px solid var(--line);border-left:4px solid var(--moss);border-radius:10px;padding:14px 18px;margin-top:18px;font-size:16px;line-height:1.8}
+.steps{counter-reset:s;list-style:none;padding:0;margin:10px 0;display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.steps li{background:#fffdf8;border:1px solid var(--line);border-radius:12px;padding:16px;font-size:15px;line-height:1.75;color:#4a514b}
+.steps li b{display:block;font-family:var(--serif);font-size:18px;color:var(--ink);margin-bottom:4px}
+@media (max-width:700px){.steps{grid-template-columns:1fr}}
+
+/* 視窗 */
+.modal{position:fixed;inset:0;background:rgba(20,24,21,.45);z-index:60;display:grid;place-items:center;padding:20px}
+.modal .box{background:var(--paper);border-radius:16px;padding:26px;max-width:460px;width:100%;box-shadow:0 20px 60px rgba(0,0,0,.25)}
+.modal .box.wide{max-width:900px;max-height:92vh;overflow:auto}
+.modal .row3{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:14px 0}
+.modal .row3 .full{grid-column:1/-1}
+
+/* 第一部分 */
+.lenses{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.lens-btn{border:1px solid var(--line);background:#fff;border-radius:12px;padding:12px;text-align:left;display:flex;flex-direction:column;gap:4px;min-height:74px}
+.lens-btn .ln{font-family:var(--serif);font-weight:700;font-size:19px}
+.lens-btn .ld{font-size:13px;color:var(--mute);line-height:1.5}
+.lens-btn.on{border-color:var(--ember);box-shadow:0 0 0 2px var(--ember-l) inset;background:#fffaf2}
+.lens-fb{font-size:15px;line-height:1.8;color:#4a514b;background:var(--paper2);border-radius:10px;padding:10px 14px;margin:10px 0 0}
+.lens-fb:empty{display:none}
+.scene{position:relative;background:var(--night);border-radius:16px;overflow:hidden;touch-action:none;user-select:none;-webkit-user-select:none;--x:50%;--y:30%;--r:120px}
+.scene .text{position:relative;padding:30px 34px 36px;font-family:var(--serif);color:#ece5d2;line-height:2.05;font-size:20px;transition:font-size .3s}
+.scene.lens-wide .text{font-size:17px}
+.scene.lens-mid .text{font-size:20px}
+.scene.lens-macro .text{font-size:24px}
+.scene .pno{display:inline-block;font-size:12px;color:#8e9a8f;border:1px solid #3c4a40;border-radius:4px;padding:0 5px;margin-right:8px;line-height:1.6;vertical-align:middle;font-family:var(--sans)}
+.scene p{margin:0 0 14px}
+.scene .clue{border-bottom:1px dashed rgba(240,195,143,.55);cursor:pointer}
+.scene .clue.found{background:rgba(240,195,143,.22);border-bottom:2px solid var(--ember-l);color:#fff3dc}
+.scene .shade{position:absolute;inset:0;pointer-events:none;
+  background:radial-gradient(circle var(--r) at var(--x) var(--y),rgba(255,214,150,.07) 0%,rgba(255,214,150,.03) 55%,rgba(7,10,8,.965) 100%)}
+.scene.lens-off .shade{background:rgba(7,10,8,.985)}
+.scene .off-msg{position:absolute;inset:0;display:grid;place-items:center;color:#a8b0a6;font-size:17px;pointer-events:none;letter-spacing:.05em}
+.bag{display:flex;flex-direction:column;gap:8px;margin-top:12px}
+.bag .item{background:#fff;border:1px solid var(--line);border-left:4px solid var(--ember);border-radius:8px;padding:10px 14px}
+.bag .q{font-family:var(--serif);font-weight:600}
+.bag .n{font-size:14px;color:var(--mute);margin-top:4px;line-height:1.7}
+.bag .empty{font-size:14px;color:var(--mute)}
+.rec-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:12px}
+@media (max-width:700px){.rec-grid,.lenses{grid-template-columns:1fr}}
+.st-nav{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-top:22px}
+.gate{font-size:14px;color:var(--ember);text-align:center;flex:1}
+
+/* 第二部分 */
+.p2-grid{display:grid;grid-template-columns:330px 1fr;gap:22px;align-items:start;margin-top:18px}
+@media (max-width:820px){.p2-grid{grid-template-columns:1fr}}
+.wheel-box{display:flex;flex-direction:column;align-items:center;gap:14px}
+.wheel-wrap{position:relative;width:290px;height:290px}
+.pointer{position:absolute;left:50%;top:-6px;transform:translateX(-50%);width:0;height:0;border-left:13px solid transparent;border-right:13px solid transparent;border-top:24px solid var(--ember);z-index:3}
+.wheel{width:290px;height:290px;border-radius:50%;position:relative;border:6px solid #2d3a31;transition:transform 3.2s cubic-bezier(.16,.84,.26,1);
+  background:conic-gradient(#dfe5d6 0 45deg,#cfd8c6 45deg 90deg,#dfe5d6 90deg 135deg,#cfd8c6 135deg 180deg,#dfe5d6 180deg 225deg,#cfd8c6 225deg 270deg,#dfe5d6 270deg 315deg,#cfd8c6 315deg 360deg)}
+.wheel .lab{position:absolute;left:50%;top:50%;width:0;height:0}
+.wheel .lab span{position:absolute;left:-40px;top:-128px;width:80px;text-align:center;font-family:var(--serif);font-size:14px;font-weight:700;color:#2d3a31;line-height:1.25}
+.wheel .lab.used span{color:#9aa496;text-decoration:line-through}
+.wheel .hub{position:absolute;left:50%;top:50%;width:54px;height:54px;margin:-27px 0 0 -27px;border-radius:50%;background:#2d3a31;color:var(--paper);display:grid;place-items:center;font-size:12px}
+.claim{background:#2b2420;color:#f3eadb;border-radius:14px;padding:18px 20px}
+.claim .who{font-size:13px;color:#cdb79b;letter-spacing:.08em}
+.claim .say{font-family:var(--serif);font-size:20px;line-height:1.8;margin:6px 0 8px}
+.sdg{display:inline-block;font-size:12px;border:1px solid #8c7a63;border-radius:4px;padding:1px 6px;margin-right:6px;color:#e2cfb3}
+.arrows{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}
+@media (max-width:560px){.arrows{grid-template-columns:1fr}}
+.arrow-btn{border:1px solid var(--line);background:#fff;border-radius:12px;padding:12px 14px;text-align:left;min-height:84px}
+.arrow-btn .an{font-family:var(--serif);font-weight:700;font-size:17px;display:flex;align-items:center;gap:8px}
+.arrow-btn .an::before{content:"";width:22px;height:2px;background:var(--ink);display:inline-block}
+.arrow-btn .aq{font-size:13px;color:var(--mute);line-height:1.6;margin-top:4px}
+.arrow-btn.last{border-color:var(--ember);background:#fffaf2}
+.arrow-btn:disabled{opacity:.45}
+.target-row{display:flex;gap:16px;align-items:center;margin-top:14px;flex-wrap:wrap}
+.target{position:relative;width:200px;height:200px;flex:none}
+.target svg{width:200px;height:200px}
+.dart{position:absolute;width:14px;height:14px;margin:-7px 0 0 -7px;border-radius:50%;background:var(--ember);border:2px solid #fff;box-shadow:0 0 0 1px var(--ember);transition:left .55s cubic-bezier(.3,.7,.3,1),top .55s cubic-bezier(.3,.7,.3,1)}
+.dart.old{background:#8b8f88;box-shadow:none;opacity:.6;transition:none}
+.dart.na{background:#9aa09a;box-shadow:none}
+.fb{flex:1;min-width:220px;font-size:15px;line-height:1.85}
+.fb .lv{font-family:var(--serif);font-weight:700;font-size:18px;margin-bottom:4px}
+.rounds{margin-top:22px}
+.rounds .r{border-top:1px solid var(--line);padding:10px 0;font-size:14px;line-height:1.7}
+.rounds .r b{font-family:var(--serif)}
+
+/* 第三部分 */
+.p3-grid{display:grid;grid-template-columns:1.25fr 1fr;gap:22px;align-items:start;margin-top:16px}
+@media (max-width:900px){.p3-grid{grid-template-columns:1fr}}
+.preview img{width:100%;display:block;border-radius:8px;box-shadow:0 10px 30px rgba(40,35,25,.18)}
+.bgs{display:flex;gap:10px}
+.bgs button{flex:1;border:2px solid transparent;border-radius:10px;padding:0;overflow:hidden;background:none}
+.bgs button.on{border-color:var(--ember)}
+.bgs canvas{width:100%;display:block}
+.bgs small{display:block;font-size:13px;padding:4px 0;background:#fff;color:var(--ink)}
+.orig{font-size:14px;color:var(--mute);margin-top:6px;line-height:1.7}
+.meter{height:6px;background:var(--line);border-radius:3px;overflow:hidden;margin-top:4px}
+.meter i{display:block;height:100%;background:var(--moss);transition:width .3s}
+.actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:16px}
+.code-box{font-family:ui-monospace,Menlo,monospace;font-size:12px;word-break:break-all;background:#fff;border:1px solid var(--line);border-radius:8px;padding:10px;max-height:160px;overflow:auto}
+
+/* 報告書 */
+.report{background:#fffdf8;border:1px solid var(--line);border-radius:14px;padding:30px 34px;margin-top:20px}
+.report h2{margin:0}
+.report .meta{color:var(--mute);font-size:15px;margin-top:6px}
+.report section{margin-top:22px}
+.report h3{margin:0 0 8px;padding-bottom:6px;border-bottom:1px solid var(--line)}
+.report ul{margin:6px 0;padding-left:1.3em;line-height:1.9}
+.report p{line-height:1.9;margin:6px 0}
+.levels{display:flex;gap:10px;flex-wrap:wrap}
+.level{flex:1;min-width:150px;border:1px solid var(--line);border-radius:12px;padding:12px;text-align:center;background:#fff}
+.level .ic{font-size:26px;line-height:1}
+.level.ok{border-color:var(--moss);background:#f0f4ee}
+.level b{display:block;font-family:var(--serif);margin-top:6px}
+.ans-row{border-top:1px dashed var(--line);padding:8px 0;font-size:15px;line-height:1.8}
+
+/* 成績頁 */
+.tbl{width:100%;border-collapse:collapse;font-size:15px;background:#fff;border-radius:10px;overflow:hidden}
+.tbl th,.tbl td{padding:9px 10px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
+.tbl th{background:var(--paper2);font-weight:600;font-size:14px}
+.tbl tr.flag td{background:#fbf0ea}
+.tbl-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:10px}
+.cls-tabs{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0}
+.cls-tabs button{border:1px solid var(--line);background:#fff;border-radius:999px;padding:6px 16px;min-height:38px}
+.cls-tabs button.on{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+.login{display:flex;flex-wrap:wrap;gap:10px;align-items:center;background:#fffdf8;border:1px solid var(--line);border-radius:12px;padding:12px 16px;margin-top:16px}
+.login input{border:1px solid var(--line);border-radius:8px;padding:8px 12px;min-width:180px}
+.tools{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.tools label{font-size:14px;display:flex;gap:6px;align-items:center}
+.tools input[type=number]{width:90px;border:1px solid var(--line);border-radius:8px;padding:6px 8px}
+.bars .b{display:grid;grid-template-columns:170px 1fr 60px;gap:10px;align-items:center;margin:6px 0;font-size:14px}
+.bars .t{height:14px;background:var(--paper2);border-radius:7px;overflow:hidden}
+.bars .t i{display:block;height:100%;background:var(--moss)}
+.stack{display:flex;height:16px;border-radius:8px;overflow:hidden;background:var(--paper2)}
+.stack i{display:block;height:100%}
+.legend{font-size:13px;color:var(--mute)}
+.legend i{display:inline-block;width:10px;height:10px;border-radius:2px;margin:0 4px 0 10px;vertical-align:middle}
+
+/* 大屏（淺色底） */
+body.screen-mode{background:#f7f1e4}
+.scr{padding:22px 34px 30px;max-width:1700px;margin:0 auto}
+.scr-head{display:flex;align-items:center;gap:18px;flex-wrap:wrap}
+.scr-head h1{margin:0;font-size:44px}
+.scr-head select{font-size:26px;padding:6px 14px;border-radius:10px;border:2px solid #2f3a33;background:#fff}
+.scr-nums{display:grid;grid-template-columns:repeat(4,1fr);gap:18px;margin:22px 0}
+.scr-num{background:#fff;border-radius:16px;padding:18px 22px;border:2px solid #e2d6bf}
+.scr-num .v{font-family:var(--serif);font-size:64px;font-weight:700;color:#1d2a22;line-height:1.1}
+.scr-num .k{font-size:22px;color:#4b524d}
+.scr-grid{display:grid;grid-template-columns:1.2fr 1fr 0.8fr;gap:18px}
+.scr-panel{background:#fff;border-radius:16px;padding:18px 22px;border:2px solid #e2d6bf}
+.scr-panel h2{font-size:28px;margin:0 0 12px}
+.scr-row{display:grid;grid-template-columns:190px 1fr;gap:12px;align-items:center;margin:10px 0;font-size:21px}
+.scr-row .stack{height:28px;border-radius:8px}
+.scr-row .t{height:28px;background:#efe6d4;border-radius:8px;overflow:hidden;position:relative}
+.scr-row .t i{display:block;height:100%;background:#2f6b4a}
+.scr-row .t em{position:absolute;right:10px;top:0;line-height:28px;font-style:normal;font-weight:700;color:#1d2a22}
+.scr-top li{font-size:26px;line-height:1.9;font-family:var(--serif)}
+.scr-foot{margin-top:16px;color:#4b524d;font-size:18px;display:flex;justify-content:space-between}
+@media (max-width:1100px){.scr-grid{grid-template-columns:1fr}.scr-nums{grid-template-columns:repeat(2,1fr)}}
+
+.foot{text-align:center;margin-top:40px;font-size:13px;color:var(--mute)}
+.foot button{background:none;border:none;color:var(--mute);text-decoration:underline;font-size:13px}
+
+@media print{
+  @page{size:A4;margin:14mm}
+  body{background:#fff}
+  .top,.noprint,.toast{display:none!important}
+  .wrap{max-width:none;padding:0}
+  .report{border:none;padding:0;margin:0;font-size:12.5px}
+  .report p,.report ul{line-height:1.65}
+  .report section{margin-top:12px;break-inside:avoid}
+  .modal{position:static;background:none;padding:0}
+  .modal .box{box-shadow:none;max-height:none;padding:0;background:#fff}
+  body.has-modal #app{display:none}
+}
+</style>
+</head>
+<body>
+<header class="top"><div class="in" id="topbar"></div></header>
+<main id="app"></main>
+<div id="modalRoot"></div>
+<div class="toast" id="toast"></div>
+<canvas id="pc" width="1200" height="800" style="display:none"></canvas>
+
+<script>
+/* ============ 後端設定 ============ */
+const API = ((window.MZ_CONFIG||{}).sheetApi||"").trim();
+const LOCAL = !API;
+
+/* ============ 課文（康軒版 瓦歷斯‧諾幹〈獵人〉） ============ */
+const TEXT = {
+1:"我們抵達八雅鞍部山脈的肩膀時，整片天空宛如張大翅膀的蒼鷹迅速撲掠而下。向上望，濃密而深黑的樹林沉靜地霸占山頭，透過樹群的空隙，山腳下但見山谷或深或淺的輪廓。",
+2:"「生火。」雅隆‧諾基斯把命令像流星拋進我的耳朵裡，身影已像是隻蝙蝠飄然消逝在林子裡。",
+3:"我希望能夠討好獵人，手腳伶俐地尋到幾堆柴火，耗費了幾根火柴棒才把地表的潮氣趕走，幾點星火緩緩地自柴堆中冒起。這時候，老獵人枯藤一般的左手已拎了隻狐狸，肩上負著兩隻飛鼠，愉快地對我說：「我知道你會帶來好運氣，雖然你在都市中生活，仍是泰雅鍾愛的孩子。」",
+4:"事實上，我已年近三十，利用學校暑假的空檔，央求雅爸無論如何一定要替我完成泰雅成年禮的見證。國中畢業後，一直就在外地求學、服務，泰雅的子民卻無法親自領受傳統禮儀，一直是我心中的遺憾。雅爸邀請雅隆‧諾基斯到家中述明我渴求的願望，年近八十的老獵人離去的時候，要我一早準備番刀和鹽巴就好。",
+5:"我一邊撥著火，一邊看獵人嫻熟地處理狐狸。「狩獵對泰雅男人是莊嚴的事，沒有獵物就餵不飽你的家人，也證明這個男人失去勇武犯難的精神，泰雅是在戰鬥中生存下來的。」黯夜中，老獵人以最原始的方法完成一頓晚餐，狐狸肉不加任何都市或科技的添加物，只消沾上粗鹽入口，便是道可口的肉食。",
+6:"入睡前，寒意愈加沉重，老獵人吩咐不得讓篝火停息：「黑暗是森林的鬼魅，它會趁你不注意的時候凍結身體的血液，第二天，黑夜的使者──山豬，便把失去靈魂的軀殼叨走。」老獵人依然絮絮叨叨地說出成年禮的諸多禁忌。「你只許有一把番刀，前去尋找山豬的一對利牙。」我迷迷糊糊地入睡，根本就忘了篝火熄滅的預言，只覺得徹夜出奇地溫暖。",
+7:"黯夜消失，我也沒被山豬叨走。金陽猶在山的床褥裡掙扎，老獵人早已整理好營地，要我獨自進入山的心臟地帶。失去了老獵人的陪伴，我便像是在大海中猶豫的扁舟，哪裡才有老獵人的獵物呢？",
+8:"芒草擦過肌膚，馬上就泌出明亮的血痕，為了不使血腥味觸動野獸的鼻子，我順手搓揉了藥草抹去。我取下堅實的櫸木，製作一些堅固而實用的長矛。來到山谷地，一彎溪水流瀉著山的音符，溼潤的泥地可發現不同的蹄跡。我慶幸發現了牠的蹤跡，逆著風跟隨牠的腳步，全身的血液快速流轉在緊握長矛的手掌上，我興奮著自己將要成為「泰雅」。",
+9:"我看見牠了，牠必然也感覺到我的存在。在牠轉身剎那，我的長矛像頭豹奔出去，牠受傷的前蹄憤怒地跨過來，把我的身軀像葉片般撥開。",
+10:"穿過樹林，陽光把一盆火當頭罩下來，鹹澀的汗水侵凌傷口，我只好先以爛泥和腐葉裹傷。疲憊地穿行山林間，可以感覺到似乎有一對眼睛審視著我，一刻不曾稍停，我懷疑是不是老獵人？數度轉身，只有山中偶爾傳來鳥雀的鳴聲。我重新回到山谷地，選擇芒草覆蓋的巨岩背後，從草徑的縫隙，可以清楚地看見溪水的一切。「等待是獵人的美德」，我像壁虎般趴著伏著。黃昏，牠必須前來飲水，到時候，我將給牠致命的一擊。",
+11:"「來了！」我聽見草叢分撥的聲音，聽到悶雷般的吼聲。我揉亮眼睛，不錯，果真是牠，隨後，還有三隻淘氣的小山豬……。",
+12:"重回營地，老獵人逕自生起篝火，遠遠看去，彷彿那是尊千百年來就在此庇佑山林的神祇。我心虛地靠坐過去，想到老獵人所說，狩獵後家族將以戰歌和小米酒迎接，我頹然地怨恨自己因為一時心軟而失去作為「泰雅」的榮譽。",
+13:"「還懊惱著嗎？」老獵人把醃了許久的飛鼠肉遞過來，我用沉默代替回答。",
+14:"「牠是這座山最後的山豬，也是最凶猛的。」老獵人自言自語般，繼續說下去：「勇敢、智慧與愛就是一個好獵人的全部財產。」老獵人戲謔地補充說：「何況山裡只有這一頭勇猛的山豬，你獵到了，以後泰雅的小孩要獵什麼？」",
+15:"在八雅鞍部山脈的肩膀，這夜晚一如泰雅的每一個夜晚，老獵人指引著年輕人的腳步，許多山林的故事便在耳傳口述中綿綿不止。"
+};
+const CN = ["","一","二","三","四","五","六","七","八","九","十","十一","十二","十三","十四","十五"];
+const LENS = {
+  wide:{name:"廣角",desc:"把山、天空與人一起放進畫面",r:175},
+  mid:{name:"中距",desc:"看見人與人、人與獸之間的距離",r:125},
+  macro:{name:"微距",desc:"貼近手、火、傷口與心裡細微的感覺",r:85}
+};
+
+/* ============ 第一部分：七個段落群 ============ */
+const STATIONS = [
+{range:"第一～二段",title:"抵達山的肩膀",paras:[1,2],lens:"wide",
+ why:"作者先把畫面拉得很遠：天空、樹林、山谷，人顯得很小；接著老獵人一轉眼就消失在林中。",
+ clues:[
+  {t:"整片天空宛如張大翅膀的蒼鷹迅速撲掠而下",n:"天色像蒼鷹一樣撲下來：是黃昏急速降臨，還是山給初來者的一種壓迫感？"},
+  {t:"濃密而深黑的樹林沉靜地霸占山頭",n:"「霸占」把樹林寫成山的主人。人在這裡，像個客人。"},
+  {t:"把命令像流星拋進我的耳朵裡",n:"只有兩個字的命令，又快又亮——老獵人不多話。"},
+  {t:"身影已像是隻蝙蝠飄然消逝在林子裡",n:"老獵人和夜裡的森林融為一體，「我」卻被留在原地。"}],
+ starters:["站在山的肩膀上，我覺得「我」的心情是……","老獵人只說了「生火」兩個字，我猜他……"]},
+{range:"第三～四段",title:"生火與遺憾",paras:[3,4],lens:"mid",
+ why:"鏡頭停在「我」和老獵人之間：一個努力生火想討好，一個拎著獵物回來，中間隔著近三十年的遺憾。",
+ clues:[
+  {t:"我希望能夠討好獵人",n:"為什麼要「討好」？「我」在擔心什麼？"},
+  {t:"耗費了幾根火柴棒才把地表的潮氣趕走",n:"生個火都不容易：都市生活的「我」和山林之間有距離。"},
+  {t:"老獵人枯藤一般的左手",n:"枯藤般的手，卻早已拎回狐狸與飛鼠——年老與熟練並存。"},
+  {t:"仍是泰雅鍾愛的孩子",n:"老獵人用這句話，接住了「我」的不安。"},
+  {t:"一直是我心中的遺憾",n:"年近三十才補上的成年禮，補的是儀式，還是身分？"},
+  {t:"要我一早準備番刀和鹽巴就好",n:"只要番刀和鹽巴：山裡的成年禮，從簡單開始。"}],
+ starters:["年近三十才來補成年禮，我覺得「我」心中的遺憾是……","老獵人說「我」仍是泰雅鍾愛的孩子，這句話可能讓「我」……"]},
+{range:"第五段",title:"火塘邊的晚餐",paras:[5],lens:"macro",
+ why:"鏡頭貼近火塘：處理狐狸的手、一撮粗鹽，以及老獵人說「莊嚴」時的語氣。",
+ clues:[
+  {t:"獵人嫻熟地處理狐狸",n:"「嫻熟」——一輩子在山裡累積的手藝。"},
+  {t:"狩獵對泰雅男人是莊嚴的事",n:"「莊嚴」不是殘忍，也不是遊戲。你覺得莊嚴在哪裡？"},
+  {t:"沒有獵物就餵不飽你的家人",n:"狩獵和責任連在一起：為了家人，不是為了炫耀。"},
+  {t:"只消沾上粗鹽入口",n:"不加任何添加物：最原始的方法，也最貼近山。"}],
+ starters:["老獵人說狩獵是「莊嚴的事」，我覺得莊嚴的意思是……","只沾粗鹽的狐狸肉，讓我感受到……"]},
+{range:"第六段",title:"篝火與禁忌",paras:[6],lens:"mid",
+ why:"篝火旁兩個人：一個絮絮叨叨交代禁忌，一個迷迷糊糊睡去——規矩在人與人之間傳遞。",
+ clues:[
+  {t:"老獵人吩咐不得讓篝火停息",n:"火不能熄：這是禁忌，也是在山裡活下去的經驗。"},
+  {t:"黑暗是森林的鬼魅",n:"把寒冷與危險說成鬼魅與使者——用故事讓人記住規矩。"},
+  {t:"絮絮叨叨地說出成年禮的諸多禁忌",n:"「絮絮叨叨」：嘮叨裡藏著擔心。"},
+  {t:"你只許有一把番刀",n:"只許一把刀：限制自己，也是對獵物的公平。"},
+  {t:"只覺得徹夜出奇地溫暖",n:"「我」忘了顧火，火卻沒熄。是誰整夜守著？"}],
+ starters:["我猜老獵人訂下「＿＿」這個禁忌，用意可能是……","「我」睡著了，篝火卻整夜溫暖，我想是因為……"]},
+{range:"第七～八段",title:"獨自入山",paras:[7,8],lens:"macro",
+ why:"鏡頭貼近身體：芒草割出的血痕、搓揉的藥草、泥地上的蹄跡，以及心裡那艘猶豫的扁舟。",
+ clues:[
+  {t:"要我獨自進入山的心臟地帶",n:"成年禮真正開始：沒有人陪。"},
+  {t:"我便像是在大海中猶豫的扁舟",n:"山變成大海，「我」變成小舟——不知方向的心情。"},
+  {t:"馬上就泌出明亮的血痕",n:"山林在身上留下記號：這裡不是都市。"},
+  {t:"我順手搓揉了藥草抹去",n:"「我」記得的山林知識，開始派上用場。"},
+  {t:"溼潤的泥地可發現不同的蹄跡",n:"鏡頭貼近地面：學著讀懂山的語言。"},
+  {t:"我興奮著自己將要成為「泰雅」",n:"加了引號的「泰雅」：不只是族名，是一種被認可的身分。"}],
+ starters:["一個人進山時，「我」像猶豫的扁舟，因為……","如果我是「我」，看到泥地上的蹄跡會……"]},
+{range:"第九～十一段",title:"與山豬相遇",paras:[9,10,11],lens:"mid",
+ why:"人與山豬的距離忽遠忽近：撲上、被撥開、躲在巨岩後等待，直到看見三隻小山豬。",
+ clues:[
+  {t:"牠必然也感覺到我的存在",n:"獵人與獵物彼此感知——山豬也是有感覺的生命。"},
+  {t:"把我的身軀像葉片般撥開",n:"人在山豬面前輕得像葉片：力量對比翻轉了。"},
+  {t:"似乎有一對眼睛審視著我",n:"是老獵人？是山？是祖靈？這雙眼睛在看什麼？"},
+  {t:"「等待是獵人的美德」",n:"獵人的本事不只是出手，還有忍耐。"},
+  {t:"我像壁虎般趴著伏著",n:"「我」把自己變得很小、很靜，和山融在一起。"},
+  {t:"還有三隻淘氣的小山豬",n:"刪節號停在這裡：「我」看見了什麼，又想到了什麼？"}],
+ starters:["看見三隻小山豬的那一刻，我猜「我」心裡……","「一對眼睛審視著我」，我覺得那雙眼睛可能是……"]},
+{range:"第十二～十五段",title:"篝火旁的回答",paras:[12,13,14,15],lens:"wide",
+ why:"結尾鏡頭慢慢拉遠：篝火、山的肩膀、泰雅的每一個夜晚，故事在一代代之間綿延。",
+ clues:[
+  {t:"彷彿那是尊千百年來就在此庇佑山林的神祇",n:"老獵人像守護山林的神，而不只是會打獵的人。"},
+  {t:"因為一時心軟而失去作為「泰雅」的榮譽",n:"「我」以為心軟是失敗。真的是嗎？"},
+  {t:"我用沉默代替回答",n:"沉默裡有懊惱、羞愧，也許還有說不清的東西。"},
+  {t:"牠是這座山最後的山豬",n:"「最後的」——如果獵到了，山就少了什麼？"},
+  {t:"勇敢、智慧與愛就是一個好獵人的全部財產",n:"三樣財產，「我」在山谷裡用到了哪一樣？"},
+  {t:"以後泰雅的小孩要獵什麼",n:"老獵人用玩笑說出最重要的事：為下一代留下山林。"},
+  {t:"許多山林的故事便在耳傳口述中綿綿不止",n:"鏡頭拉遠：這個夜晚，也將成為下一個故事。"}],
+ starters:["「我」以為心軟是失敗，但老獵人的話讓我覺得……","如果我是那個沉默的「我」，我想回答老獵人……"]}
+];
+
+/* ============ 第二部分（準度與回饋由後端判定，前端不放答案） ============ */
+const ARROWS = [
+ {id:"zy",name:"生存與莊嚴之箭",q:"「狩獵對泰雅男人是莊嚴的事，沒有獵物就餵不飽你的家人。」"},
+ {id:"jj",name:"火光與禁忌之箭",q:"「不得讓篝火停息」「你只許有一把番刀」"},
+ {id:"kz",name:"獨行與克制之箭",q:"「牠是這座山最後的山豬」「以後泰雅的小孩要獵什麼？」"},
+ {id:"wh",name:"文化與尊重之箭",q:"「勇敢、智慧與愛就是一個好獵人的全部財產」"}
+];
+const ARROW_NAME = Object.fromEntries(ARROWS.map(a=>[a.id,a.name]));
+const CLAIMS = [
+ {id:0,tag:"貪多掠奪",sdg:["SDG 15"],say:"山裡獵物那麼多，看到就全部帶走！背包裝得越滿，越是厲害的獵人。"},
+ {id:1,tag:"規矩迷信",sdg:["SDG 10"],say:"篝火不能熄、只能帶一把番刀……老人家的禁忌都是迷信，現代人不用理。"},
+ {id:2,tag:"白V黑熊",sdg:["SDG 15"],say:"我在山裡遇到一隻胸前有白色V字的臺灣黑熊！獵到牠，就能證明我最勇敢。"},
+ {id:3,tag:"狩獵偏見",sdg:["SDG 10"],say:"原住民打獵就是殘忍又落後，應該全部禁止。"},
+ {id:4,tag:"獵人無用",sdg:["SDG 10"],say:"獵人不過是在山裡殺動物，沒什麼值得學的。"},
+ {id:5,tag:"保育兩難",sdg:["SDG 15","SDG 10"],say:"要保育，就全面禁獵；要文化，就隨便獵——只能二選一！"},
+ {id:6,tag:"不擇手段",sdg:["SDG 15"],say:"成年禮只要拿到獵物就好，偷帶幾把刀、設一堆陷阱也沒關係。"},
+ {id:7,tag:"母子山豬",sdg:["SDG 15"],say:"母山豬帶著三隻小山豬？一次全部獵走，下次就不用再找了。"}
+];
+const ACC_NAME={3:"靶心",2:"內環",1:"外環",0:"未判定"};
+
+/* ============ 第三部分 ============ */
+const BGS = ["山林","黑熊","篝火"];
+const OPENINGS = [
+ "山林裡的我：我知道你還懊惱著，那天在溪邊，你放下了長矛。我心裡還有點……",
+ "那個像小舟一樣猶豫的我：那一夜的火，其實一直有人替你守著。我心裡還有點……",
+ "沉默的我：謝謝你在那一刻停了下來。山還在，故事也還在。我心裡還有點……"
+];
+const GOLDEN = [
+ "等待是獵人的美德","勇敢、智慧與愛就是一個好獵人的全部財產","你獵到了，以後泰雅的小孩要獵什麼？",
+ "許多山林的故事便在耳傳口述中綿綿不止","狩獵對泰雅男人是莊嚴的事","仍是泰雅鍾愛的孩子","只覺得徹夜出奇地溫暖"
+];
+const TO_LINE = "致：八雅鞍部山上，那個還在找答案的「我」";
+const STAMP_NAME={guard:"森林守護者",learn:"山林見習獵人"};
+
+/* ============ 狀態 ============ */
+const KEY = "hunter-journey-v2";
+function fresh(student){return {student:student||null,step:"s0",
+  p1:STATIONS.map(()=>({lens:"",clues:[],did:"",said:"",mood:"",thought:""})),
+  p2:{rounds:[],cur:null,rot:0},p3:{bg:0,text:""},t:{start:null,p1:null,p2:null},submitted:null,report:null}}
+let state = (()=>{try{return JSON.parse(localStorage.getItem(KEY))}catch(e){return null}})() || fresh();
+function save(){try{localStorage.setItem(KEY,JSON.stringify(state))}catch(e){}}
+
+const $ = s=>document.querySelector(s);
+const app = $("#app");
+const esc = s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const clen = s=>String(s||"").replace(/\s/g,"").length;
+let toastT;
+function toast(m){const t=$("#toast");t.textContent=m;t.classList.add("show");clearTimeout(toastT);toastT=setTimeout(()=>t.classList.remove("show"),2400)}
+const ERR = {"bad-password":"密碼錯誤。","locked":"密碼錯太多次，請 10 分鐘後再試。","bad-class":"這個班級不在老師設定的名單中，請確認班級。","bad-seat":"座號請填 1～60。","bad-name":"請填寫姓名。","already":"這個座號已經交過了。如果需要重新交出，請找老師開放重做；如果不是你交的，請告訴老師。","answers-not-set":"老師還沒在後端設定第二部分答案。","network":"連線不穩，請稍後再試。","local":"本機模式（尚未連接後端）。","not-found":"找不到紀錄。","empty":"內容是空的。","bad-code":"成績碼格式不正確。"};
+const errMsg = e=>ERR[e]||("發生錯誤："+e);
+function fmtTime(iso){if(!iso)return "";const d=new Date(iso);return `${d.getFullYear()}/${d.getMonth()+1}/${d.getDate()} ${String(d.getHours()).padStart(2,"0")}:${String(d.getMinutes()).padStart(2,"0")}`}
+function fmtDur(sec){sec=Math.round(sec||0);const m=Math.floor(sec/60),s=sec%60;return m?`${m} 分 ${s} 秒`:`${s} 秒`}
+function copyText(t,msg){
+  const fallback=()=>{const ta=document.createElement("textarea");ta.value=t;ta.style.position="fixed";ta.style.opacity="0";document.body.appendChild(ta);ta.focus();ta.select();ta.setSelectionRange(0,t.length);let ok=false;try{ok=document.execCommand("copy")}catch(e){}ta.remove();toast(ok?msg:"複製失敗，請再試一次")};
+  if(navigator.clipboard&&window.isSecureContext) navigator.clipboard.writeText(t).then(()=>toast(msg),fallback); else fallback();
+}
+
+/* ============ API（Apps Script；未設定時為本機模式） ============ */
+async function api(action,data={}){
+  if(LOCAL) return localApi(action,data);
+  try{
+    const r=await fetch(API,{method:"POST",headers:{"Content-Type":"text/plain;charset=utf-8"},body:JSON.stringify({action,...data})});
+    return await r.json();
+  }catch(e){return {ok:false,error:"network"}}
+}
+/* 本機模式：只供介面試用，不計分 */
+const LKEY="hunter-localdb";
+function ldb(){try{return JSON.parse(localStorage.getItem(LKEY))||{rows:[]}}catch(e){return {rows:[]}}}
+function lsave(d){try{localStorage.setItem(LKEY,JSON.stringify(d))}catch(e){}}
+function analyzeLocal(rec){
+  const p1Words=rec.p1.reduce((t,x)=>t+clen(x.thought)+clen(x.did)+clen(x.said)+clen(x.mood),0);
+  const p2Words=rec.p2.reduce((t,x)=>t+clen(x.reason),0), p3Words=clen(rec.p3.text);
+  const p1Done=rec.p1.length===7&&rec.p1.every(x=>x.lens&&x.clues.length&&clen(x.thought)>=10);
+  const parts=[p1Done,rec.p2.length>=3,p3Words>=20];
+  return {p1Words,p2Words,p3Words,words:p1Words+p2Words+p3Words,clues:rec.p1.reduce((t,x)=>t+x.clues.length,0),
+    rounds:rec.p2.map(x=>({id:x.id,shots:x.shots.length})),bulls:0,parts,partsDone:parts.filter(Boolean).length};
+}
+function localApi(action,d){
+  const db=ldb();
+  if(action==="check") return {ok:true,already:false};
+  if(action==="judge") return {ok:false,error:"local"};
+  if(action==="save"){
+    const ts=new Date().toISOString(),ana=analyzeLocal(d.record);
+    let r=db.rows.find(x=>x.cls===d.student.cls&&+x.seat===+d.student.seat);
+    if(!r){r={cls:d.student.cls,seat:+d.student.seat,name:d.student.name,attempts:[]};db.rows.push(r)}
+    r.name=d.student.name;r.attempts.push({ts,name:d.student.name,rec:d.record,ana});r.attempts=r.attempts.slice(-20);lsave(db);
+    return {ok:true,ts,report:{student:d.student,ts,rec:d.record,ana,published:false,answers:null}};
+  }
+  if(action==="report"){const r=db.rows.find(x=>x.cls===d.student.cls&&+x.seat===+d.student.seat);if(!r)return{ok:false,error:"not-found"};const a=r.attempts.at(-1);return{ok:true,report:{student:d.student,ts:a.ts,rec:a.rec,ana:a.ana,published:false,answers:null}}}
+  if(action==="list"){if(d.password)return{ok:false,error:"local"};return{ok:true,teacher:false,published:false,board:db.rows.filter(r=>r.attempts.length).map(r=>{const a=r.attempts.at(-1);return{cls:r.cls,seat:r.seat,name:r.name,partsDone:a.ana.partsDone,words:a.ana.words,bulls:0,stamp:a.rec.p3.stamp}})}}
+  if(action==="stats"){
+    const classes={};db.rows.forEach(r=>{if(r.attempts.length)classes[r.cls]=(classes[r.cls]||0)+1});
+    const mine=db.rows.filter(r=>r.cls===d.cls&&r.attempts.length);
+    const lens=STATIONS.map(()=>({wide:0,mid:0,macro:0}));const stamps={guard:0,learn:0};
+    mine.forEach(r=>{const a=r.attempts.at(-1);a.rec.p1.forEach((x,i)=>{if(x.lens)lens[i][x.lens]++});if(stamps[a.rec.p3.stamp]!=null)stamps[a.rec.p3.stamp]++});
+    return{ok:true,classes,cls:d.cls,count:mine.length,finished:mine.filter(r=>r.attempts.at(-1).ana.partsDone===3).length,lens,stamps,
+      claims:CLAIMS.map(c=>({tag:c.tag,n:0,bulls:0})),top:mine.map(r=>({seat:r.seat,name:r.name,words:r.attempts.at(-1).ana.words})).sort((a,b)=>b.words-a.words).slice(0,5)};
+  }
+  return {ok:false,error:"local"};
+}
+
+/* ============ 路由 ============ */
+function route(){
+  closeModal();
+  document.body.classList.remove("screen-mode");
+  clearInterval(screenTimer);
+  const h=location.hash.replace("#","");
+  if(h==="quiz") quiz();
+  else if(h==="scores") scoresPage();
+  else if(h==="screen") screenPage();
+  else if(h==="report") reportPage();
+  else homePage();
+  window.scrollTo(0,0);
+}
+window.addEventListener("hashchange",route);
+function topbar(mode){
+  const tb=$("#topbar");
+  if(mode!=="quiz"){tb.innerHTML=`<a class="ttl" href="#">〈獵人〉山林旅程</a><a class="home" href="#">🏠 回主畫面</a>`;$(".top").style.display=mode==="screen"?"none":"";return}
+  $(".top").style.display="";
+  const s=state.step;let p=0,f1=0,f2=0,f3=0;
+  if(s.startsWith("s")){p=1;f1=(+s.slice(1)+1)/STATIONS.length}
+  if(s==="p2"){p=2;f1=1;f2=Math.min(state.p2.rounds.length/3,1)}
+  if(s==="p3"){p=3;f1=1;f2=1;f3=.5}
+  const leg=(n,label,f)=>`<div class="leg ${p===n?"on":""}"><span>${label}</span><div class="bar"><i style="width:${f*100}%"></i></div></div>`;
+  tb.innerHTML=`<a class="ttl j" href="#">〈獵人〉山林旅程</a>${leg(1,"一｜頭燈與鏡頭",f1)}${leg(2,"二｜獵人的遊戲",f2)}${leg(3,"三｜森林明信片",f3)}`;
+}
+function openModal(html,wide){$("#modalRoot").innerHTML=`<div class="modal"><div class="box ${wide?"wide":""}">${html}</div></div>`;document.body.classList.add("has-modal")}
+function closeModal(){$("#modalRoot").innerHTML="";document.body.classList.remove("has-modal")}
+
+/* ============ 主畫面 ============ */
+function homePage(){
+  topbar("home");
+  const st=state.student;
+  let welcome="";
+  if(st){
+    welcome=`<div class="welcome">歡迎，${esc(st.cls)} 班 ${esc(st.seat)} 號 ${esc(st.name)}。${state.submitted?`<br><b>✓ 已交出學習歷程</b>（${fmtTime(state.submitted.ts)}）`:state.t.start?"<br>你的旅程進度已保存在這台裝置上。":""}</div>`;
+  }
+  const mainBtn = state.submitted?"查看作答狀態":(st&&state.t.start?"繼續旅程":"我是學生，開始旅程");
+  app.innerHTML=`<div class="wrap">
+  <div class="home-hero">
+    <h1>獵人</h1>
+    <div style="font-family:var(--serif);font-size:20px;color:#4a514b">瓦歷斯‧諾幹｜山林旅程：頭燈、箭與明信片</div>
+    <div style="margin-top:16px"><span class="tag">三段旅程</span><span class="tag">課文第一～十五段</span><span class="tag">重思考歷程，不扣分</span><span class="tag">iPad／電腦皆可</span>${LOCAL?'<span class="tag" style="color:var(--warn)">本機模式：不計分、不收資料</span>':""}</div>
+    ${welcome}
+  </div>
+  <div class="home-btns">
+    <a class="btn big" href="#quiz">${mainBtn}</a>
+    ${state.submitted?'<a class="btn big ghost" href="#report">查看我的報告書</a>':""}
+    <a class="btn big ghost" href="#scores">老師入口</a>
+  </div>
+  <h3>旅程怎麼走</h3>
+  <ol class="steps">
+    <li><b>一｜頭燈與鏡頭</b>你就是文章裡的「我」。每一段先選鏡頭，再用頭燈照亮線索，寫下看見的與感受到的。</li>
+    <li><b>二｜獵人的遊戲</b>轉盤抽出假獵人的說法。你的判斷就是你的箭：選一支獵人哲學之箭反駁，再寫下理由。</li>
+    <li><b>三｜森林明信片</b>寫一張明信片給山林裡失落、猶豫的「我」，交出後會看到你的個人報告書。</li>
+  </ol>
+  <div class="foot">進度會自動存在這台裝置上。<button id="resetBtn">這台裝置換人使用：清除紀錄</button></div>
+  </div>`;
+  $("#resetBtn").onclick=()=>{if(confirm("確定要清除這台裝置上的旅程紀錄嗎？（已交出的資料不受影響）")){state=fresh();save();route()}};
+}
+
+/* ============ 登記 ============ */
+function registerModal(){
+  const s=state.student||{};
+  openModal(`<h2 style="margin-top:0">登記你的班級座號</h2>
+   <p class="note">登記後開始旅程。資料會交給老師，請確實填寫。</p>
+   <div class="row3">
+     <label class="field">班級<input id="rCls" inputmode="numeric" value="${esc(s.cls)}" placeholder="例：901"></label>
+     <label class="field">座號<input id="rSeat" inputmode="numeric" value="${esc(s.seat)}" placeholder="1～60"></label>
+     <label class="field full">姓名<input id="rName" value="${esc(s.name)}" maxlength="20" placeholder="你的名字"></label>
+   </div>
+   <div class="err" id="rErr"></div>
+   <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:10px">
+     <a href="#" class="note">取消</a>
+     <button class="btn" id="rGo">開始旅程</button>
+   </div>
+   <p style="margin:18px 0 0;font-size:14px"><a href="#scores">我是老師，先略過，直接看班級成績 →</a></p>`);
+  $("#rGo").onclick=async()=>{
+    const cls=$("#rCls").value.trim(), seat=parseInt($("#rSeat").value,10), name=$("#rName").value.trim();
+    const e=$("#rErr");
+    if(!/^\d{3,4}$/.test(cls)){e.textContent="班級請填 3～4 位數字，例如 901。";return}
+    if(!(seat>=1&&seat<=60)){e.textContent=ERR["bad-seat"];return}
+    if(!name){e.textContent=ERR["bad-name"];return}
+    $("#rGo").disabled=true;e.textContent="確認中……";
+    const res=await api("check",{student:{cls,seat,name}});
+    $("#rGo").disabled=false;
+    if(!res.ok){e.textContent=errMsg(res.error);return}
+    if(res.already){e.textContent=ERR.already;return}
+    const prev=state.student;
+    if(prev&&(prev.cls!==cls||+prev.seat!==seat)) state=fresh();
+    state.student={cls,seat,name};save();closeModal();quiz();
+  };
+}
+
+/* ============ 學生旅程 ============ */
+function quiz(){
+  if(!state.student){topbar("home");homePage();registerModal();return}
+  if(state.submitted){statusPage();return}
+  if(!state.t.start){state.t.start=Date.now();save()}
+  renderStep();
+}
+function statusPage(){
+  topbar("home");
+  app.innerHTML=`<div class="wrap"><div class="kicker">作答狀態</div><h2>你已交出學習歷程 ✓</h2>
+   <p class="lead" style="font-size:17px">${esc(state.student.cls)} 班 ${esc(state.student.seat)} 號 ${esc(state.student.name)}，交出時間：${fmtTime(state.submitted.ts)}</p>
+   <div class="actions"><a class="btn" href="#report">查看我的報告書</a><a class="btn ghost" href="#">🏠 回主畫面</a></div>
+   <p class="note" style="margin-top:26px">如果老師已經開放你重做，按這裡重新開始：<button class="btn sm ghost" id="redoBtn">重新開始旅程</button></p>
+   <div class="err" id="redoErr"></div></div>`;
+  $("#redoBtn").onclick=async()=>{
+    const res=await api("check",{student:state.student});
+    if(!res.ok){$("#redoErr").textContent=errMsg(res.error);return}
+    if(res.already){$("#redoErr").textContent="老師還沒有開放重做喔。";return}
+    if(confirm("重新開始會清除這台裝置上的旅程內容（已交出的紀錄老師那邊還在）。確定嗎？")){const s=state.student;state=fresh(s);save();quiz()}
+  };
+}
+function go(step){
+  if(step==="p2"&&!state.t.p1) state.t.p1=Date.now();
+  if(step==="p3"&&!state.t.p2) state.t.p2=Date.now();
+  state.step=step;save();renderStep();window.scrollTo(0,0);
+}
+function renderStep(){
+  topbar("quiz");
+  const s=state.step;
+  if(s.startsWith("s")) renderStation(+s.slice(1));
+  else if(s==="p2") renderP2();
+  else renderP3();
+}
+
+/* ---------- 第一部分 ---------- */
+function paraHTML(st){
+  return st.paras.map(n=>{
+    let h=esc(TEXT[n]);
+    st.clues.forEach((c,ci)=>{h=h.replace(esc(c.t),`<span class="clue" data-ci="${ci}">${esc(c.t)}</span>`)});
+    return `<p><span class="pno">${CN[n]}</span>${h}</p>`;
+  }).join("");
+}
+function lensFeedback(st,d){
+  if(!d.lens) return "";
+  const me=LENS[d.lens], sug=LENS[st.lens];
+  if(d.lens===st.lens) return `你和作者的鏡頭很靠近。${st.why}`;
+  return `你選了<b>${me.name}</b>：${me.desc}。作者在這裡比較像用<b>${sug.name}</b>——${st.why} 兩種看法都可以，寫下你從自己的鏡頭看見了什麼。`;
+}
+function ownLen(text,starters){let o=text||"";starters.forEach(s=>{o=o.split(s).join("")});return clen(o)}
+function renderStation(i){
+  const st=STATIONS[i], d=state.p1[i];
+  app.innerHTML=`<div class="wrap">
+  <div class="kicker">第一部分｜文章、手電筒、鏡頭　${i+1} / ${STATIONS.length}</div>
+  <h2>${st.range}｜${st.title}</h2>
+  <div class="step-label"><b>1</b>選鏡頭：你想用什麼距離看這一段？</div>
+  <div class="lenses">${Object.keys(LENS).map(k=>`<button class="lens-btn ${d.lens===k?"on":""}" data-lens="${k}"><span class="ln">${LENS[k].name}</span><span class="ld">${LENS[k].desc}</span></button>`).join("")}</div>
+  <p class="lens-fb" id="lensFb">${lensFeedback(st,d)}</p>
+  <div class="step-label"><b>2</b>戴上頭燈：在暗處拖曳光圈，點選你發現的關鍵句或意象</div>
+  <div class="scene lens-${d.lens||"off"}" id="scene">
+    <div class="text">${paraHTML(st)}</div><div class="shade"></div>
+    <div class="off-msg">${d.lens?"":"先選一個鏡頭，頭燈就會亮起"}</div>
+  </div>
+  <div class="bag" id="bag"></div>
+  <div class="step-label"><b>3</b>記錄：這一段裡，「獵人／我」……</div>
+  <div class="rec-grid">
+    <label class="field">做了什麼<input data-k="did" maxlength="200" value="${esc(d.did)}" placeholder="例：努力生火"></label>
+    <label class="field">說了什麼<input data-k="said" maxlength="200" value="${esc(d.said)}" placeholder="可以抄一句"></label>
+    <label class="field">感受到的氛圍<input data-k="mood" maxlength="200" value="${esc(d.mood)}" placeholder="例：安靜、有點不安"></label>
+  </div>
+  <div class="field">點一個句型開頭，接著寫下你的觀察與想法（寫多一點也沒關係）</div>
+  <div class="chips">${st.starters.map((s,k)=>`<button class="chip" data-st="${k}">${esc(s)}</button>`).join("")}</div>
+  <textarea id="thought" maxlength="3000" placeholder="從句型開始，或用自己的話寫……">${esc(d.thought)}</textarea>
+  <nav class="st-nav">
+    <button class="btn ghost" id="prevBtn">${i===0?"🏠 回主畫面":"上一個段落群"}</button>
+    <span class="gate" id="gate"></span>
+    <button class="btn" id="nextBtn">${i===STATIONS.length-1?"前往第二部分":"繼續前進"}</button>
+  </nav></div>`;
+
+  const scene=$("#scene");
+  scene.style.setProperty("--r",(LENS[d.lens]?.r||120)+"px");
+  let lx=scene.clientWidth/2, ly=90;
+  const setLight=(x,y)=>{lx=x;ly=y;scene.style.setProperty("--x",x+"px");scene.style.setProperty("--y",y+"px")};
+  setLight(lx,ly);
+  const pos=e=>{const r=scene.getBoundingClientRect();return [e.clientX-r.left,e.clientY-r.top]};
+  scene.addEventListener("pointermove",e=>{const [x,y]=pos(e);setLight(x,y)});
+  scene.addEventListener("pointerdown",e=>{const [x,y]=pos(e);setLight(x,y)});
+  scene.addEventListener("click",e=>{
+    const el=e.target.closest(".clue"); if(!el) return;
+    if(!d.lens){toast("先選鏡頭，打開頭燈");return}
+    const sr=scene.getBoundingClientRect(), R=LENS[d.lens].r;
+    let near=false;
+    for(const rc of el.getClientRects()){
+      const cx=Math.max(rc.left,Math.min(lx+sr.left,rc.right)), cy=Math.max(rc.top,Math.min(ly+sr.top,rc.bottom));
+      if(Math.hypot(cx-lx-sr.left,cy-ly-sr.top)<R*0.75){near=true;break}
+    }
+    if(!near){toast("把光照過去，再點一次");return}
+    const ci=+el.dataset.ci;
+    if(!d.clues.includes(ci)){d.clues.push(ci);d.clues.sort((a,b)=>a-b);save();markClues();drawBag();gate()}
+  });
+  function markClues(){scene.querySelectorAll(".clue").forEach(el=>el.classList.toggle("found",d.clues.includes(+el.dataset.ci)))}
+  function drawBag(){
+    $("#bag").innerHTML=d.clues.length?d.clues.map(ci=>`<div class="item"><div class="q">「${esc(st.clues[ci].t.replace(/^「|」$/g,""))}」</div><div class="n">${esc(st.clues[ci].n)}</div></div>`).join("")
+      :`<div class="empty">線索袋還是空的。這一段藏著 ${st.clues.length} 條線索，找到一條以上就可以前進。</div>`;
+  }
+  function gate(){
+    const g=[]; if(!d.lens)g.push("選鏡頭"); if(!d.clues.length)g.push("找到一條線索");
+    if(ownLen(d.thought,st.starters)<10)g.push("接著句型寫下想法（10 字以上）");
+    $("#gate").textContent=g.length?"還差："+g.join("、"):"";
+    $("#nextBtn").disabled=!!g.length;
+  }
+  markClues();drawBag();gate();
+  app.querySelectorAll(".lens-btn").forEach(b=>b.onclick=()=>{
+    d.lens=b.dataset.lens;save();
+    app.querySelectorAll(".lens-btn").forEach(x=>x.classList.toggle("on",x===b));
+    scene.className="scene lens-"+d.lens;scene.style.setProperty("--r",LENS[d.lens].r+"px");
+    scene.querySelector(".off-msg").textContent="";
+    $("#lensFb").innerHTML=lensFeedback(st,d);gate();
+  });
+  app.querySelectorAll("[data-k]").forEach(inp=>inp.addEventListener("input",()=>{d[inp.dataset.k]=inp.value;save()}));
+  const ta=$("#thought");
+  ta.addEventListener("input",()=>{d.thought=ta.value;save();gate()});
+  app.querySelectorAll("[data-st]").forEach(b=>b.onclick=()=>{
+    const s=st.starters[+b.dataset.st];
+    ta.value=ta.value.trim()?ta.value.replace(/\s*$/,"\n")+s:s;
+    d.thought=ta.value;save();gate();ta.focus();ta.setSelectionRange(ta.value.length,ta.value.length);
+  });
+  $("#prevBtn").onclick=()=>{if(i===0)location.hash="#";else go("s"+(i-1))};
+  $("#nextBtn").onclick=()=>go(i===STATIONS.length-1?"p2":"s"+(i+1));
+}
+
+/* ---------- 第二部分 ---------- */
+let shooting=false;
+function renderP2(){
+  const P=state.p2;
+  const used=P.rounds.map(r=>r.id).concat(P.cur?[P.cur.id]:[]);
+  app.innerHTML=`<div class="wrap">
+  <div class="kicker">第二部分｜獵人的遊戲</div>
+  <h2>真假獵人轉盤 × 哲學反駁之箭</h2>
+  <p class="lead" style="font-size:16px">轉盤會抽出一句「假獵人」的說法。這裡不比手速，<b>你的判斷就是你的箭</b>：選一支最能切中要害的獵人哲學之箭反駁它。沒射中靶心也沒關係，可以調整角度再射，最後寫下一句反駁理由。<br><span class="mute">至少完成 3 回，就能前往森林明信片。</span></p>
+  <div class="p2-grid">
+    <div class="wheel-box">
+      <div class="wheel-wrap"><div class="pointer"></div>
+        <div class="wheel" id="wheel" style="transform:rotate(${P.rot}deg)">
+          ${CLAIMS.map((c,k)=>`<div class="lab ${used.includes(c.id)?"used":""}" style="transform:rotate(${k*45+22.5}deg)"><span>${c.tag}</span></div>`).join("")}
+          <div class="hub">假獵人</div>
+        </div>
+      </div>
+      <button class="btn ember" id="spinBtn" ${P.cur?"disabled":""}>${P.rounds.length?"轉動下一回":"轉動轉盤"}</button>
+    </div>
+    <div id="playArea"></div>
+  </div>
+  <div class="rounds" id="rounds"></div>
+  <nav class="st-nav">
+    <button class="btn ghost" id="backP1">回到第一部分</button>
+    <span class="gate" id="gate2"></span>
+    <button class="btn" id="toP3">前往森林明信片</button>
+  </nav></div>`;
+  drawPlay();drawRounds();
+  $("#spinBtn").onclick=spin;
+  $("#backP1").onclick=()=>go("s"+(STATIONS.length-1));
+  $("#toP3").onclick=()=>go("p3");
+}
+function spin(){
+  const P=state.p2; if(P.cur) return;
+  const used=P.rounds.map(r=>r.id);
+  let pool=CLAIMS.filter(c=>!used.includes(c.id)); if(!pool.length) pool=CLAIMS;
+  const c=pool[Math.floor(Math.random()*pool.length)], k=CLAIMS.indexOf(c);
+  P.rot=P.rot-(P.rot%360)+360*5+360-(k*45+22.5)+(Math.random()*24-12);
+  $("#spinBtn").disabled=true;
+  $("#wheel").style.transform=`rotate(${P.rot}deg)`;
+  setTimeout(()=>{P.cur={id:c.id,shots:[],reason:""};save();renderP2()},3300);
+}
+function drawPlay(){
+  const P=state.p2, area=$("#playArea");
+  if(!P.cur){
+    area.innerHTML=`<div class="card mute" style="line-height:1.9">${P.rounds.length?"這一回的箭已收好。準備好就轉動下一回。":"按下「轉動轉盤」，看看假獵人會說什麼。"}<br>你的箭袋裡有四支箭：${ARROWS.map(a=>"「"+a.name+"」").join("、")}。</div>`;
+    return;
+  }
+  const c=CLAIMS[P.cur.id], last=P.cur.shots.at(-1);
+  area.innerHTML=`
+   <div class="claim"><div class="who">假獵人說</div><div class="say">「${esc(c.say)}」</div>${c.sdg.map(s=>`<span class="sdg">${s}</span>`).join("")}</div>
+   <div class="step-label" style="margin-top:18px"><b>箭</b>選一支箭反駁（可以換角度重射）</div>
+   <div class="arrows">${ARROWS.map(a=>`<button class="arrow-btn ${last&&last.arrow===a.id?"last":""}" data-a="${a.id}"><div class="an">${a.name}</div><div class="aq">${esc(a.q)}</div></button>`).join("")}</div>
+   <div class="target-row">
+     <div class="target" id="target"><svg viewBox="0 0 200 200"><circle cx="100" cy="100" r="96" fill="#efe7d6" stroke="#c9bb9f"/><circle cx="100" cy="100" r="64" fill="#e2d6bd" stroke="#bfae8c"/><circle cx="100" cy="100" r="30" fill="#c98b5a" stroke="#a96d40"/><circle cx="100" cy="100" r="3" fill="#fff"/></svg></div>
+     <div class="fb" id="fb">${last?fbHTML(last):'<span class="mute">還沒射箭。讀一讀假獵人的話，想想它錯在哪裡。</span>'}</div>
+   </div>
+   <div id="reasonBox"></div>`;
+  P.cur.shots.forEach((s,idx)=>placeDart(s,idx<P.cur.shots.length-1,false));
+  area.querySelectorAll("[data-a]").forEach(b=>b.onclick=()=>shoot(b.dataset.a));
+  drawReason();
+}
+function dartPos(s){
+  const ring={3:[0,20],2:[38,56],1:[70,88],0:[44,80]}[s.acc||0];
+  const r=ring[0]+(s.seed%100)/100*(ring[1]-ring[0]), ang=(s.seed*137)%360*Math.PI/180;
+  return [100+r*Math.cos(ang),100+r*Math.sin(ang)];
+}
+function placeDart(s,old,animate){
+  const t=$("#target"); if(!t) return;
+  const el=document.createElement("div"); el.className="dart"+(old?" old":"")+(s.acc?"":" na");
+  const [x,y]=dartPos(s);
+  if(animate){el.style.left="100px";el.style.top="230px";t.appendChild(el);requestAnimationFrame(()=>requestAnimationFrame(()=>{el.style.left=x+"px";el.style.top=y+"px"}))}
+  else{el.style.left=x+"px";el.style.top=y+"px";t.appendChild(el)}
+}
+function fbHTML(s){
+  const name=ARROW_NAME[s.arrow];
+  if(!s.acc){
+    if(s.err==="local") return `<div class="lv">箭已射出</div>本機模式（未連接後端）無法判定準度，僅供介面試用。直接寫下你的理由吧。`;
+    return `<div class="lv">箭已射出</div>${esc(errMsg(s.err))}先寫下你的理由吧。`;
+  }
+  if(s.acc===3) return `<div class="lv">正中靶心</div>${esc(s.text)}<br><span class="mute">把你的理由寫下來吧。</span>`;
+  if(s.acc===2) return `<div class="lv">射進內環——方向對了</div>再想一下：${esc(s.text)}<br><span class="mute">可以換個角度再射一次，也可以直接寫下你的理由。</span>`;
+  return `<div class="lv">擦過靶邊</div>「${name}」說的道理沒錯，但和這句話的核心還有距離。<br>線索：${esc(s.text)}`;
+}
+async function shoot(aid){
+  const P=state.p2; if(shooting||!P.cur) return;
+  shooting=true; document.querySelectorAll("[data-a]").forEach(b=>b.disabled=true);
+  const res=await api("judge",{claimId:P.cur.id,arrow:aid});
+  shooting=false; document.querySelectorAll("[data-a]").forEach(b=>b.disabled=false);
+  if(!res.ok&&res.error==="network"){toast(ERR.network+"箭沒有射出去，請再試一次。");return}
+  const s={arrow:aid,acc:res.ok?res.acc:0,text:res.ok?res.text:"",err:res.ok?"":res.error,seed:Math.floor(Math.random()*997)};
+  $("#target").querySelectorAll(".dart").forEach(d=>d.classList.add("old"));
+  const prefix=n=>`我用「${n}」反駁：課文中`;
+  const prev=P.cur.shots.at(-1);
+  P.cur.shots.push(s);
+  if(!P.cur.reason.trim()||(prev&&P.cur.reason.trim()===prefix(ARROW_NAME[prev.arrow]))) P.cur.reason=prefix(ARROW_NAME[aid]);
+  save();
+  placeDart(s,false,true);
+  $("#fb").innerHTML=fbHTML(s);
+  document.querySelectorAll("[data-a]").forEach(b=>b.classList.toggle("last",b.dataset.a===aid));
+  drawReason();
+}
+function drawReason(){
+  const P=state.p2, box=$("#reasonBox"); if(!box) return;
+  if(!P.cur||!P.cur.shots.length){box.innerHTML="";return}
+  box.innerHTML=`<div class="step-label"><b>寫</b>寫下一句反駁理由</div>
+   <div class="field" style="margin-bottom:6px">句型：我用「＿＿之箭」反駁：課文中＿＿＿＿，所以我認為＿＿＿＿。</div>
+   <textarea id="reason" maxlength="3000" style="min-height:90px">${esc(P.cur.reason)}</textarea>
+   <div style="display:flex;justify-content:flex-end;margin-top:10px"><button class="btn" id="commit">收箭，記錄這一回</button></div>`;
+  const ta=$("#reason"),btn=$("#commit");
+  const chk=()=>{btn.disabled=clen(ta.value.replace(/^我用「.+?」反駁：課文中/,""))<8};
+  ta.addEventListener("input",()=>{P.cur.reason=ta.value;save();chk()});chk();
+  btn.onclick=()=>{P.rounds.push(P.cur);P.cur=null;save();renderP2();topbar("quiz");toast("這一回已記錄")};
+}
+function drawRounds(){
+  const P=state.p2;
+  $("#rounds").innerHTML=P.rounds.length?`<h3 style="font-size:18px;margin:0 0 4px">已完成 ${P.rounds.length} 回</h3>`+P.rounds.map((r,k)=>{
+    return `<div class="r"><b>第 ${k+1} 回｜${CLAIMS[r.id].tag}</b>　${r.shots.map(s=>ARROW_NAME[s.arrow].replace("之箭","")+(s.acc?"（"+ACC_NAME[s.acc]+"）":"")).join(" → ")}<br>${esc(r.reason)}</div>`}).join(""):"";
+  const left=Math.max(0,3-P.rounds.length);
+  $("#gate2").textContent=left?`再完成 ${left} 回就能前往明信片`:"";
+  $("#toP3").disabled=!!left;
+}
+
+/* ---------- 第三部分 ---------- */
+function norm(s){return String(s).replace(/[\s，。、：；！？「」『』（）…─—．‧,.!?;:'"()\-~～＿_]/g,"")}
+const GRAMS=(()=>{const t=norm(Object.values(TEXT).join(""));const g=new Set();for(let i=0;i+4<=t.length;i++)g.add(t.substr(i,4));return g})();
+function originality(text){
+  let own=text||""; OPENINGS.forEach(o=>{own=own.split(o).join("")});
+  const n=norm(own); if(!n.length) return {len:0,ratio:0};
+  const cov=new Array(n.length).fill(false);
+  for(let i=0;i+4<=n.length;i++) if(GRAMS.has(n.substr(i,4))) for(let j=i;j<i+4;j++) cov[j]=true;
+  return {len:n.length,ratio:1-cov.filter(Boolean).length/n.length};
+}
+function stampType(o){if(o.len<20) return null; return o.ratio>=0.7?"guard":"learn"}
+
+function renderP3(){
+  const P=state.p3;
+  app.innerHTML=`<div class="wrap">
+  <div class="kicker">第三部分｜森林明信片</div>
+  <h2>寫給山林裡的那個「我」</h2>
+  <p class="lead" style="font-size:16px">篝火旁，「我」用沉默代替回答。那份失落、猶豫，和對狩獵與規矩的困惑，還留在山上。<br>寫一張明信片給他：回應他、安頓他，也想想——將來你遇到相似的處境（面對規矩、面對環境、面對想要卻該放下的東西）時，會怎麼做？</p>
+  <div class="p3-grid">
+    <div class="preview"><img id="pcImg" alt="森林明信片預覽"><div class="note" style="margin-top:6px">iPad 若下載沒有反應，可以長按上面的明信片圖片儲存。</div></div>
+    <div>
+      <div class="field">選一張底圖</div>
+      <div class="bgs">${BGS.map((b,k)=>`<button data-bg="${k}" class="${P.bg===k?"on":""}"><canvas width="240" height="160"></canvas><small>${b}</small></button>`).join("")}</div>
+      <div class="field" style="margin-top:16px">開頭語（點一句放進信裡，也可以不用）</div>
+      <div class="chips">${OPENINGS.map((o,k)=>`<button class="chip" data-op="${k}">${esc(o)}</button>`).join("")}</div>
+      <div class="field" style="margin-top:8px">課文金句（點一下放進信裡）</div>
+      <div class="chips">${GOLDEN.map((g,k)=>`<button class="chip" data-gd="${k}" style="font-family:var(--serif);font-size:14px">${esc(g)}</button>`).join("")}</div>
+      <textarea id="letter" maxlength="3000" style="min-height:200px;margin-top:8px" placeholder="寫下你想對山林裡的「我」說的話……&#10;可以寫：你懂他的失落嗎？那些規矩是什麼意思？以後當你面對＿＿時，你會……">${esc(P.text)}</textarea>
+      <div class="orig" id="orig"></div>
+      <div class="actions">
+        <button class="btn ember" id="submitBtn">交出學習歷程</button>
+        <button class="btn ghost" id="copyBtn">一鍵複製完整學習歷程</button>
+        <button class="btn ghost" id="dlBtn">下載明信片圖卡</button>
+        ${SUBMISSION_URL?`<a class="btn ghost" href="${esc(SUBMISSION_URL)}" target="_blank" rel="noopener">前往繳交</a>`:""}
+      </div>
+      <div class="err" id="subErr"></div>
+      <div class="note" style="margin-top:8px">按「交出學習歷程」後，三個部分的內容會一起交給老師，交出後就不能再修改。</div>
+    </div>
+  </div>
+  <nav class="st-nav"><button class="btn ghost" id="backP2">回到第二部分</button><span></span></nav>
+  </div>`;
+  app.querySelectorAll(".bgs button").forEach(b=>{
+    const k=+b.dataset.bg, x=b.querySelector("canvas").getContext("2d");
+    x.scale(.2,.2); drawBg(x,k);
+    b.onclick=()=>{P.bg=k;save();app.querySelectorAll(".bgs button").forEach(y=>y.classList.toggle("on",y===b));refresh()};
+  });
+  const ta=$("#letter");
+  ta.addEventListener("input",()=>{P.text=ta.value;save();refresh()});
+  app.querySelectorAll("[data-op]").forEach(b=>b.onclick=()=>{
+    const o=OPENINGS[+b.dataset.op]; let t=ta.value;
+    const cur=OPENINGS.find(x=>t.startsWith(x));
+    t=cur?o+t.slice(cur.length):(t.trim()?o+"\n"+t:o);
+    ta.value=t;P.text=t;save();refresh();ta.focus();ta.setSelectionRange(t.length,t.length);
+  });
+  app.querySelectorAll("[data-gd]").forEach(b=>b.onclick=()=>{
+    const g="「"+GOLDEN[+b.dataset.gd]+"」", s=ta.selectionStart??ta.value.length, e=ta.selectionEnd??s;
+    ta.value=ta.value.slice(0,s)+g+ta.value.slice(e);P.text=ta.value;save();refresh();
+    ta.focus();ta.setSelectionRange(s+g.length,s+g.length);
+  });
+  $("#copyBtn").onclick=()=>copyText(buildText(state.student,buildRecord()),"已複製完整學習歷程");
+  $("#dlBtn").onclick=()=>download(state.student,state.p3);
+  $("#submitBtn").onclick=submitAll;
+  $("#backP2").onclick=()=>go("p2");
+  refresh();
+}
+let refT;
+function refresh(){
+  const o=originality(state.p3.text), st=stampType(o), el=$("#orig");
+  if(el) el.innerHTML = o.len<20
+    ? `再寫 ${20-o.len} 字左右，系統就會為明信片貼上郵票、蓋上郵戳。`
+    : `和課文不同的文字比例：約 ${Math.round(o.ratio*100)}%　→　郵票：<b>${STAMP_NAME[st]}</b><div class="meter"><i style="width:${Math.round(o.ratio*100)}%"></i></div><span style="font-size:13px">（用自己的話寫得越多，越接近「森林守護者」；以課文金句為主，會是「山林見習獵人」。兩種都是好的開始。）</span>`;
+  const btn=$("#submitBtn"); if(btn) btn.disabled=o.len<20;
+  clearTimeout(refT); refT=setTimeout(()=>{drawPostcard(state.student,state.p3);const img=$("#pcImg");if(img) img.src=$("#pc").toDataURL("image/png")},120);
+}
+function buildRecord(){
+  const now=Date.now(), t=state.t, o=originality(state.p3.text);
+  return {
+    p1:state.p1.map(x=>({lens:x.lens,clues:x.clues,did:x.did,said:x.said,mood:x.mood,thought:x.thought})),
+    p2:state.p2.rounds.map(r=>({id:r.id,shots:r.shots.map(s=>({arrow:s.arrow})),reason:r.reason})),
+    p3:{bg:state.p3.bg,text:state.p3.text,originality:Math.round(o.ratio*100)/100,stamp:stampType(o)||""},
+    durationSec:t.start?Math.round((now-t.start)/1000):0,
+    partSec:[t.p1&&t.start?Math.round((t.p1-t.start)/1000):0,t.p2&&t.p1?Math.round((t.p2-t.p1)/1000):0,t.p2?Math.round((now-t.p2)/1000):0]
+  };
+}
+async function submitAll(){
+  if(!confirm("確定要交出嗎？交出後就不能再修改囉。")) return;
+  const btn=$("#submitBtn"), e=$("#subErr");
+  btn.disabled=true;e.textContent="傳送中……";
+  const record=buildRecord();
+  const res=await api("save",{student:state.student,record});
+  btn.disabled=false;e.textContent="";
+  if(res.ok){state.submitted={ts:res.ts};state.report=res.report;save();location.hash="#report";return}
+  if(res.error==="network"||!res.error){showCode(record);return}
+  e.textContent=errMsg(res.error);
+}
+function showCode(record){
+  const code=btoa(unescape(encodeURIComponent(JSON.stringify({app:"hunter",student:state.student,record}))));
+  openModal(`<h2 style="margin-top:0">暫時連不上老師的試算表</h2>
+   <p>你的內容沒有遺失。請按「複製成績碼」，貼到老師指定的地方（例如 Classroom 私人留言），老師可以在教師區匯入。也可以等一下再按一次「交出學習歷程」。</p>
+   <div class="code-box">${esc(code)}</div>
+   <div class="actions"><button class="btn" id="cpCode">複製成績碼</button><button class="btn ghost" id="cl">關閉</button></div>`);
+  $("#cpCode").onclick=()=>copyText(code,"已複製成績碼");
+  $("#cl").onclick=closeModal;
+}
+
+/* ---- 明信片繪圖 ---- */
+function rr(x,X,Y,W,H,R){x.beginPath();x.moveTo(X+R,Y);x.arcTo(X+W,Y,X+W,Y+H,R);x.arcTo(X+W,Y+H,X,Y+H,R);x.arcTo(X,Y+H,X,Y,R);x.arcTo(X,Y,X+W,Y,R);x.closePath()}
+function ridge(x,base,amp,col,seed){
+  x.fillStyle=col;x.beginPath();x.moveTo(0,800);
+  for(let i=0;i<=1200;i+=10){const y=base-amp*(0.6*Math.sin(i/170+seed)+0.3*Math.sin(i/63+seed*2)+0.15*Math.sin(i/29+seed*3));x.lineTo(i,y)}
+  x.lineTo(1200,800);x.closePath();x.fill();
+}
+function pine(x,px,py,h,col){x.fillStyle=col;for(let k=0;k<3;k++){const w=h*(0.42-k*0.09),y=py-k*h*0.28;x.beginPath();x.moveTo(px,y-h*0.42);x.lineTo(px-w,y);x.lineTo(px+w,y);x.closePath();x.fill()}}
+function drawBg(x,k){
+  x.save();
+  if(k===0){
+    const g=x.createLinearGradient(0,0,0,800);g.addColorStop(0,"#c7d1c6");g.addColorStop(.55,"#e9dcc4");g.addColorStop(1,"#d9c9ab");
+    x.fillStyle=g;x.fillRect(0,0,1200,800);
+    x.fillStyle="rgba(255,246,225,.85)";x.beginPath();x.arc(300,260,56,0,7);x.fill();
+    ridge(x,380,60,"#a9b5a3",1);ridge(x,470,70,"#7f9282",2.3);ridge(x,570,60,"#566d5b",4.1);ridge(x,680,40,"#34473a",5.7);
+    for(let i=0;i<14;i++){pine(x,20+i*44+(i%3)*9,760-(i%2)*18,90+(i%4)*14,"#22312a")}
+  }else if(k===1){
+    const g=x.createLinearGradient(0,0,0,800);g.addColorStop(0,"#17232b");g.addColorStop(1,"#2c3b35");
+    x.fillStyle=g;x.fillRect(0,0,1200,800);
+    x.fillStyle="rgba(240,232,210,.8)";for(let i=0;i<60;i++){x.beginPath();x.arc((i*197)%1200,(i*89)%380,(i%3)*0.7+0.6,0,7);x.fill()}
+    x.fillStyle="#efe6cf";x.beginPath();x.arc(150,150,48,0,7);x.fill();
+    ridge(x,560,50,"#22302a",3);ridge(x,690,30,"#17201b",6);
+    x.translate(320,520);x.fillStyle="#0e1311";
+    x.beginPath();x.ellipse(0,90,130,150,0,0,7);x.fill();
+    x.beginPath();x.arc(0,-90,78,0,7);x.fill();
+    x.beginPath();x.arc(-60,-152,26,0,7);x.arc(60,-152,26,0,7);x.fill();
+    x.fillStyle="#3b3631";x.beginPath();x.ellipse(0,-62,34,26,0,0,7);x.fill();
+    x.fillStyle="#0e1311";x.beginPath();x.ellipse(0,-74,12,8,0,0,7);x.fill();
+    x.strokeStyle="#ece4cf";x.lineWidth=16;x.lineCap="round";x.lineJoin="round";
+    x.beginPath();x.moveTo(-62,-6);x.lineTo(0,52);x.lineTo(62,-6);x.stroke();
+  }else{
+    const g=x.createLinearGradient(0,0,0,800);g.addColorStop(0,"#120d0b");g.addColorStop(1,"#2a1b13");
+    x.fillStyle=g;x.fillRect(0,0,1200,800);
+    const gl=x.createRadialGradient(300,600,10,300,600,420);gl.addColorStop(0,"rgba(240,150,70,.55)");gl.addColorStop(1,"rgba(240,150,70,0)");
+    x.fillStyle=gl;x.fillRect(0,0,1200,800);
+    for(let i=0;i<5;i++)pine(x,30+i*30,800,300+i*20,"#0b0807");
+    pine(x,560,800,360,"#0b0807");
+    x.save();x.translate(300,690);x.fillStyle="#4a3022";
+    x.rotate(-.22);rr(x,-140,-14,280,30,12);x.fill();x.rotate(.44);rr(x,-140,-14,280,30,12);x.fill();x.restore();
+    const flame=(w,h,c)=>{x.fillStyle=c;x.beginPath();x.moveTo(300-w,680);x.bezierCurveTo(300-w,680-h*.5,300-w*.2,680-h*.7,300,680-h);x.bezierCurveTo(300+w*.25,680-h*.65,300+w,680-h*.45,300+w,680);x.closePath();x.fill()};
+    flame(95,250,"#d9772f");flame(68,190,"#f0a74a");flame(40,120,"#fbdc95");
+    x.fillStyle="rgba(255,210,140,.9)";[[250,360],[350,310],[280,250],[380,410],[220,420]].forEach(([a,b])=>{x.beginPath();x.arc(a,b,3,0,7);x.fill()});
+  }
+  x.restore();
+}
+function wrapLines(x,text,maxW){
+  const out=[],NO_START="，。、：；！？」』）…";
+  text.split("\n").forEach(par=>{let line="";for(const ch of par){if(x.measureText(line+ch).width>maxW&&line&&!NO_START.includes(ch)){out.push(line);line=ch}else line+=ch}out.push(line)});
+  return out;
+}
+function drawStamp(x,type){
+  const X=1018,Y=56,W=112,H=140;
+  if(!type){x.save();x.setLineDash([6,5]);x.strokeStyle="#b9ad97";x.lineWidth=2;x.strokeRect(X,Y,W,H);x.setLineDash([]);x.fillStyle="#b9ad97";x.font='16px "Noto Serif TC",serif';x.textAlign="center";x.fillText("郵票",X+W/2,Y+H/2+6);x.restore();return}
+  x.save();x.shadowColor="rgba(0,0,0,.18)";x.shadowBlur=6;x.shadowOffsetY=2;
+  x.fillStyle="#fffaf0";x.fillRect(X,Y,W,H);x.shadowColor="transparent";
+  x.fillStyle="#f7f2e8";for(let i=X;i<=X+W;i+=11){x.beginPath();x.arc(i,Y,4,0,7);x.arc(i,Y+H,4,0,7);x.fill()}
+  for(let j=Y;j<=Y+H;j+=11){x.beginPath();x.arc(X,j,4,0,7);x.arc(X+W,j,4,0,7);x.fill()}
+  const c=type==="guard"?"#4a6650":"#b07a3c";
+  x.fillStyle=c;x.fillRect(X+9,Y+9,W-18,H-18);x.fillStyle="#f6efe0";
+  if(type==="guard"){pine(x,X+W/2,Y+86,70,"#f6efe0");x.fillRect(X+W/2-4,Y+86,8,14)}
+  else{x.beginPath();x.moveTo(X+22,Y+96);x.lineTo(X+50,Y+44);x.lineTo(X+68,Y+72);x.lineTo(X+78,Y+58);x.lineTo(X+92,Y+96);x.closePath();x.fill();
+    x.fillStyle=c;x.beginPath();x.moveTo(X+56,Y+96);x.quadraticCurveTo(X+48,Y+80,X+56,Y+68);x.quadraticCurveTo(X+64,Y+80,X+56,Y+96);x.fill()}
+  x.fillStyle="#f6efe0";x.textAlign="center";x.font=(type==="guard"?'bold 15px ':'bold 13px ')+'"Noto Serif TC",serif';
+  x.fillText(STAMP_NAME[type],X+W/2,Y+H-22);x.restore();
+}
+function drawPostmark(x,type){
+  if(!type) return;
+  const d=new Date(), ds=`${d.getFullYear()}.${String(d.getMonth()+1).padStart(2,"0")}.${String(d.getDate()).padStart(2,"0")}`;
+  x.save();x.strokeStyle=x.fillStyle=type==="guard"?"rgba(52,73,58,.78)":"rgba(140,60,40,.78)";x.lineWidth=3;
+  for(let k=0;k<3;k++){x.beginPath();for(let i=0;i<=150;i+=4){const yy=118+k*18+Math.sin(i/12)*5;i?x.lineTo(760+i,yy):x.moveTo(760+i,yy)}x.stroke()}
+  x.translate(958,138);x.rotate(-.2);
+  x.beginPath();x.arc(0,0,60,0,7);x.stroke();x.lineWidth=1.5;x.beginPath();x.arc(0,0,49,0,7);x.stroke();
+  x.textAlign="center";x.font='bold 15px "Noto Serif TC",serif';x.fillText("八雅鞍部",0,-20);
+  x.font='bold 14px sans-serif';x.fillText(ds,0,6);
+  x.font='bold 13px "Noto Serif TC",serif';x.fillText(type==="guard"?"守護者郵戳":"見習郵戳",0,30);
+  x.restore();
+}
+function drawPostcard(stu,p3){
+  const x=$("#pc").getContext("2d"), i=stu||{};
+  x.clearRect(0,0,1200,800);drawBg(x,p3.bg);
+  x.fillStyle="#f7f2e8";rr(x,600,36,566,728,8);x.fill();
+  x.fillStyle="#7c8a7e";x.font='14px sans-serif';x.textAlign="left";x.fillText("FOREST POSTCARD　森林明信片",632,78);
+  const st=stampType(originality(p3.text));
+  drawStamp(x,st);drawPostmark(x,st);
+  x.fillStyle="#4a6650";x.font='600 21px "Noto Serif TC",serif';x.fillText(TO_LINE,632,244);
+  x.strokeStyle="#d7ccb6";x.lineWidth=1;x.beginPath();x.moveTo(632,262);x.lineTo(1136,262);x.stroke();
+  const body=(p3.text||"").trim()||"（在右邊寫下你想說的話）";
+  let fs=27,lines,lh;
+  for(;fs>=15;fs--){x.font=`${fs}px "Noto Serif TC",serif`;lines=wrapLines(x,body,500);lh=fs*1.75;if(lines.length*lh<=410)break}
+  if(lines.length*lh>410){const max=Math.floor(410/lh);lines=lines.slice(0,max);lines[max-1]=lines[max-1].slice(0,-1)+"…"}
+  x.fillStyle=(p3.text||"").trim()?"#262d28":"#a49a88";
+  lines.forEach((l,k)=>x.fillText(l,632,300+k*lh));
+  x.fillStyle="#4b524d";x.font='18px "Noto Serif TC",serif';x.textAlign="right";
+  x.fillText(`── ${i.cls?i.cls+"班 ":""}${i.seat?i.seat+"號 ":""}${i.name||""}`,1136,738);
+  x.textAlign="left";x.fillStyle=p3.bg===0?"rgba(30,40,32,.7)":"rgba(240,232,214,.7)";x.font='15px "Noto Serif TC",serif';
+  x.fillText("讀瓦歷斯‧諾幹〈獵人〉",32,770);
+}
+function download(stu,p3){
+  drawPostcard(stu,p3);
+  const fn=`獵人明信片_${stu.cls||""}${stu.seat?"-"+stu.seat:""}${stu.name||""}.png`;
+  $("#pc").toBlob(b=>{const a=document.createElement("a");a.href=URL.createObjectURL(b);a.download=fn;document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},1500);toast("明信片已下載")},"image/png");
+}
+
+/* ---- 學習歷程文字 ---- */
+function buildText(stu,rec,ts){
+  const d=ts?new Date(ts):new Date(), L=[];
+  L.push("【瓦歷斯‧諾幹〈獵人〉學習歷程】");
+  L.push(`班級：${stu.cls}　座號：${stu.seat}　姓名：${stu.name}　日期：${d.getFullYear()}/${d.getMonth()+1}/${d.getDate()}`);
+  L.push("","━━ 第一部分｜文章、手電筒、鏡頭 ━━");
+  STATIONS.forEach((st,k)=>{
+    const r=rec.p1[k]||{clues:[]};
+    L.push(`▍${st.range}｜${st.title}`,`鏡頭：${r.lens?LENS[r.lens].name:"（未選）"}`,
+      `照亮的線索：${r.clues.length?r.clues.map(ci=>"「"+st.clues[ci].t.replace(/^「|」$/g,"")+"」").join("、"):"（無）"}`,
+      `做了什麼：${r.did||"—"}`,`說了什麼：${r.said||"—"}`,`氛圍：${r.mood||"—"}`,`我的想法：${r.thought||"—"}`,"");
+  });
+  L.push("━━ 第二部分｜獵人的遊戲 ━━");
+  rec.p2.forEach((r,k)=>{const c=CLAIMS[r.id];L.push(`▍第 ${k+1} 回｜${c.tag}（${c.sdg.join("、")}）`,`假獵人說：「${c.say}」`,`我的箭：${r.shots.map(s=>ARROW_NAME[s.arrow]).join(" → ")}`,`反駁理由：${r.reason}`,"")});
+  if(!rec.p2.length) L.push("（尚未完成）","");
+  L.push("━━ 第三部分｜森林明信片 ━━",`底圖：${BGS[rec.p3.bg]}`,TO_LINE,rec.p3.text||"（尚未書寫）",
+    `與課文不同的文字比例：約 ${Math.round((rec.p3.originality||0)*100)}%　郵票：${STAMP_NAME[rec.p3.stamp]||"（字數未達）"}`);
+  return L.join("\n");
+}
+
+/* ============ 個人報告書 ============ */
+function reportHTML(rep,opt={}){
+  const {student:s,rec,ana}=rep;
+  const lensMatch=rec.p1.filter((x,i)=>x.lens&&x.lens===STATIONS[i].lens).length;
+  const p1Own=rec.p1.map((x,i)=>ownLen(x.thought,STATIONS[i].starters));
+  const best=p1Own.indexOf(Math.max(...p1Own));
+  const totalShots=rec.p2.reduce((t,r)=>t+r.shots.length,0);
+  const adjusted=rec.p2.filter(r=>r.shots.length>1).length;
+  const text=rec.p3.text||"";
+  const ratio=rec.p3.originality||0;
+  const parts=ana.parts||[false,false,false];
+  const lv=(ok,ic,name)=>`<div class="level ${ok?"ok":""}"><div class="ic">${ok?ic:"○"}</div><b>${name}</b><div class="note">${ok?"已完成":"未完成"}</div></div>`;
+  // 優勢
+  const good=[];
+  if(ana.p1Words>=400) good.push("你在第一部分寫得很充實，把看見的、感受到的都記了下來。");
+  if(ana.clues>=14) good.push(`你很會找線索，一共照亮了 ${ana.clues} 條關鍵句。`);
+  if(p1Own[best]>=40) good.push(`寫得最用心的是「${STATIONS[best].title}」這一段，看得出你真的停下來想了。`);
+  if(adjusted) good.push(`第二部分有 ${adjusted} 回，你願意調整角度再射一次——換個角度想，就是思考。`);
+  if(ratio>=0.7&&clen(text)>=20) good.push("明信片大多用自己的話寫成，這是屬於你的回應。");
+  else if(/「/.test(text)) good.push("你懂得借用課文金句，把老獵人的話帶進自己的信裡。");
+  if(!good.length) good.push("你完整走過了這趟山林旅程。");
+  // 可以加強
+  const more=[];
+  const weak=p1Own.map((n,i)=>[n,i]).filter(([n])=>n<25).map(([,i])=>STATIONS[i].title);
+  if(weak.length) more.push(`「${weak.slice(0,3).join("」「")}」的想法可以再多寫一點：除了感覺，也試著說說「為什麼」。`);
+  if(rec.p2.some(r=>clen(r.reason)<25)) more.push("反駁理由可以加上課文證據，用「課文中……，所以我認為……」把理由說完整。");
+  if(ratio<0.7&&clen(text)>=20) more.push("明信片可以試著多寫一段自己的話，不必只靠課文金句。");
+  // 開放題回饋
+  const fb=[];
+  if(/心軟|放下|停|小山豬|沒有獵/.test(text)) fb.push("你看見了「我」心軟背後的意義：放下，也可以是一種勇敢。");
+  if(/禁忌|規矩|篝火|番刀/.test(text)) fb.push("你注意到山林裡的規矩，並試著理解它們的用意。");
+  if(/黑熊|保育|山林|下一代|小孩|未來的山/.test(text)) fb.push("你把故事連到山林與下一代的未來。");
+  if(/以後|將來|下次|未來|如果我/.test(text)) fb.push("你把山上的經驗帶回自己的生活，這是這張明信片最珍貴的地方。");
+  else fb.push("可以再加一句：以後遇到相似的處境（想要、卻該放手的時候），你會怎麼做？");
+  // 下一步
+  const next=[];
+  next.push(weak.length?`回到「${weak[0]}」再讀一次，換一個鏡頭看看，會不會看到不一樣的東西？`:"挑一段你最有感覺的課文，換一個鏡頭重讀，寫下新的發現。");
+  next.push("想一想：在你的生活裡，有沒有像「最後的山豬」一樣，需要你忍住、留給別人的東西？");
+  next.push("把你的明信片念給同學聽，聽聽別人怎麼安頓那個「我」。");
+  // 第二部分（公布後）
+  let p2detail="";
+  if(rep.published&&rep.answers){
+    p2detail=rec.p2.map((r,k)=>{const a=rep.answers[r.id]||{},ar=(ana.rounds||[])[k]||{};const fin=ar.final;
+      return `<div class="ans-row"><b>${CLAIMS[r.id].tag}</b>：你的箭 ${r.shots.map(s=>ARROW_NAME[s.arrow].replace("之箭","")).join(" → ")}${fin?`（最後落在<b>${ACC_NAME[fin]}</b>）`:""}<br>最能切中的角度：${(a.best||[]).join("、")}<br><span class="mute">${esc(a.note||"")}</span></div>`}).join("");
+  }
+  return `<div class="report">
+   <h2>我的山林旅程報告書</h2>
+   <div class="meta">${esc(s.cls)} 班 ${esc(s.seat)} 號 ${esc(s.name)}　｜　完成時間：${fmtTime(rep.ts)}　｜　用時：${fmtDur(rec.durationSec)}</div>
+   <section><h3>我的旅程</h3><div class="levels">${lv(parts[0],"🔦","一｜頭燈與鏡頭")}${lv(parts[1],"🏹","二｜獵人的遊戲")}${lv(parts[2],"✉️","三｜森林明信片")}</div></section>
+   <section><h3>各部分表現</h3><ul>
+     <li><b>第一部分</b>：照亮 ${ana.clues} 條線索；有 ${lensMatch} 段的鏡頭和作者相近（鏡頭沒有對錯）；書寫約 ${ana.p1Words} 字。</li>
+     <li><b>第二部分</b>：完成 ${rec.p2.length} 回，共射出 ${totalShots} 支箭，其中 ${adjusted} 回調整過角度；反駁理由約 ${ana.p2Words} 字。</li>
+     <li><b>第三部分</b>：明信片約 ${ana.p3Words} 字，和課文不同的文字比例約 ${Math.round(ratio*100)}%，郵票：${STAMP_NAME[rec.p3.stamp]||"—"}。</li>
+   </ul></section>
+   <section><h3>我的書寫特色</h3><p><b>做得好的地方</b></p><ul>${good.map(g=>`<li>${esc(g)}</li>`).join("")}</ul>
+     ${more.length?`<p><b>可以再加強</b></p><ul>${more.map(g=>`<li>${esc(g)}</li>`).join("")}</ul>`:""}</section>
+   <section><h3>給我的明信片的回饋</h3><ul>${fb.map(g=>`<li>${esc(g)}</li>`).join("")}</ul></section>
+   ${p2detail?`<section><h3>獵人的遊戲：老師公布的解析</h3>${p2detail}</section>`:""}
+   <section><h3>下一步可以這樣做</h3><ul>${next.map(g=>`<li>${esc(g)}</li>`).join("")}</ul></section>
+  </div>`;
+}
+async function reportPage(){
+  topbar("home");
+  if(!state.student){location.hash="#";return}
+  app.innerHTML=`<div class="wrap"><div class="noprint" style="display:flex;gap:10px;flex-wrap:wrap;margin-top:24px"><a class="btn ghost" href="#">🏠 回主畫面</a><button class="btn" id="prt">列印／存成 PDF</button><button class="btn ghost" id="dl2">下載明信片圖卡</button><button class="btn ghost" id="cp2">複製完整學習歷程</button></div><div id="rep"><p class="mute">讀取中……</p></div></div>`;
+  $("#prt").onclick=()=>window.print();
+  let rep=state.report;
+  const res=await api("report",{student:state.student});
+  if(res.ok){rep=res.report;state.report=rep;save()}
+  if(!rep){$("#rep").innerHTML=`<p class="mute">還沒有報告書。交出學習歷程後就會出現。</p>`;return}
+  $("#rep").innerHTML=reportHTML(rep);
+  $("#dl2").onclick=()=>download(rep.student,rep.rec.p3);
+  $("#cp2").onclick=()=>copyText(buildText(rep.student,rep.rec,rep.ts),"已複製完整學習歷程");
+}
+
+/* ============ 成績頁／教師區 ============ */
+const T={pw:sessionStorage.getItem("hunter-pw")||"",data:null,cls:"",seat:"",onlyFlag:false};
+async function scoresPage(){
+  topbar("home");
+  app.innerHTML=`<div class="wrap"><div class="kicker">成績頁</div><h2>〈獵人〉山林旅程｜班級進度</h2>
+   ${LOCAL?'<p class="err">目前是本機模式（config.js 尚未設定後端），只顯示這台裝置上的試用資料，不計分。</p>':""}
+   <div class="login" id="loginBox"></div>
+   <div id="sc"><p class="mute">讀取中……</p></div></div>`;
+  drawLogin();
+  await loadList();
+}
+function drawLogin(){
+  const b=$("#loginBox");
+  if(T.pw){b.innerHTML=`<span>👩‍🏫 老師已登入</span><button class="btn sm" id="scrBtn">開啟大屏</button><button class="btn sm ghost" id="outBtn">登出</button><span class="note">用公用電腦看完請按「登出」。</span>`;
+    $("#outBtn").onclick=()=>{T.pw="";sessionStorage.removeItem("hunter-pw");drawLogin();loadList()};
+    $("#scrBtn").onclick=()=>window.open(location.pathname+"#screen","_blank");
+  }else{b.innerHTML=`<span>老師登入</span><input type="password" id="pw" placeholder="教師密碼" autocomplete="current-password"><button class="btn sm" id="inBtn">登入</button><span class="err" id="pwErr"></span>`;
+    const login=async()=>{const pw=$("#pw").value;if(!pw)return;const r=await api("login",{password:pw});if(!r.ok){$("#pwErr").textContent=errMsg(r.error);return}T.pw=pw;sessionStorage.setItem("hunter-pw",pw);drawLogin();loadList()};
+    $("#inBtn").onclick=login;$("#pw").addEventListener("keydown",e=>{if(e.key==="Enter")login()});
+  }
+}
+async function loadList(){
+  let res=await api("list",T.pw?{password:T.pw}:{});
+  if(!res.ok&&T.pw&&(res.error==="bad-password"||res.error==="locked")){T.pw="";sessionStorage.removeItem("hunter-pw");drawLogin();toast(errMsg(res.error));res=await api("list",{})}
+  if(!res.ok){$("#sc").innerHTML=`<p class="err">${esc(errMsg(res.error))}</p>`;return}
+  T.data=res;
+  const counts={};res.board.forEach(b=>counts[b.cls]=(counts[b.cls]||0)+1);
+  const classes=Object.keys(counts).sort();
+  if(!T.cls||!counts[T.cls]) T.cls=classes.sort((a,b)=>counts[b]-counts[a]||a.localeCompare(b))[0]||"";
+  drawScores();
+}
+function drawScores(){
+  const D=T.data, sc=$("#sc");
+  const counts={};D.board.forEach(b=>counts[b.cls]=(counts[b.cls]||0)+1);
+  const classes=Object.keys(counts).sort();
+  if(!classes.length){sc.innerHTML=`<p class="mute" style="margin-top:20px">目前還沒有人交出學習歷程。</p>`;return}
+  const rows=D.board.filter(b=>b.cls===T.cls).sort((a,b)=>b.partsDone-a.partsDone||b.words-a.words||a.seat-b.seat);
+  let html=`<div class="cls-tabs">${classes.map(c=>`<button data-cls="${esc(c)}" class="${c===T.cls?"on":""}">${esc(c)} 班（${counts[c]}）</button>`).join("")}</div>
+  <h3>旅程進度榜</h3><p class="note">依完成部分、書寫字數排列（鼓勵多寫，不比速度）。</p>
+  <div class="tbl-wrap"><table class="tbl"><tr><th>#</th><th>座號</th><th>姓名</th><th>完成</th><th>書寫字數</th><th>靶心回合</th><th>郵票</th>${D.teacher?"<th>最後交出</th><th>提醒次數</th>":""}</tr>
+  ${rows.map((b,k)=>`<tr><td>${k+1}</td><td>${b.seat}</td><td>${esc(b.name)}</td><td>${"●".repeat(b.partsDone)}${"○".repeat(3-b.partsDone)}</td><td>${b.words}</td><td>${b.bulls}</td><td>${STAMP_NAME[b.stamp]||"—"}</td>${D.teacher?`<td>${fmtTime(b.lastTs)}</td><td>${b.flagCount||""}</td>`:""}</tr>`).join("")}</table></div>`;
+  if(D.teacher) html+=teacherHTML(rows);
+  sc.innerHTML=html;
+  sc.querySelectorAll("[data-cls]").forEach(b=>b.onclick=()=>{T.cls=b.dataset.cls;drawScores()});
+  if(D.teacher) bindTeacher(rows);
+}
+function allAttempts(rows){
+  const list=[];rows.forEach(b=>(b.attempts||[]).forEach(a=>list.push({b,a})));
+  return list.sort((x,y)=>y.a.ts.localeCompare(x.a.ts));
+}
+function teacherHTML(rows){
+  const D=T.data;
+  let att=allAttempts(rows);
+  if(T.seat) att=att.filter(x=>String(x.b.seat)===T.seat);
+  if(T.onlyFlag) att=att.filter(x=>x.a.flags.length);
+  // 第二部分分析
+  const cl=CLAIMS.map(c=>({c,n:0,first3:0,fin3:0,firstArrow:{}}));
+  // 第一部分鏡頭
+  const lens=STATIONS.map(()=>({wide:0,mid:0,macro:0}));
+  rows.forEach(b=>{const a=b.attempts.at(-1);
+    a.rec.p1.forEach((x,i)=>{if(x.lens)lens[i][x.lens]++});
+    a.rec.p2.forEach((r,k)=>{const s=cl[r.id];s.n++;const ar=(a.ana.rounds||[])[k]||{};if(ar.accs&&ar.accs[0]===3)s.first3++;if(ar.final===3)s.fin3++;const f=r.shots[0]&&r.shots[0].arrow;if(f)s.firstArrow[f]=(s.firstArrow[f]||0)+1});
+  });
+  const pct=(a,n)=>n?Math.round(a/n*100):0;
+  const colors={wide:"#7f9282",mid:"#bf6b33",macro:"#34493a"};
+  return `
+  <h3 style="margin-top:34px">教師區</h3>
+  <div class="card tools">
+    <label><input type="checkbox" id="pubT" ${D.published?"checked":""}> 公布解答（學生報告書顯示第二部分解析）</label>
+    <label>提醒門檻：用時少於 <input type="number" id="thr" value="${D.threshold}" min="0"> 秒 <button class="btn sm ghost" id="thrSave">儲存</button></label>
+    <button class="btn sm ghost" id="csv">匯出 ${esc(T.cls)} 班 CSV</button>
+    <button class="btn sm ghost" id="impBtn">匯入成績碼</button>
+    <button class="btn sm danger" id="clr">清除 ${esc(T.cls)} 班資料</button>
+  </div>
+  <div id="impBox"></div>
+
+  <h3 style="margin-top:28px">作答紀錄（${esc(T.cls)} 班，最新在上）</h3>
+  <div class="tools" style="margin-bottom:10px">
+    <label>座號 <input type="number" id="fSeat" value="${esc(T.seat)}" min="1" max="60" style="width:80px;border:1px solid var(--line);border-radius:8px;padding:6px 8px"></label>
+    <label><input type="checkbox" id="fFlag" ${T.onlyFlag?"checked":""}> 只看需要留意的紀錄</label>
+    <button class="btn sm ghost" id="cpTbl">複製表格（貼到 Excel）</button>
+  </div>
+  <p class="note">「用時偏短」「書寫偏少」只是提醒，請老師確認。</p>
+  <div class="tbl-wrap"><table class="tbl" id="recTbl"><tr><th>交出時間</th><th>座號</th><th>姓名</th><th>用時</th><th>字數</th><th>靶心</th><th>郵票</th><th>提醒</th><th>操作</th></tr>
+  ${att.map(({b,a})=>`<tr class="${a.flags.length?"flag":""}"><td>${fmtTime(a.ts)}</td><td>${b.seat}</td><td>${esc(a.name)}</td><td>${fmtDur(a.rec.durationSec)}</td><td>${a.ana.words}</td><td>${a.ana.bulls}</td><td>${STAMP_NAME[a.rec.p3.stamp]||"—"}</td><td>${a.flags.join("、")}</td>
+   <td style="white-space:nowrap"><button class="btn sm ghost" data-view="${b.seat}|${a.ts}">報告書</button> <button class="btn sm ghost" data-redo="${b.seat}">${b.redo?"取消重做":"開放重做"}</button> <button class="btn sm danger" data-del="${b.seat}|${a.ts}">刪除</button></td></tr>`).join("")||'<tr><td colspan="9" class="mute">沒有符合的紀錄</td></tr>'}
+  </table></div>
+
+  <h3 style="margin-top:28px">第二部分：各假獵人說法</h3>
+  <div class="tbl-wrap"><table class="tbl"><tr><th>說法</th><th>回合數</th><th>第一箭靶心率</th><th>最後靶心率</th><th>最常見的第一箭</th><th>最能切中的角度</th></tr>
+  ${cl.map(s=>{const top=Object.entries(s.firstArrow).sort((a,b)=>b[1]-a[1])[0];const ans=(D.answers||{})[s.c.id];
+    return `<tr><td>${s.c.tag}</td><td>${s.n}</td><td>${pct(s.first3,s.n)}%</td><td>${pct(s.fin3,s.n)}%</td><td>${top?ARROW_NAME[top[0]]+"（"+top[1]+"）":"—"}</td><td>${ans?ans.best.join("、"):'<span class="err">後端未貼答案</span>'}</td></tr>`}).join("")}
+  </table></div>
+
+  <h3 style="margin-top:28px">第一部分：鏡頭選擇</h3>
+  <div class="legend">${Object.keys(colors).map(k=>`<i style="background:${colors[k]}"></i>${LENS[k].name}`).join("")}　（★ 為作者較接近的鏡頭，僅供討論）</div>
+  <div class="bars">${STATIONS.map((st,i)=>{const L=lens[i],n=L.wide+L.mid+L.macro;
+    return `<div class="b"><span>${st.title} ★${LENS[st.lens].name}</span><div class="stack">${Object.keys(colors).map(k=>`<i style="width:${n?L[k]/n*100:0}%;background:${colors[k]}"></i>`).join("")}</div><span>${n} 人</span></div>`}).join("")}</div>
+
+  <h3 style="margin-top:28px">學生診斷</h3>
+  <div class="tools"><select id="diag" style="border:1px solid var(--line);border-radius:8px;padding:8px">${rows.slice().sort((a,b)=>a.seat-b.seat).map(b=>`<option value="${b.seat}">${b.seat} 號 ${esc(b.name)}</option>`).join("")}</select><button class="btn sm" id="diagBtn">開啟報告書</button></div>
+  <p class="note" style="margin-top:22px">學生資料在 Google 試算表；密碼與答案只在 Apps Script，GitHub 上沒有。</p>`;
+}
+function bindTeacher(rows){
+  const D=T.data, cls=T.cls;
+  const find=seat=>rows.find(b=>String(b.seat)===String(seat));
+  const act=async(action,data,msg)=>{const r=await api(action,{password:T.pw,...data});if(!r.ok){toast(errMsg(r.error));return false}if(msg)toast(msg);await loadList();return true};
+  $("#pubT").onchange=e=>act("setting",{key:"published",value:e.target.checked},e.target.checked?"已公布解答":"已取消公布");
+  $("#thrSave").onclick=()=>act("setting",{key:"threshold",value:+$("#thr").value},"門檻已更新");
+  $("#clr").onclick=()=>{if(confirm(`確定要清除 ${cls} 班所有資料嗎？此動作無法復原。`)&&confirm("再確認一次：真的要清除嗎？"))act("clearClass",{cls},"已清除")};
+  $("#fSeat").onchange=e=>{T.seat=e.target.value.trim();drawScores()};
+  $("#fFlag").onchange=e=>{T.onlyFlag=e.target.checked;drawScores()};
+  $("#cpTbl").onclick=()=>{
+    const tr=[...$("#recTbl").querySelectorAll("tr")].map(r=>[...r.children].slice(0,8).map(c=>c.innerText.replace(/\t|\n/g," ")).join("\t")).join("\n");
+    copyText(tr,"已複製，可以貼到 Excel");
+  };
+  $("#csv").onclick=()=>{
+    const cell=v=>{let s=String(v??"");if(/^[=+\-@]/.test(s))s="'"+s;return '"'+s.replace(/"/g,'""')+'"'};
+    const head=["交出時間","班級","座號","姓名","用時(秒)","書寫總字數","靶心回合","郵票","原創比例","提醒","第一部分想法","第二部分反駁理由","明信片"];
+    const lines=[head.map(cell).join(",")];
+    allAttempts(rows).forEach(({b,a})=>lines.push([fmtTime(a.ts),b.cls,b.seat,a.name,a.rec.durationSec,a.ana.words,a.ana.bulls,STAMP_NAME[a.rec.p3.stamp]||"",a.rec.p3.originality,a.flags.join("、"),
+      a.rec.p1.map((x,i)=>`【${STATIONS[i].title}】${x.thought}`).join("\n"),a.rec.p2.map(r=>`【${CLAIMS[r.id].tag}】${r.reason}`).join("\n"),a.rec.p3.text].map(cell).join(",")));
+    const blob=new Blob(["﻿"+lines.join("\r\n")],{type:"text/csv"});
+    const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download=`獵人_${cls}班.csv`;document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},1500);
+  };
+  $("#impBtn").onclick=()=>{$("#impBox").innerHTML=`<div class="card" style="margin-top:10px"><div class="field">貼上學生給的成績碼</div><textarea id="impCode" style="min-height:80px"></textarea><div class="actions"><button class="btn sm" id="impGo">匯入</button></div></div>`;
+    $("#impGo").onclick=()=>act("import",{code:$("#impCode").value},"已匯入")};
+  app.querySelectorAll("[data-del]").forEach(b=>b.onclick=()=>{const [seat,ts]=b.dataset.del.split("|");if(confirm(`確定刪除 ${seat} 號 ${fmtTime(ts)} 這次紀錄？`))act("deleteAttempt",{cls,seat:+seat,ts},"已刪除")});
+  app.querySelectorAll("[data-redo]").forEach(b=>b.onclick=()=>{const s=find(b.dataset.redo);act("redo",{cls,seat:s.seat,value:!s.redo},s.redo?"已取消重做":"已開放重做")});
+  const view=(b,a)=>{
+    const rep={student:{cls:b.cls,seat:b.seat,name:a.name},ts:a.ts,rec:a.rec,ana:a.ana,published:true,answers:D.answers};
+    openModal(`<div class="noprint" style="display:flex;gap:10px;justify-content:flex-end"><button class="btn sm" id="mPrt">列印</button><button class="btn sm ghost" id="mTxt">複製學習歷程</button><button class="btn sm ghost" id="mCl">關閉</button></div>${reportHTML(rep)}`,true);
+    $("#mPrt").onclick=()=>window.print();$("#mCl").onclick=closeModal;
+    $("#mTxt").onclick=()=>copyText(buildText(rep.student,a.rec,a.ts),"已複製");
+  };
+  app.querySelectorAll("[data-view]").forEach(btn=>btn.onclick=()=>{const [seat,ts]=btn.dataset.view.split("|");const b=find(seat);view(b,b.attempts.find(a=>a.ts===ts))});
+  const dg=$("#diagBtn"); if(dg) dg.onclick=()=>{const b=find($("#diag").value);view(b,b.attempts.at(-1))};
+}
+
+/* ============ 大屏 ============ */
+let screenTimer=null, screenCls="";
+async function screenPage(){
+  topbar("screen");document.body.classList.add("screen-mode");
+  app.innerHTML=`<div class="scr" id="scr"><p style="font-size:24px">讀取中……</p></div>`;
+  await drawScreen();
+  screenTimer=setInterval(drawScreen,15000);
+}
+async function drawScreen(){
+  const res=await api("stats",{cls:screenCls});
+  if(!res.ok){$("#scr").innerHTML=`<p class="err" style="font-size:24px">${esc(errMsg(res.error))}</p>`;return}
+  const classes=Object.keys(res.classes).sort();
+  if(!screenCls&&classes.length){screenCls=classes.sort((a,b)=>res.classes[b]-res.classes[a])[0];return drawScreen()}
+  const colors={wide:"#8aa08e",mid:"#c46f30",macro:"#2f4a37"};
+  const now=new Date();
+  $("#scr").innerHTML=`
+   <div class="scr-head"><h1>〈獵人〉山林旅程</h1>
+     <select id="scrCls">${classes.map(c=>`<option ${c===screenCls?"selected":""}>${esc(c)}</option>`).join("")||"<option>—</option>"}</select><span style="font-size:26px">班即時進度</span>
+     <a href="#scores" style="margin-left:auto;font-size:20px">🏠 離開大屏</a></div>
+   <div class="scr-nums">
+     <div class="scr-num"><div class="v">${res.count}</div><div class="k">已交出學習歷程</div></div>
+     <div class="scr-num"><div class="v">${res.finished}</div><div class="k">三個部分全部完成</div></div>
+     <div class="scr-num"><div class="v">${res.stamps.guard}</div><div class="k">森林守護者郵票</div></div>
+     <div class="scr-num"><div class="v">${res.stamps.learn}</div><div class="k">山林見習獵人郵票</div></div>
+   </div>
+   <div class="scr-grid">
+     <div class="scr-panel"><h2>第一部分：大家用什麼鏡頭看？</h2>
+       <div style="font-size:18px;color:#4b524d;margin-bottom:6px">${Object.keys(colors).map(k=>`<span style="display:inline-block;width:16px;height:16px;border-radius:3px;background:${colors[k]};margin:0 6px 0 14px;vertical-align:middle"></span>${LENS[k].name}`).join("")}</div>
+       ${STATIONS.map((st,i)=>{const L=res.lens[i],n=L.wide+L.mid+L.macro;return `<div class="scr-row"><span>${st.title}</span><div class="stack">${Object.keys(colors).map(k=>`<i style="width:${n?L[k]/n*100:0}%;background:${colors[k]}"></i>`).join("")}</div></div>`}).join("")}
+     </div>
+     <div class="scr-panel"><h2>第二部分：射中靶心的比例</h2>
+       ${res.claims.map(c=>{const p=c.n?Math.round(c.bulls/c.n*100):0;return `<div class="scr-row"><span>${c.tag}</span><div class="t"><i style="width:${p}%"></i><em>${c.n?p+"%":"—"}</em></div></div>`}).join("")}
+     </div>
+     <div class="scr-panel"><h2>書寫最多</h2><ol class="scr-top">${res.top.map(t=>`<li>${t.seat} 號 ${esc(t.name)}　${t.words} 字</li>`).join("")||"<li>—</li>"}</ol></div>
+   </div>
+   <div class="scr-foot"><span>每 15 秒自動更新</span><span>更新時間 ${String(now.getHours()).padStart(2,"0")}:${String(now.getMinutes()).padStart(2,"0")}:${String(now.getSeconds()).padStart(2,"0")}</span></div>`;
+  $("#scrCls").onchange=e=>{screenCls=e.target.value;drawScreen()};
+}
+
+/* ============ 啟動 ============ */
+route();
+if(document.fonts&&document.fonts.load){document.fonts.load('27px "Noto Serif TC"').then(()=>{if(location.hash==="#quiz"&&state.step==="p3"&&!state.submitted)refresh()}).catch(()=>{})}
+</script>
+</body>
+</html>
