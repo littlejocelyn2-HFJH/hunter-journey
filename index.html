@@ -652,7 +652,7 @@ function renderStation(i){
       :`<div class="empty">線索袋還是空的。這一段藏著 ${st.clues.length} 條線索，找到一條以上就可以前進。</div>`;
   }
   function gate(){
-    const g=[]; if(!d.lens)g.push("選鏡頭"); if(!d.clues.length)g.push("找到一條線索");
+    const g=[]; if(!d.lens)g.push("選鏡頭"); if(!d.clues.length)g.push("在上方頭燈畫面點選一條線索（虛線底的句子）");
     if(ownLen(d.thought,st.starters)<10)g.push("接著句型寫下想法（10 字以上）");
     $("#gate").textContent=g.length?"還差："+g.join("、"):"";
     $("#nextBtn").disabled=!!g.length;
