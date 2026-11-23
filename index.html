@@ -283,63 +283,43 @@ const LENS = {
   macro:{name:"微距",desc:"貼近手、火、傷口與心裡細微的感覺",r:85}
 };
 
-/* ============ 第一部分：七個段落群 ============ */
+/* ============ 第一部分：四個段落群 ============ */
 const STATIONS = [
-{range:"第一～二段",title:"抵達山的肩膀",paras:[1,2],lens:"wide",
- why:"作者先把畫面拉得很遠：天空、樹林、山谷，人顯得很小；接著老獵人一轉眼就消失在林中。",
+{range:"第一～四段",title:"抵達與生火",paras:[1,2,3,4],lens:"wide",
+ why:"作者先把畫面拉得很遠——天空、樹林、山谷，人顯得很小；再慢慢拉近到火堆邊的「我」，和他近三十年的遺憾。",
  clues:[
   {t:"整片天空宛如張大翅膀的蒼鷹迅速撲掠而下",n:"天色像蒼鷹一樣撲下來：是黃昏急速降臨，還是山給初來者的一種壓迫感？"},
   {t:"濃密而深黑的樹林沉靜地霸占山頭",n:"「霸占」把樹林寫成山的主人。人在這裡，像個客人。"},
   {t:"把命令像流星拋進我的耳朵裡",n:"只有兩個字的命令，又快又亮——老獵人不多話。"},
-  {t:"身影已像是隻蝙蝠飄然消逝在林子裡",n:"老獵人和夜裡的森林融為一體，「我」卻被留在原地。"}],
- starters:["站在山的肩膀上，我覺得「我」的心情是……","老獵人只說了「生火」兩個字，我猜他……"]},
-{range:"第三～四段",title:"生火與遺憾",paras:[3,4],lens:"mid",
- why:"鏡頭停在「我」和老獵人之間：一個努力生火想討好，一個拎著獵物回來，中間隔著近三十年的遺憾。",
- clues:[
+  {t:"身影已像是隻蝙蝠飄然消逝在林子裡",n:"老獵人和夜裡的森林融為一體，「我」卻被留在原地。"},
   {t:"我希望能夠討好獵人",n:"為什麼要「討好」？「我」在擔心什麼？"},
-  {t:"耗費了幾根火柴棒才把地表的潮氣趕走",n:"生個火都不容易：都市生活的「我」和山林之間有距離。"},
-  {t:"老獵人枯藤一般的左手",n:"枯藤般的手，卻早已拎回狐狸與飛鼠——年老與熟練並存。"},
   {t:"仍是泰雅鍾愛的孩子",n:"老獵人用這句話，接住了「我」的不安。"},
-  {t:"一直是我心中的遺憾",n:"年近三十才補上的成年禮，補的是儀式，還是身分？"},
-  {t:"要我一早準備番刀和鹽巴就好",n:"只要番刀和鹽巴：山裡的成年禮，從簡單開始。"}],
- starters:["年近三十才來補成年禮，我覺得「我」心中的遺憾是……","老獵人說「我」仍是泰雅鍾愛的孩子，這句話可能讓「我」……"]},
-{range:"第五段",title:"火塘邊的晚餐",paras:[5],lens:"macro",
- why:"鏡頭貼近火塘：處理狐狸的手、一撮粗鹽，以及老獵人說「莊嚴」時的語氣。",
+  {t:"一直是我心中的遺憾",n:"年近三十才補上的成年禮，補的是儀式，還是身分？"}],
+ starters:["站在山的肩膀上，「我」的心情是……","年近三十才來補成年禮，我覺得「我」心中的遺憾是……","老獵人說「我」仍是泰雅鍾愛的孩子，這句話可能讓「我」……"]},
+{range:"第五～六段",title:"火塘與禁忌",paras:[5,6],lens:"mid",
+ why:"鏡頭停在火塘邊的兩個人：一個嫻熟地處理獵物、絮絮叨叨交代禁忌，一個聽著、迷迷糊糊睡去——規矩就在人與人之間傳遞。",
  clues:[
-  {t:"獵人嫻熟地處理狐狸",n:"「嫻熟」——一輩子在山裡累積的手藝。"},
   {t:"狩獵對泰雅男人是莊嚴的事",n:"「莊嚴」不是殘忍，也不是遊戲。你覺得莊嚴在哪裡？"},
   {t:"沒有獵物就餵不飽你的家人",n:"狩獵和責任連在一起：為了家人，不是為了炫耀。"},
-  {t:"只消沾上粗鹽入口",n:"不加任何添加物：最原始的方法，也最貼近山。"}],
- starters:["老獵人說狩獵是「莊嚴的事」，我覺得莊嚴的意思是……","只沾粗鹽的狐狸肉，讓我感受到……"]},
-{range:"第六段",title:"篝火與禁忌",paras:[6],lens:"mid",
- why:"篝火旁兩個人：一個絮絮叨叨交代禁忌，一個迷迷糊糊睡去——規矩在人與人之間傳遞。",
- clues:[
+  {t:"只消沾上粗鹽入口",n:"不加任何添加物：最原始的方法，也最貼近山。"},
   {t:"老獵人吩咐不得讓篝火停息",n:"火不能熄：這是禁忌，也是在山裡活下去的經驗。"},
   {t:"黑暗是森林的鬼魅",n:"把寒冷與危險說成鬼魅與使者——用故事讓人記住規矩。"},
-  {t:"絮絮叨叨地說出成年禮的諸多禁忌",n:"「絮絮叨叨」：嘮叨裡藏著擔心。"},
   {t:"你只許有一把番刀",n:"只許一把刀：限制自己，也是對獵物的公平。"},
   {t:"只覺得徹夜出奇地溫暖",n:"「我」忘了顧火，火卻沒熄。是誰整夜守著？"}],
- starters:["我猜老獵人訂下「＿＿」這個禁忌，用意可能是……","「我」睡著了，篝火卻整夜溫暖，我想是因為……"]},
-{range:"第七～八段",title:"獨自入山",paras:[7,8],lens:"macro",
- why:"鏡頭貼近身體：芒草割出的血痕、搓揉的藥草、泥地上的蹄跡，以及心裡那艘猶豫的扁舟。",
+ starters:["老獵人說狩獵是「莊嚴的事」，我覺得莊嚴的意思是……","我猜老獵人訂下「＿＿」這個禁忌，用意可能是……","「我」睡著了，篝火卻整夜溫暖，我想是因為……"]},
+{range:"第七～十一段",title:"獨自入山",paras:[7,8,9,10,11],lens:"macro",
+ why:"鏡頭貼近身體與地面：芒草割出的血痕、泥地上的蹄跡、被撥開的身軀，以及心裡那艘猶豫的扁舟，直到看見三隻小山豬。",
  clues:[
-  {t:"要我獨自進入山的心臟地帶",n:"成年禮真正開始：沒有人陪。"},
   {t:"我便像是在大海中猶豫的扁舟",n:"山變成大海，「我」變成小舟——不知方向的心情。"},
   {t:"馬上就泌出明亮的血痕",n:"山林在身上留下記號：這裡不是都市。"},
-  {t:"我順手搓揉了藥草抹去",n:"「我」記得的山林知識，開始派上用場。"},
   {t:"溼潤的泥地可發現不同的蹄跡",n:"鏡頭貼近地面：學著讀懂山的語言。"},
-  {t:"我興奮著自己將要成為「泰雅」",n:"加了引號的「泰雅」：不只是族名，是一種被認可的身分。"}],
- starters:["一個人進山時，「我」像猶豫的扁舟，因為……","如果我是「我」，看到泥地上的蹄跡會……"]},
-{range:"第九～十一段",title:"與山豬相遇",paras:[9,10,11],lens:"mid",
- why:"人與山豬的距離忽遠忽近：撲上、被撥開、躲在巨岩後等待，直到看見三隻小山豬。",
- clues:[
+  {t:"我興奮著自己將要成為「泰雅」",n:"加了引號的「泰雅」：不只是族名，是一種被認可的身分。"},
   {t:"牠必然也感覺到我的存在",n:"獵人與獵物彼此感知——山豬也是有感覺的生命。"},
   {t:"把我的身軀像葉片般撥開",n:"人在山豬面前輕得像葉片：力量對比翻轉了。"},
   {t:"似乎有一對眼睛審視著我",n:"是老獵人？是山？是祖靈？這雙眼睛在看什麼？"},
   {t:"「等待是獵人的美德」",n:"獵人的本事不只是出手，還有忍耐。"},
-  {t:"我像壁虎般趴著伏著",n:"「我」把自己變得很小、很靜，和山融在一起。"},
   {t:"還有三隻淘氣的小山豬",n:"刪節號停在這裡：「我」看見了什麼，又想到了什麼？"}],
- starters:["看見三隻小山豬的那一刻，我猜「我」心裡……","「一對眼睛審視著我」，我覺得那雙眼睛可能是……"]},
+ starters:["一個人進山時，「我」像猶豫的扁舟，因為……","看見三隻小山豬的那一刻，我猜「我」心裡……","「一對眼睛審視著我」，我覺得那雙眼睛可能是……"]},
 {range:"第十二～十五段",title:"篝火旁的回答",paras:[12,13,14,15],lens:"wide",
  why:"結尾鏡頭慢慢拉遠：篝火、山的肩膀、泰雅的每一個夜晚，故事在一代代之間綿延。",
  clues:[
@@ -388,7 +368,7 @@ const TO_LINE = "致：八雅鞍部山上，那個還在找答案的「我」";
 const STAMP_NAME={guard:"森林守護者",learn:"山林見習獵人"};
 
 /* ============ 狀態 ============ */
-const KEY = "hunter-journey-v2";
+const KEY = "hunter-journey-v3";
 function fresh(student){return {student:student||null,step:"s0",
   p1:STATIONS.map(()=>({lens:"",clues:[],did:"",said:"",mood:"",thought:""})),
   p2:{rounds:[],cur:null,rot:0},p3:{bg:0,text:""},t:{start:null,p1:null,p2:null},submitted:null,report:null}}
@@ -425,7 +405,7 @@ function lsave(d){try{localStorage.setItem(LKEY,JSON.stringify(d))}catch(e){}}
 function analyzeLocal(rec){
   const p1Words=rec.p1.reduce((t,x)=>t+clen(x.thought)+clen(x.did)+clen(x.said)+clen(x.mood),0);
   const p2Words=rec.p2.reduce((t,x)=>t+clen(x.reason),0), p3Words=clen(rec.p3.text);
-  const p1Done=rec.p1.length===7&&rec.p1.every(x=>x.lens&&x.clues.length&&clen(x.thought)>=10);
+  const p1Done=rec.p1.length>=STATIONS.length&&rec.p1.every(x=>x.lens&&x.clues.length&&clen(x.thought)>=10);
   const parts=[p1Done,rec.p2.length>=3,p3Words>=20];
   return {p1Words,p2Words,p3Words,words:p1Words+p2Words+p3Words,clues:rec.p1.reduce((t,x)=>t+x.clues.length,0),
     rounds:rec.p2.map(x=>({id:x.id,shots:x.shots.length})),bulls:0,parts,partsDone:parts.filter(Boolean).length};
@@ -495,7 +475,7 @@ function homePage(){
   <div class="home-hero">
     <h1>獵人</h1>
     <div style="font-family:var(--serif);font-size:20px;color:#4a514b">瓦歷斯‧諾幹｜山林旅程：頭燈、箭與明信片</div>
-    <div style="margin-top:16px"><span class="tag">三段旅程</span><span class="tag">課文第一～十五段</span><span class="tag">重思考歷程，不扣分</span><span class="tag">iPad／電腦皆可</span>${LOCAL?'<span class="tag" style="color:var(--warn)">本機模式：不計分、不收資料</span>':""}</div>
+    <div style="margin-top:16px"><span class="tag">三段旅程</span><span class="tag">第一部分 4 關</span><span class="tag">課文第一～十五段</span><span class="tag">重思考歷程，不扣分</span><span class="tag">iPad／電腦皆可</span>${LOCAL?'<span class="tag" style="color:var(--warn)">本機模式：不計分、不收資料</span>':""}</div>
     ${welcome}
   </div>
   <div class="home-btns">
@@ -610,13 +590,8 @@ function renderStation(i){
     <div class="off-msg">${d.lens?"":"先選一個鏡頭，頭燈就會亮起"}</div>
   </div>
   <div class="bag" id="bag"></div>
-  <div class="step-label"><b>3</b>記錄：這一段裡，「獵人／我」……</div>
-  <div class="rec-grid">
-    <label class="field">做了什麼<input data-k="did" maxlength="200" value="${esc(d.did)}" placeholder="例：努力生火"></label>
-    <label class="field">說了什麼<input data-k="said" maxlength="200" value="${esc(d.said)}" placeholder="可以抄一句"></label>
-    <label class="field">感受到的氛圍<input data-k="mood" maxlength="200" value="${esc(d.mood)}" placeholder="例：安靜、有點不安"></label>
-  </div>
-  <div class="field">點一個句型開頭，接著寫下你的觀察與想法（寫多一點也沒關係）</div>
+  <div class="step-label"><b>3</b>寫下你的觀察與想法</div>
+  <div class="field">可以寫「我／獵人」做了什麼、說了什麼、你感受到什麼氛圍。點一個句型開頭，接著寫（寫多一點也沒關係）</div>
   <div class="chips">${st.starters.map((s,k)=>`<button class="chip" data-st="${k}">${esc(s)}</button>`).join("")}</div>
   <textarea id="thought" maxlength="3000" placeholder="從句型開始，或用自己的話寫……">${esc(d.thought)}</textarea>
   <nav class="st-nav">
@@ -665,7 +640,6 @@ function renderStation(i){
     scene.querySelector(".off-msg").textContent="";
     $("#lensFb").innerHTML=lensFeedback(st,d);gate();
   });
-  app.querySelectorAll("[data-k]").forEach(inp=>inp.addEventListener("input",()=>{d[inp.dataset.k]=inp.value;save()}));
   const ta=$("#thought");
   ta.addEventListener("input",()=>{d.thought=ta.value;save();gate()});
   app.querySelectorAll("[data-st]").forEach(b=>b.onclick=()=>{
@@ -1018,7 +992,7 @@ function buildText(stu,rec,ts){
     const r=rec.p1[k]||{clues:[]};
     L.push(`▍${st.range}｜${st.title}`,`鏡頭：${r.lens?LENS[r.lens].name:"（未選）"}`,
       `照亮的線索：${r.clues.length?r.clues.map(ci=>"「"+st.clues[ci].t.replace(/^「|」$/g,"")+"」").join("、"):"（無）"}`,
-      `做了什麼：${r.did||"—"}`,`說了什麼：${r.said||"—"}`,`氛圍：${r.mood||"—"}`,`我的想法：${r.thought||"—"}`,"");
+      `我的想法：${r.thought||"—"}`,"");
   });
   L.push("━━ 第二部分｜獵人的遊戲 ━━");
   rec.p2.forEach((r,k)=>{const c=CLAIMS[r.id];L.push(`▍第 ${k+1} 回｜${c.tag}（${c.sdg.join("、")}）`,`假獵人說：「${c.say}」`,`我的箭：${r.shots.map(s=>ARROW_NAME[s.arrow]).join(" → ")}`,`反駁理由：${r.reason}`,"")});
@@ -1043,7 +1017,7 @@ function reportHTML(rep,opt={}){
   // 優勢
   const good=[];
   if(ana.p1Words>=400) good.push("你在第一部分寫得很充實，把看見的、感受到的都記了下來。");
-  if(ana.clues>=14) good.push(`你很會找線索，一共照亮了 ${ana.clues} 條關鍵句。`);
+  if(ana.clues>=10) good.push(`你很會找線索，一共照亮了 ${ana.clues} 條關鍵句。`);
   if(p1Own[best]>=40) good.push(`寫得最用心的是「${STATIONS[best].title}」這一段，看得出你真的停下來想了。`);
   if(adjusted) good.push(`第二部分有 ${adjusted} 回，你願意調整角度再射一次——換個角度想，就是思考。`);
   if(ratio>=0.7&&clen(text)>=20) good.push("明信片大多用自己的話寫成，這是屬於你的回應。");

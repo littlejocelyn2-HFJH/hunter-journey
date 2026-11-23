@@ -134,7 +134,7 @@ function analyze(rec) {
     const accs = a ? x.shots.map(s => accOf(a, s.arrow)) : [];
     return { id: x.id, shots: x.shots.length, accs: accs, final: accs.length ? accs[accs.length - 1] : 0 };
   });
-  const p1Done = rec.p1.length === 7 && rec.p1.every(x => x.lens && x.clues.length && len(x.thought) >= 10);
+  const p1Done = rec.p1.length >= 4 && rec.p1.every(x => x.lens && x.clues.length && len(x.thought) >= 10);
   return {
     p1Words: p1Words, p2Words: p2Words, p3Words: p3Words, words: p1Words + p2Words + p3Words,
     clues: rec.p1.reduce((t, x) => t + x.clues.length, 0),
