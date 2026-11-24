@@ -4,8 +4,8 @@
 <meta charset="UTF-8">
 <script>
 /* ======================================================
-   繳交連結（選用）：填入 Google 表單或 Padlet 網址後，
-   第三部分會多一個「前往繳交」按鈕。留空則不顯示。
+   Padlet 分享連結：填入班級 Padlet 網址後，學生交出後的
+   報告書頁會出現「分享明信片到 Padlet」。留空則不顯示。
    （學習歷程本身會自動送到老師的 Google 試算表）
    ====================================================== */
 const SUBMISSION_URL = "";
@@ -297,6 +297,7 @@ body.screen-mode{background:#f7f1e4}
 .scr-foot{margin-top:16px;color:#4b524d;font-size:18px;display:flex;justify-content:space-between}
 @media (max-width:1100px){.scr-grid{grid-template-columns:1fr}.scr-nums{grid-template-columns:repeat(2,1fr)}}
 
+.share{display:flex;flex-wrap:wrap;gap:12px;justify-content:space-between;align-items:center;background:#fff6ea;border:1px solid #f0d2ad;border-radius:14px;padding:16px 20px;margin-top:20px}
 .foot{text-align:center;margin-top:40px;font-size:13px;color:var(--mute)}
 .foot button{background:none;border:none;color:var(--mute);text-decoration:underline;font-size:13px}
 
@@ -1038,10 +1039,9 @@ function renderP3(){
         <button class="btn ember" id="submitBtn">交出學習歷程</button>
         <button class="btn ghost" id="copyBtn">一鍵複製完整學習歷程</button>
         <button class="btn ghost" id="dlBtn">下載明信片圖卡</button>
-        ${SUBMISSION_URL?`<a class="btn ghost" href="${esc(SUBMISSION_URL)}" target="_blank" rel="noopener">前往繳交</a>`:""}
       </div>
       <div class="err" id="subErr"></div>
-      <div class="note" style="margin-top:8px">按「交出學習歷程」後，三個部分的內容會一起交給老師，交出後就不能再修改。</div>
+      <div class="note" style="margin-top:8px">按「交出學習歷程」後，所有內容會一起交給老師，交出後就不能再修改。${SUBMISSION_URL?"交出後可以把明信片分享到班級 Padlet。":""}</div>
     </div>
   </div>
   <nav class="st-nav"><button class="btn ghost" id="backP2">回到第二部分</button><span></span></nav>
@@ -1215,6 +1215,33 @@ function download(stu,p3){
   $("#pc").toBlob(b=>{const a=document.createElement("a");a.href=URL.createObjectURL(b);a.download=fn;document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},1500);toast("明信片已下載")},"image/png");
 }
 
+/* ---- 分享到 Padlet ---- */
+function sharePadlet(stu,p3){
+  drawPostcard(stu,p3);
+  const cv=$("#pc");
+  const w=window.open(SUBMISSION_URL,"_blank");try{if(w)w.opener=null}catch(e){}
+  let copied=false;
+  try{
+    if(navigator.clipboard&&window.ClipboardItem){
+      navigator.clipboard.write([new ClipboardItem({"image/png":new Promise(res=>cv.toBlob(res,"image/png"))})]).then(()=>{copied=true;const el=$("#cpState");if(el)el.textContent="✓ 明信片圖片已複製，可以直接貼上。"}).catch(()=>{});
+    }
+  }catch(e){}
+  download(stu,p3);
+  const name=`${stu.cls}班 ${stu.seat}號 ${stu.name}`;
+  openModal(`<h2 style="margin-top:0">分享到 Padlet</h2>
+   ${w?"":`<p><a class="btn" href="${esc(SUBMISSION_URL)}" target="_blank" rel="noopener">打開班級 Padlet</a></p>`}
+   <ol style="line-height:2;padding-left:1.3em;margin:8px 0">
+     <li>在 Padlet 按 <b>＋</b> 新增一則貼文。</li>
+     <li>標題寫：<b>${esc(name)}</b> <button class="btn sm ghost" id="cpName">複製</button></li>
+     <li>直接<b>貼上</b>明信片圖片（電腦按 Ctrl+V，平板長按 → 貼上）。<br><span class="note" id="cpState">貼不上的話，改按「上傳」，選剛剛下載的明信片圖片。</span></li>
+     <li>按 <b>發布</b>，就完成了。</li>
+   </ol>
+   <div class="actions"><button class="btn ghost" id="dlAgain">再下載一次明信片</button><button class="btn" id="mClose">關閉</button></div>`);
+  $("#cpName").onclick=()=>copyText(name,"已複製標題");
+  $("#dlAgain").onclick=()=>download(stu,p3);
+  $("#mClose").onclick=closeModal;
+}
+
 /* ---- 學習歷程文字 ---- */
 function buildText(stu,rec,ts){
   const d=ts?new Date(ts):new Date(), L=[];
@@ -1329,7 +1356,8 @@ async function reportPage(){
   const res=await api("report",{student:state.student});
   if(res.ok){rep=res.report;state.report=rep;save()}
   if(!rep){$("#rep").innerHTML=`<p class="mute">還沒有報告書。交出學習歷程後就會出現。</p>`;return}
-  $("#rep").innerHTML=reportHTML(rep);
+  $("#rep").innerHTML=(SUBMISSION_URL?`<div class="share noprint"><div><b>📮 把明信片分享到班級 Padlet</b><div class="note">按下後會下載明信片、複製圖片，並打開班級 Padlet。</div></div><button class="btn ember" id="padBtn">分享明信片到 Padlet</button></div>`:"")+reportHTML(rep);
+  if($("#padBtn")) $("#padBtn").onclick=()=>sharePadlet(rep.student,rep.rec.p3);
   $("#dl2").onclick=()=>download(rep.student,rep.rec.p3);
   $("#cp2").onclick=()=>copyText(buildText(rep.student,rep.rec,rep.ts),"已複製完整學習歷程");
 }
