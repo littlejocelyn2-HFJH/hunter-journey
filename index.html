@@ -620,7 +620,7 @@ function renderPretest(){
    <p class="lead" style="font-size:16px">第 1～5 題是選擇題（兩題檢索、兩題推論整合、一題省思評鑑），第 6 題選出你心中的全文重點並寫下原因。可以展開課文回頭找。交出後就不能修改。</p>
    ${textPanel()}
    ${QUESTIONS.map((q,i)=>qHTML(i,P.answers[i],"q"+i)).join("")}
-   <div class="card" style="margin-top:14px"><div class="note">第 6 題｜開放題（沒有標準答案）</div>
+   <div class="card" style="margin-top:14px"><div class="note">第 6 題｜開放題</div>
      <div style="font-family:var(--serif);font-size:18px;line-height:1.8;margin:6px 0 10px">讀完全文，你覺得這篇文章最重要的是什麼？先選一個最接近你想法的，再寫下原因。</div>
      ${KEYPOINTS.map((t,k)=>`<label class="opt" style="display:flex;gap:10px;align-items:flex-start;padding:10px 12px;border:1px solid ${o.choice===k?"var(--ember)":"var(--line)"};background:${o.choice===k?"#fffaf2":"#fff"};border-radius:10px;margin:6px 0;cursor:pointer;line-height:1.7"><input type="radio" name="kp" value="${k}" ${o.choice===k?"checked":""} style="margin-top:6px;width:18px;height:18px"><span><b>(${OPT[k]})</b> ${esc(t)}</span></label>`).join("")}
      <div class="field" style="margin-top:10px">我選這個的原因（可以引用課文中的句子）</div>
