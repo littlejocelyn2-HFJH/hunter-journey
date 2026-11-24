@@ -495,9 +495,12 @@ function p3Compose(p3){
   return t;
 }
 function p3Student(p3){const R=RECIP[p3.to];if(!R)return p3.text||"";return R.lines.flat().filter(x=>typeof x!=="string"&&!x.q).map(x=>(p3.blanks||{})[x.k]||"").join("")+(p3.extra||"")}
-function p3Stamp(p3){if(p3.stamp!==undefined&&p3.blanks===undefined)return p3.stamp||null;const o=originality(p3Student(p3));return clen(p3Student(p3))<LINE_MIN*3?null:(o.ratio>=0.7?"guard":"learn")}
+function p3Own(p3){const R=RECIP[p3.to];if(!R)return clen(p3.text);return R.lines.reduce((t,l)=>t+p3LineOwn(p3,l),0)+clen(p3.extra)}
+function p3Stamp(p3){if(p3.stamp!==undefined&&p3.blanks===undefined)return p3.stamp||null;if(!p3Ok(p3))return null;return p3Own(p3)>=GOLD_MIN?"guard":"learn"}
 function p3ToLine(p3){return (RECIP[p3.to]||{}).to||TO_LINE}
-const STAMP_NAME={guard:"森林守護者",learn:"山林見習獵人"};
+const STAMP_NAME={guard:"金色郵票．森林守護者",learn:"黑色郵票．山林見習獵人"};
+const STAMP_SHORT={guard:"森林守護者",learn:"山林見習獵人"};
+const GOLD_MIN=60;   /* 三句自己寫的字（含「還想多說的話」）達到這個字數，換成金色郵票 */
 
 /* ============ 狀態 ============ */
 const KEY = "hunter-journey-v5";
@@ -1234,10 +1237,11 @@ function refresh(){
   P.text=p3Compose(P);
   const left=[];
   R.lines.forEach((l,i)=>{const n=p3LineOwn(P,l),ok=n>=LINE_MIN,el=$("#ok"+i);if(el)el.textContent=ok?"✓":`還差 ${LINE_MIN-n} 字`;const fl=$("#fl"+i);if(fl)fl.classList.toggle("done",ok);if(!ok)left.push(i+1)});
-  const st=p3Stamp(P), o=originality(p3Student(P)), el=$("#orig");
+  const st=p3Stamp(P), own=p3Own(P), el=$("#orig");
   if(el) el.innerHTML = left.length
     ? `<span style="color:var(--ember);font-weight:600">還沒填完：第 ${left.join("、")} 句。三句都完成，就會貼上郵票、可以交出。</span>`
-    : `自己寫的話和課文不同的比例：約 ${Math.round(o.ratio*100)}%　→　郵票：<b>${STAMP_NAME[st]||"—"}</b><div class="meter"><i style="width:${Math.round(o.ratio*100)}%"></i></div>`;
+    : `你自己寫了 <b>${own}</b> 字　→　<b>${STAMP_NAME[st]}</b>${st==="guard"?"　寫得真好！":`<br><span style="color:var(--ember)">再寫 ${GOLD_MIN-own} 字，就能換成<b>金色郵票</b>（可以把句子寫得更具體，或在「還想多說的話」補充）。</span>`}
+       <div class="meter"><i style="width:${Math.min(100,Math.round(own/GOLD_MIN*100))}%;background:${st==="guard"?"#c9a227":"#2b2b2b"}"></i></div>`;
   const btn=$("#submitBtn"); if(btn) btn.disabled=!PREVIEW&&!!left.length;
   clearTimeout(refT); refT=setTimeout(()=>{drawPostcard(state.student,P);const img=$("#pcImg");if(img) img.src=$("#pc").toDataURL("image/png")},120);
 }
@@ -1333,24 +1337,27 @@ function drawStamp(x,type){
   x.fillStyle="#fffaf0";x.fillRect(X,Y,W,H);x.shadowColor="transparent";
   x.fillStyle="#f7f2e8";for(let i=X;i<=X+W;i+=11){x.beginPath();x.arc(i,Y,4,0,7);x.arc(i,Y+H,4,0,7);x.fill()}
   for(let j=Y;j<=Y+H;j+=11){x.beginPath();x.arc(X,j,4,0,7);x.arc(X+W,j,4,0,7);x.fill()}
-  const c=type==="guard"?"#4a6650":"#b07a3c";
-  x.fillStyle=c;x.fillRect(X+9,Y+9,W-18,H-18);x.fillStyle="#f6efe0";
-  if(type==="guard"){pine(x,X+W/2,Y+86,70,"#f6efe0");x.fillRect(X+W/2-4,Y+86,8,14)}
-  else{x.beginPath();x.moveTo(X+22,Y+96);x.lineTo(X+50,Y+44);x.lineTo(X+68,Y+72);x.lineTo(X+78,Y+58);x.lineTo(X+92,Y+96);x.closePath();x.fill();
-    x.fillStyle=c;x.beginPath();x.moveTo(X+56,Y+96);x.quadraticCurveTo(X+48,Y+80,X+56,Y+68);x.quadraticCurveTo(X+64,Y+80,X+56,Y+96);x.fill()}
-  x.fillStyle="#f6efe0";x.textAlign="center";x.font=(type==="guard"?'bold 15px ':'bold 13px ')+'"Noto Serif TC",serif';
-  x.fillText(STAMP_NAME[type],X+W/2,Y+H-22);x.restore();
+  const gold=type==="guard";
+  if(gold){const g=x.createLinearGradient(X,Y,X+W,Y+H);g.addColorStop(0,"#f3d77a");g.addColorStop(.45,"#c9a227");g.addColorStop(1,"#8a6a12");x.fillStyle=g}
+  else x.fillStyle="#1f1f1f";
+  x.fillRect(X+9,Y+9,W-18,H-18);
+  const ink=gold?"#3a2c05":"#e8c96a";
+  x.strokeStyle=ink;x.lineWidth=1.5;x.strokeRect(X+14,Y+14,W-28,H-28);
+  pine(x,X+W/2,Y+84,66,ink);x.fillStyle=ink;x.fillRect(X+W/2-4,Y+84,8,12);
+  if(gold){x.fillStyle="#fff6cf";[[X+28,Y+34],[X+86,Y+40],[X+80,Y+28]].forEach(([a,b])=>{x.beginPath();x.arc(a,b,2.2,0,7);x.fill()})}
+  x.fillStyle=ink;x.textAlign="center";x.font=(gold?'bold 15px ':'bold 13px ')+'"Noto Serif TC",serif';
+  x.fillText(STAMP_SHORT[type],X+W/2,Y+H-22);x.restore();
 }
 function drawPostmark(x,type){
   if(!type) return;
   const d=new Date(), ds=`${d.getFullYear()}.${String(d.getMonth()+1).padStart(2,"0")}.${String(d.getDate()).padStart(2,"0")}`;
-  x.save();x.strokeStyle=x.fillStyle=type==="guard"?"rgba(52,73,58,.78)":"rgba(140,60,40,.78)";x.lineWidth=3;
+  x.save();x.strokeStyle=x.fillStyle=type==="guard"?"rgba(150,112,10,.85)":"rgba(30,30,30,.8)";x.lineWidth=3;
   for(let k=0;k<3;k++){x.beginPath();for(let i=0;i<=150;i+=4){const yy=118+k*18+Math.sin(i/12)*5;i?x.lineTo(760+i,yy):x.moveTo(760+i,yy)}x.stroke()}
   x.translate(958,138);x.rotate(-.2);
   x.beginPath();x.arc(0,0,60,0,7);x.stroke();x.lineWidth=1.5;x.beginPath();x.arc(0,0,49,0,7);x.stroke();
   x.textAlign="center";x.font='bold 15px "Noto Serif TC",serif';x.fillText("八雅鞍部",0,-20);
   x.font='bold 14px sans-serif';x.fillText(ds,0,6);
-  x.font='bold 13px "Noto Serif TC",serif';x.fillText(type==="guard"?"守護者郵戳":"見習郵戳",0,30);
+  x.font='bold 13px "Noto Serif TC",serif';x.fillText(type==="guard"?"金色郵戳":"黑色郵戳",0,30);
   x.restore();
 }
 function drawPostcard(stu,p3){
@@ -1425,7 +1432,7 @@ function buildText(stu,rec,ts){
   rec.p2.forEach((r,k)=>{const c=CLAIMS[r.id];L.push(`▍第 ${k+1} 回｜${c.tag}（${c.sdg.join("、")}）`,`假獵人說：「${c.say}」`,`我的箭：${r.shots.map(s=>ARROW_NAME[s.arrow]).join(" → ")}`,`反駁理由：${r.reason}`,"")});
   if(!rec.p2.length) L.push("（尚未完成）","");
   L.push("━━ 第三部分｜森林明信片 ━━",`底圖：${BGS[rec.p3.bg]}`,p3ToLine(rec.p3),rec.p3.text||"（尚未書寫）",
-    `與課文不同的文字比例：約 ${Math.round((rec.p3.originality||0)*100)}%　郵票：${STAMP_NAME[rec.p3.stamp]||"（字數未達）"}`);
+    `郵票：${STAMP_NAME[rec.p3.stamp]||"（尚未完成）"}`);
   return L.join("\n");
 }
 
@@ -1457,7 +1464,7 @@ function reportHTML(rep,opt={}){
   if(P.cmp.diffs.length>=2) good.push("和系統的另一盞燈比較時，你看見了不只一種差異。");
   if(themeOwn>=40) good.push("你的主旨體悟寫得很完整，看得出你真的停下來想了。");
   if(adjusted) good.push(`第二部分有 ${adjusted} 回，你願意調整角度再射一次——換個角度想，就是思考。`);
-  if(ratio>=0.7&&clen(text)>=20) good.push("明信片大多用自己的話寫成，這是屬於你的回應。");
+  if(rec.p3.stamp==="guard") good.push("你的明信片寫得很充實，拿到了金色郵票。");
   else if(/「/.test(text)) good.push("你懂得借用課文金句，把老獵人的話帶進自己的信裡。");
   if(!good.length) good.push("你完整走過了這趟山林旅程。");
   // 可以加強
@@ -1465,7 +1472,7 @@ function reportHTML(rep,opt={}){
   const weak=themeOwn<25;
   if(weak) more.push("主旨體悟可以再多寫一點：從「失落」寫到「學會了什麼」，也試著說說「為什麼」。");
   if(rec.p2.some(r=>clen(r.reason)<25)) more.push("反駁理由可以加上課文證據，用「課文中……，所以我認為……」把理由說完整。");
-  if(ratio<0.7&&clen(text)>=20) more.push("明信片可以試著多寫一段自己的話，不必只靠課文金句。");
+  if(rec.p3.stamp==="learn") more.push(`明信片可以把三句話寫得更具體一點，寫到 ${GOLD_MIN} 字就能拿到金色郵票。`);
   // 開放題回饋
   const fb=[];
   if(/心軟|放下|停|小山豬|沒有獵/.test(text)) fb.push("你看見了「我」心軟背後的意義：放下，也可以是一種勇敢。");
@@ -1493,7 +1500,7 @@ function reportHTML(rep,opt={}){
    <section><h3>各部分表現</h3><ul>
      <li><b>第一部分</b>：焦點「${FOCUS[P.focus]?FOCUS[P.focus].short:"—"}」、切法「${PA.name}」，拉了 ${ana.clues} 句文句${P.cmp.angle?`，和系統的「${ANGLES[P.cmp.angle].name}」做了比對`:""}。<br><span class="mute">我的主旨體悟：${esc(P.theme.text||"—")}</span></li>
      <li><b>第二部分</b>：完成 ${rec.p2.length} 回，共射出 ${totalShots} 支箭，其中 ${adjusted} 回調整過角度；反駁理由約 ${ana.p2Words} 字。</li>
-     <li><b>第三部分</b>：明信片約 ${ana.p3Words} 字，和課文不同的文字比例約 ${Math.round(ratio*100)}%，郵票：${STAMP_NAME[rec.p3.stamp]||"—"}。</li>
+     <li><b>第三部分</b>：寫給${RECIP[rec.p3.to]?RECIP[rec.p3.to].name:"文中的「我」"}的明信片約 ${ana.p3Words} 字，郵票：${STAMP_NAME[rec.p3.stamp]||"—"}。</li>
    </ul></section>
    <section><h3>我的書寫特色</h3><p><b>做得好的地方</b></p><ul>${good.map(g=>`<li>${esc(g)}</li>`).join("")}</ul>
      ${more.length?`<p><b>可以再加強</b></p><ul>${more.map(g=>`<li>${esc(g)}</li>`).join("")}</ul>`:""}</section>
@@ -1715,8 +1722,8 @@ async function drawScreen(){
    <div class="scr-nums">
      <div class="scr-num"><div class="v">${res.count}</div><div class="k">已交出學習歷程</div></div>
      <div class="scr-num"><div class="v">${res.finished}</div><div class="k">三個部分全部完成</div></div>
-     <div class="scr-num"><div class="v">${res.stamps.guard}</div><div class="k">森林守護者郵票</div></div>
-     <div class="scr-num"><div class="v">${res.stamps.learn}</div><div class="k">山林見習獵人郵票</div></div>
+     <div class="scr-num"><div class="v">${res.stamps.guard}</div><div class="k">金色郵票</div></div>
+     <div class="scr-num"><div class="v">${res.stamps.learn}</div><div class="k">黑色郵票</div></div>
    </div>
    <div class="scr-grid">
      <div class="scr-panel"><h2>第一部分：大家怎麼切、從哪裡看？</h2>
