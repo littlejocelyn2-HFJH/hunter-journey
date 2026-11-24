@@ -215,6 +215,10 @@ input:focus,textarea:focus{outline:2px solid var(--ember-l);border-color:var(--e
 .arrow-btn .aq{font-size:13px;color:var(--mute);line-height:1.6;margin-top:4px}
 .arrow-btn.last{border-color:var(--ember);background:#fffaf2}
 .arrow-btn:disabled{opacity:.45}
+.arrow-btn.ev .aq2{font-family:var(--serif);font-size:16px;line-height:1.7;color:var(--ink)}
+.arrow-btn.ev .an2{font-size:12px;color:var(--mute);margin-top:4px}
+.frame.rb{font-family:var(--serif);font-size:17px;line-height:1.9}
+.frame.rb textarea{margin-top:6px;min-height:80px;font-family:var(--serif)}
 .ringkey{font-size:14px;color:#4a514b;margin:4px 0 2px;line-height:2}
 .ringkey span{display:inline-block;border-radius:999px;padding:0 10px;font-weight:700;margin-right:4px}
 .ringkey .k3{background:#c98b5a;color:#fff}.ringkey .k2{background:#e2d6bd;color:#4a3d22}.ringkey .k1{background:#efe7d6;color:#6b5f48;border:1px solid #c9bb9f}
@@ -441,21 +445,21 @@ function sysOption(p,i){const oa=Object.keys(ANGLES).filter(k=>k!==p.angle),of=O
 
 /* ============ 第二部分（準度與回饋由後端判定，前端不放答案） ============ */
 const ARROWS = [
- {id:"zy",name:"生存與莊嚴之箭",q:"「狩獵對泰雅男人是莊嚴的事，沒有獵物就餵不飽你的家人。」"},
- {id:"jj",name:"火光與禁忌之箭",q:"「不得讓篝火停息」「你只許有一把番刀」"},
- {id:"kz",name:"獨行與克制之箭",q:"「牠是這座山最後的山豬」「以後泰雅的小孩要獵什麼？」"},
- {id:"wh",name:"文化與尊重之箭",q:"「勇敢、智慧與愛就是一個好獵人的全部財產」"}
+ {id:"zy",name:"生存與莊嚴之箭",ev:"狩獵對泰雅男人是莊嚴的事，沒有獵物就餵不飽你的家人",q:"「狩獵對泰雅男人是莊嚴的事，沒有獵物就餵不飽你的家人。」"},
+ {id:"jj",name:"火光與禁忌之箭",ev:"你只許有一把番刀，前去尋找山豬的一對利牙",q:"「你只許有一把番刀，前去尋找山豬的一對利牙。」"},
+ {id:"kz",name:"獨行與克制之箭",ev:"你獵到了，以後泰雅的小孩要獵什麼",q:"「牠是這座山最後的山豬」「你獵到了，以後泰雅的小孩要獵什麼？」"},
+ {id:"wh",name:"文化與尊重之箭",ev:"勇敢、智慧與愛就是一個好獵人的全部財產",q:"「勇敢、智慧與愛就是一個好獵人的全部財產。」"}
 ];
 const ARROW_NAME = Object.fromEntries(ARROWS.map(a=>[a.id,a.name]));
 const CLAIMS = [
- {id:0,tag:"貪多掠奪",sdg:["SDG 15"],say:"山裡獵物那麼多，看到就全部帶走！背包裝得越滿，越是厲害的獵人。"},
- {id:1,tag:"規矩迷信",sdg:["SDG 10"],say:"篝火不能熄、只能帶一把番刀……老人家的禁忌都是迷信，現代人不用理。"},
- {id:2,tag:"白V黑熊",sdg:["SDG 15"],say:"我在山裡遇到一隻胸前有白色V字的臺灣黑熊！獵到牠，就能證明我最勇敢。"},
- {id:3,tag:"狩獵偏見",sdg:["SDG 10"],say:"原住民打獵就是殘忍又落後，應該全部禁止。"},
- {id:4,tag:"獵人無用",sdg:["SDG 10"],say:"獵人不過是在山裡殺動物，沒什麼值得學的。"},
- {id:5,tag:"保育兩難",sdg:["SDG 15","SDG 10"],say:"要保育，就全面禁獵；要文化，就隨便獵——只能二選一！"},
- {id:6,tag:"不擇手段",sdg:["SDG 15"],say:"成年禮只要拿到獵物就好，偷帶幾把刀、設一堆陷阱也沒關係。"},
- {id:7,tag:"母子山豬",sdg:["SDG 15"],say:"母山豬帶著三隻小山豬？一次全部獵走，下次就不用再找了。"}
+ {id:0,short:"獵物越多越厲害，看到就全部帶走",tag:"貪多掠奪",sdg:["SDG 15"],say:"山裡獵物那麼多，看到就全部帶走！背包裝得越滿，越是厲害的獵人。"},
+ {id:1,short:"老人家的禁忌都是迷信",tag:"規矩迷信",sdg:["SDG 10"],say:"篝火不能熄、只能帶一把番刀……老人家的禁忌都是迷信，現代人不用理。"},
+ {id:2,short:"獵到臺灣黑熊才能證明最勇敢",tag:"白V黑熊",sdg:["SDG 15"],say:"我在山裡遇到一隻胸前有白色V字的臺灣黑熊！獵到牠，就能證明我最勇敢。"},
+ {id:3,short:"原住民打獵殘忍又落後",tag:"狩獵偏見",sdg:["SDG 10"],say:"原住民打獵就是殘忍又落後，應該全部禁止。"},
+ {id:4,short:"獵人沒什麼值得學的",tag:"獵人無用",sdg:["SDG 10"],say:"獵人不過是在山裡殺動物，沒什麼值得學的。"},
+ {id:5,short:"保育和文化只能二選一",tag:"保育兩難",sdg:["SDG 15","SDG 10"],say:"要保育，就全面禁獵；要文化，就隨便獵——只能二選一！"},
+ {id:6,short:"只要拿到獵物，手段不重要",tag:"不擇手段",sdg:["SDG 15"],say:"成年禮只要拿到獵物就好，偷帶幾把刀、設一堆陷阱也沒關係。"},
+ {id:7,short:"把母山豬和小山豬一次全部獵走",tag:"母子山豬",sdg:["SDG 15"],say:"母山豬帶著三隻小山豬？一次全部獵走，下次就不用再找了。"}
 ];
 const ACC_NAME={3:"靶心",2:"內環",1:"外環",0:"未判定"};
 
@@ -677,7 +681,7 @@ function homePage(){
   <ol class="steps" style="grid-template-columns:repeat(auto-fit,minmax(200px,1fr))">
     <li><b>前測</b>先回答 5 題選擇題，再選出你心中的全文重點、寫下原因。做完前測，後面三個部分可以照自己的順序走。</li>
     <li><b>一｜頭燈與視角</b>先選一種三段結構，再選觀察焦點、用頭燈把課文句子拉進三段；系統會再點亮另一盞燈，讓你比較差在哪裡。</li>
-    <li><b>二｜獵人的遊戲</b>轉盤抽出假獵人的說法。你的判斷就是你的箭：選一支獵人哲學之箭反駁，再寫下理由。</li>
+    <li><b>二｜獵人的遊戲</b>轉盤抽出假獵人的說法。選一句課文當證據，寫下你的反駁，再射出去看看準不準。</li>
     <li><b>三｜森林明信片</b>寫一張明信片給山林裡失落、猶豫的「我」，交出後會看到你的個人報告書。</li>
   </ol>
   <div class="foot">${LOCAL?"進度會自動存在這台裝置上。":"進度會自動存到雲端。今天做不完沒關係，下次在任何一台平板或電腦，登記<b>同樣的班級、座號、姓名</b>，就能從上次的地方接著做。"}<br><button id="resetBtn">這台裝置換人使用：清除紀錄</button></div>
@@ -1052,7 +1056,7 @@ function renderP2(){
   app.innerHTML=`<div class="wrap">
   <div class="kicker">第二部分｜獵人的遊戲</div>
   <h2>真假獵人轉盤 × 哲學反駁之箭</h2>
-  <p class="lead" style="font-size:16px">轉盤會抽出一句「假獵人」的說法。這裡不比手速，<b>你的判斷就是你的箭</b>：選一支最能切中要害的獵人哲學之箭反駁它。沒射中靶心也沒關係，可以調整角度再射，最後寫下一句反駁理由。<br><span class="mute">完成 3 回，第二部分就算完成；想多玩幾回也可以。</span></p>
+  <p class="lead" style="font-size:16px">轉盤會抽出一句「假獵人」的說法。你的任務是<b>反駁他的想法</b>：先從四句課文中選一句當證據（你的箭），寫下你的反駁，再射出去看看準不準。射歪了可以修改一次。<br><span class="mute">完成 3 回，第二部分就算完成；想多玩幾回也可以。</span></p>
   <div class="p2-grid">
     <div class="wheel-box">
       <div class="wheel-wrap"><div class="pointer"></div>
@@ -1086,27 +1090,52 @@ function spin(){
   $("#wheel").style.transform=`rotate(${P.rot}deg)`;
   setTimeout(()=>{P.cur={id:c.id,shots:[],reason:""};save();renderP2()},3300);
 }
+const RB_PRE=c=>`假獵人說「${c.short}」，我不同意。`;
+const RB_MID=a=>`課文中老獵人說「${a.ev}」，這表示`;
 function drawPlay(){
   const P=state.p2, area=$("#playArea");
   if(!P.cur){
-    area.innerHTML=`<div class="card mute" style="line-height:1.9">${P.rounds.length?"這一回的箭已收好。準備好就轉動下一回。":"按下「轉動轉盤」，看看假獵人會說什麼。"}<br>你的箭袋裡有四支箭：${ARROWS.map(a=>"「"+a.name+"」").join("、")}。</div>`;
+    area.innerHTML=`<div class="card mute" style="line-height:1.9">${P.rounds.length?"這一回已記錄。準備好就轉動下一回。":"按下「轉動轉盤」，看看假獵人會說什麼。"}<br>你的箭袋裡有四支「證據之箭」，每一支都是老獵人在課文裡說過的話。</div>`;
     return;
   }
-  const c=CLAIMS[P.cur.id], last=P.cur.shots.at(-1);
+  const C=P.cur, c=CLAIMS[C.id], last=C.shots.at(-1);
+  if(C.note===undefined){C.note="";C.pick=""}
+  const judged=!!last&&(C.shots.length>=2||last.acc===3||!C.retry);
+  const canShoot=!last||C.retry;
+  const A=ARROWS.find(a=>a.id===C.pick);
   area.innerHTML=`
    <div class="claim"><div class="who">假獵人說</div><div class="say">「${esc(c.say)}」</div>${c.sdg.map(s=>`<span class="sdg">${s}</span>`).join("")}</div>
-   <div class="step-label" style="margin-top:18px"><b>箭</b>選一支最能反駁這句話的箭（可以換一支重射）</div>
-   <div class="ringkey"><span class="k3">靶心</span>最能反駁這句話　<span class="k2">內環</span>有關係，但不是最準的　<span class="k1">外環</span>關係不大</div>
-   <div class="arrows">${ARROWS.map(a=>`<button class="arrow-btn ${last&&last.arrow===a.id?"last":""}" data-a="${a.id}"><div class="an">${a.name}</div><div class="aq">${esc(a.q)}</div></button>`).join("")}</div>
+   <div class="step-label" style="margin-top:18px"><b>1</b>選一支證據之箭：哪一句課文最能反駁他？</div>
+   <div class="arrows">${ARROWS.map(a=>`<button class="arrow-btn ev ${C.pick===a.id?"last":""}" data-pick="${a.id}" ${canShoot?"":"disabled"}><div class="aq2">${esc(a.q)}</div><div class="an2">→ ${a.name}</div></button>`).join("")}</div>
+   <div class="step-label"><b>2</b>寫下你的反駁（「這表示」後面至少寫 10 字）</div>
+   <div class="frame rb">
+     <div>${esc(RB_PRE(c))}</div>
+     <div>${A?esc(RB_MID(A)):'<span class="mute">（先在上面選一支證據之箭）</span>'}</div>
+     <textarea id="rbNote" maxlength="500" placeholder="用自己的話說明：這句課文為什麼能證明假獵人錯了？" ${canShoot?"":"disabled"}>${esc(C.note)}</textarea>
+   </div>
+   <div class="ringkey" style="margin-top:12px"><span class="k3">靶心</span>最能反駁　<span class="k2">內環</span>有關係，但不是最準　<span class="k1">外環</span>關係不大</div>
    <div class="target-row">
      <div class="target" id="target"><svg viewBox="0 0 200 200"><circle cx="100" cy="100" r="96" fill="#efe7d6" stroke="#c9bb9f"/><circle cx="100" cy="100" r="64" fill="#e2d6bd" stroke="#bfae8c"/><circle cx="100" cy="100" r="30" fill="#c98b5a" stroke="#a96d40"/>
        <text x="100" y="20" text-anchor="middle" font-size="12" fill="#7a6d55" font-weight="700">外環</text><text x="100" y="52" text-anchor="middle" font-size="12" fill="#6b5a3a" font-weight="700">內環</text><text x="100" y="95" text-anchor="middle" font-size="13" fill="#fff" font-weight="700">靶心</text></svg></div>
-     <div class="fb" id="fb" data-x="1">${last?fbHTML(last):'<span class="mute">還沒射箭。讀一讀假獵人的話，想想它錯在哪裡。</span>'}</div>
+     <div class="fb" id="fb">${last?fbHTML(last,C):'<span class="mute">選好證據、寫好反駁，再射出去。</span>'}</div>
    </div>
-   <div id="reasonBox"></div>`;
-  P.cur.shots.forEach((s,idx)=>placeDart(s,idx<P.cur.shots.length-1,false));
-  area.querySelectorAll("[data-a]").forEach(b=>b.onclick=()=>shoot(b.dataset.a));
-  drawReason();
+   <div class="actions" id="p2act"></div>`;
+  C.shots.forEach((s,idx)=>placeDart(s,idx<C.shots.length-1,false));
+  area.querySelectorAll("[data-pick]").forEach(b=>b.onclick=()=>{C.pick=b.dataset.pick;save();drawPlay()});
+  const ta=$("#rbNote");ta.addEventListener("input",()=>{C.note=ta.value;save();acts()});
+  function acts(){
+    const box=$("#p2act");
+    const ready=!!C.pick&&clen(C.note)>=10;
+    if(canShoot){
+      box.innerHTML=`<button class="btn ember" id="fire" ${(ready||PREVIEW)?"":"disabled"}>🏹 射出反駁之箭</button><span class="note">${!C.pick?"先選一支證據之箭":clen(C.note)<10?`「這表示」後面再寫 ${10-clen(C.note)} 字`:""}</span>`;
+      $("#fire").onclick=()=>shoot(C.pick);
+    }else{
+      box.innerHTML=(last.acc!==3&&C.shots.length<2&&last.acc?`<button class="btn ghost" id="retry">換一支證據，修改後再射一次</button>`:"")+`<button class="btn" id="commit">收箭，記錄這一回</button>`;
+      if($("#retry")) $("#retry").onclick=()=>{C.retry=true;save();drawPlay()};
+      $("#commit").onclick=()=>{const A2=ARROWS.find(a=>a.id===C.pick);C.reason=RB_PRE(c)+RB_MID(A2)+C.note.trim()+"。";P.rounds.push(C);P.cur=null;save();renderP2();topbar("quiz");toast("這一回已記錄")};
+    }
+  }
+  acts();
 }
 function dartPos(s){
   const ring={3:[8,16],2:[42,54],1:[74,86],0:[44,80]}[s.acc||0];
@@ -1120,46 +1149,30 @@ function placeDart(s,old,animate){
   if(animate){el.style.left="100px";el.style.top="230px";t.appendChild(el);requestAnimationFrame(()=>requestAnimationFrame(()=>{el.style.left=x+"px";el.style.top=y+"px"}))}
   else{el.style.left=x+"px";el.style.top=y+"px";t.appendChild(el)}
 }
-function fbHTML(s){
-  const name=ARROW_NAME[s.arrow];
+function fbHTML(s,C){
+  const name=ARROW_NAME[s.arrow], tries=C?C.shots.length:1;
   if(!s.acc){
-    if(s.err==="local") return `<div class="lv">箭已射出</div>本機模式（未連接後端）無法判定準度，僅供介面試用。直接寫下你的理由吧。`;
-    return `<div class="lv">箭已射出</div>${esc(errMsg(s.err))}先寫下你的理由吧。`;
+    if(s.err==="local") return `<div class="lv">箭已射出</div>本機模式（未連接後端）無法判定準度，僅供介面試用。`;
+    return `<div class="lv">箭已射出</div>${esc(errMsg(s.err))}`;
   }
-  if(s.acc===3) return `<div class="lv">🎯 正中靶心！</div><b>「${name}」最能反駁這句話。</b><br>${esc(s.text)}<br><span class="mute">把你的理由寫下來吧。</span>`;
-  if(s.acc===2) return `<div class="lv">射進內環：有關係，但還不是最準的一支</div>「${name}」和這句話有關，但<b>還有一支箭更能直接反駁它</b>。<br>提示：${esc(s.text)}<br><span class="mute">想射中靶心，就換一支箭再試；也可以直接寫下你的理由。</span>`;
-  return `<div class="lv">射到外環：離核心還很遠</div>「${name}」本身的道理沒錯，但<b>和這句話關係不大</b>，換一支箭試試。<br>提示：${esc(s.text)}`;
+  if(s.acc===3) return `<div class="lv">🎯 正中靶心！</div>你選的證據最能反駁假獵人。<br>${esc(s.text)}`;
+  const more=tries<2?`<br><span class="mute">可以換一支證據、修改反駁後再射一次；也可以直接收箭。</span>`:`<br><span class="mute">已經射過兩次了，把這一回記錄下來吧。</span>`;
+  if(s.acc===2) return `<div class="lv">射進內環：有關係，但還不是最準的證據</div>你的證據和這句話有關，但還有一句課文更能直接反駁它。<br>提示：${esc(s.text)}${more}`;
+  return `<div class="lv">射到外環：離核心還很遠</div>這句課文本身沒錯，但和假獵人的說法關係不大。<br>提示：${esc(s.text)}${more}`;
 }
 async function shoot(aid){
-  const P=state.p2; if(shooting||!P.cur) return;
-  shooting=true; document.querySelectorAll("[data-a]").forEach(b=>b.disabled=true);
-  const res=await api("judge",{claimId:P.cur.id,arrow:aid});
-  shooting=false; document.querySelectorAll("[data-a]").forEach(b=>b.disabled=false);
-  if(!res.ok&&res.error==="network"){toast(ERR.network+"箭沒有射出去，請再試一次。");return}
-  const s={arrow:aid,acc:res.ok?res.acc:0,text:res.ok?res.text:"",err:res.ok?"":res.error,seed:Math.floor(Math.random()*997)};
-  $("#target").querySelectorAll(".dart").forEach(d=>d.classList.add("old"));
-  const prefix=n=>`我用「${n}」反駁：課文中`;
-  const prev=P.cur.shots.at(-1);
-  P.cur.shots.push(s);
-  if(!P.cur.reason.trim()||(prev&&P.cur.reason.trim()===prefix(ARROW_NAME[prev.arrow]))) P.cur.reason=prefix(ARROW_NAME[aid]);
-  save();
-  placeDart(s,false,true);
-  $("#fb").innerHTML=fbHTML(s);
-  document.querySelectorAll("[data-a]").forEach(b=>b.classList.toggle("last",b.dataset.a===aid));
-  drawReason();
+  const P=state.p2, C=P.cur; if(shooting||!C||!aid) return;
+  shooting=true; const f=$("#fire"); if(f) f.disabled=true;
+  const res=await api("judge",{claimId:C.id,arrow:aid});
+  shooting=false;
+  if(!res.ok&&res.error==="network"){toast(ERR.network+"箭沒有射出去，請再試一次。");if(f)f.disabled=false;return}
+  const s={arrow:aid,acc:res.ok?res.acc:0,text:res.ok?res.text:"",err:res.ok?"":res.error,seed:Math.floor(Math.random()*997),note:C.note};
+  C.shots.push(s);C.retry=false;save();
+  drawPlay();
+  const darts=$("#target").querySelectorAll(".dart");const lastD=darts[darts.length-1];
+  if(lastD){const [x,y]=dartPos(s);lastD.style.transition="none";lastD.style.left="100px";lastD.style.top="230px";requestAnimationFrame(()=>requestAnimationFrame(()=>{lastD.style.transition="";lastD.style.left=x+"px";lastD.style.top=y+"px"}))}
 }
-function drawReason(){
-  const P=state.p2, box=$("#reasonBox"); if(!box) return;
-  if(!P.cur||!P.cur.shots.length){box.innerHTML="";return}
-  box.innerHTML=`<div class="step-label"><b>寫</b>寫下一句反駁理由</div>
-   <div class="field" style="margin-bottom:6px">句型：我用「＿＿之箭」反駁：課文中＿＿＿＿，所以我認為＿＿＿＿。</div>
-   <textarea id="reason" maxlength="3000" style="min-height:90px">${esc(P.cur.reason)}</textarea>
-   <div style="display:flex;justify-content:flex-end;margin-top:10px"><button class="btn" id="commit">收箭，記錄這一回</button></div>`;
-  const ta=$("#reason"),btn=$("#commit");
-  const chk=()=>{btn.disabled=!PREVIEW&&clen(ta.value.replace(/^我用「.+?」反駁：課文中/,""))<8};
-  ta.addEventListener("input",()=>{P.cur.reason=ta.value;save();chk()});chk();
-  btn.onclick=()=>{P.rounds.push(P.cur);P.cur=null;save();renderP2();topbar("quiz");toast("這一回已記錄")};
-}
+function drawReason(){}
 function drawRounds(){
   const P=state.p2;
   $("#rounds").innerHTML=P.rounds.length?`<h3 style="font-size:18px;margin:0 0 4px">已完成 ${P.rounds.length} 回</h3>`+P.rounds.map((r,k)=>{
