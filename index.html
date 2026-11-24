@@ -107,8 +107,12 @@ input:focus,textarea:focus{outline:2px solid var(--ember-l);border-color:var(--e
 .scene .clue{border-bottom:1px dashed rgba(240,195,143,.55);cursor:pointer}
 .scene .clue.found{background:rgba(240,195,143,.22);border-bottom:2px solid var(--ember-l);color:#fff3dc}
 .scene .shade{position:absolute;inset:0;pointer-events:none;
-  background:radial-gradient(circle var(--r) at var(--x) var(--y),rgba(255,214,150,.07) 0%,rgba(255,214,150,.03) 55%,rgba(7,10,8,.965) 100%)}
-.scene.lens-off .shade{background:rgba(7,10,8,.985)}
+  background:radial-gradient(circle var(--r) at var(--x) var(--y),rgba(255,214,150,.08) 0%,rgba(255,214,150,.04) 45%,rgba(7,10,8,.55) 78%,rgba(7,10,8,.8) 100%);transition:background .2s}
+.scene.lens-off .shade{background:rgba(7,10,8,.88)}
+.scene.lit .shade{background:radial-gradient(circle at 50% 40%,rgba(255,200,120,.10),rgba(255,200,120,0) 70%)}
+.campfire{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin:0 0 10px}
+.campfire button{border:1px solid #efd3b0;background:#fffaf2;border-radius:999px;padding:8px 16px;font-size:15px;min-height:42px}
+.campfire button.on{background:var(--ember);color:#fff;border-color:var(--ember)}
 .scene .off-msg{position:absolute;inset:0;display:grid;place-items:center;color:#a8b0a6;font-size:17px;pointer-events:none;letter-spacing:.05em}
 .bag{display:flex;flex-direction:column;gap:8px;margin-top:12px}
 .bag .item{background:#fff;border:1px solid var(--line);border-left:4px solid var(--ember);border-radius:8px;padding:10px 14px}
@@ -378,9 +382,9 @@ const KEYPOINTS=["成年禮的意義不在獵到獵物，而在學會「勇敢�
 
 /* ============ 第一部分：選視角 ➔ 拉文句 ➔ 差異比對 ➔ 主旨體悟 ============ */
 const FOCUS={
-  me:{name:"「我」的行動、猶豫與內心想法",short:"「我」",lamp:"微距頭燈",r:100,ask:"「我」做了什麼、猶豫什麼、心裡怎麼想？"},
-  hunter:{name:"「獵人」的精準動作、沉默與背景底蘊",short:"獵人",lamp:"中距頭燈",r:135,ask:"老獵人做了什麼、說了（或沒說）什麼、背後有什麼文化？"},
-  gap:{name:"「我」與「獵人」在山林裡的視角落差",short:"視角落差",lamp:"廣角頭燈",r:175,ask:"「我」和老獵人面對同一件事，看法有什麼不一樣？"}
+  me:{name:"「我」的行動、猶豫與內心想法",short:"「我」",lamp:"微距頭燈",r:170,ask:"「我」做了什麼、猶豫什麼、心裡怎麼想？"},
+  hunter:{name:"「獵人」的精準動作、沉默與背景底蘊",short:"獵人",lamp:"中距頭燈",r:220,ask:"老獵人做了什麼、說了（或沒說）什麼、背後有什麼文化？"},
+  gap:{name:"「我」與「獵人」在山林裡的視角落差",short:"視角落差",lamp:"廣角頭燈",r:280,ask:"「我」和老獵人面對同一件事，看法有什麼不一樣？"}
 };
 const ANGLES={
   A:{name:"事件推進線",secs:["與獵人上山","入山打獵","沒有獵得的對話"],picks:[
@@ -832,6 +836,7 @@ function sceneHTML(markFn,paras){
   const ps=paras||Object.keys(TEXT).map(Number);
   return ps.map(n=>`<p><span class="pno">${CN[n]}</span>${SENTS.map((x,k)=>x.p===n?`<span class="sn ${markFn?markFn(k):""}" data-i="${k}">${esc(x.t)}</span>`:"").join("")}</p>`).join("");
 }
+let campfire=false;
 function p1Pull(nav,bindNav){
   const p=state.p1;
   if(!p.angle){go("s0");return}
@@ -843,18 +848,22 @@ function p1Pull(nav,bindNav){
    <div class="combo" id="fbanner">${F?`🔦 <b>${F.lamp}｜在每一段裡找：</b>${F.ask}`:""}</div>
    <div class="step-label"><b>B</b>照亮課文，把句子拉進你的三段（${A.name}）</div>
    <p class="note" style="font-size:15px;margin-top:-4px">在暗處移動頭燈（平板可直接點），點一下被照亮的句子，選擇要放進哪一段。每段放 1～2 句。</p>
+   <div class="campfire"><button id="fireBtn" class="${campfire?"on":""}">${campfire?"🔥 營火已點亮（再按一次回到頭燈）":"🔥 看不清楚？點亮營火，整頁都看得見"}</button></div>
    <div class="pull-grid">
-     <div class="scene ${F?"lens-on":"lens-off"}" id="scene"><div class="text">${sceneHTML()}</div><div class="shade"></div><div class="off-msg">${F?"":"先選上面的觀察焦點，頭燈就會亮起"}</div></div>
+     <div class="scene ${F?"lens-on":"lens-off"} ${F&&campfire?"lit":""}" id="scene"><div class="text">${sceneHTML()}</div><div class="shade"></div><div class="off-msg">${F?"":"先選上面的觀察焦點，頭燈就會亮起"}</div></div>
      <div class="cards" id="cards"></div>
    </div>
    ${nav("","下一步：差異比對")}</div>`;
   const scene=$("#scene");
   scene.style.setProperty("--r",(F?F.r:120)+"px");
+  $("#fireBtn").onclick=()=>{campfire=!campfire;const b=$("#fireBtn");b.classList.toggle("on",campfire);
+    b.textContent=campfire?"🔥 營火已點亮（再按一次回到頭燈）":"🔥 看不清楚？點亮營火，整頁都看得見";
+    if(p.focus) scene.classList.toggle("lit",campfire); else toast("先選觀察焦點，頭燈就會亮起")};
   let lx=scene.clientWidth/2, ly=110;
   app.querySelectorAll("[data-f]").forEach(b=>b.onclick=()=>{p.focus=b.dataset.f;save();const nf=FOCUS[p.focus];
     app.querySelectorAll("[data-f]").forEach(x=>x.classList.toggle("on",x===b));
     $("#fbanner").innerHTML=`🔦 <b>${nf.lamp}｜在每一段裡找：</b>${nf.ask}`;
-    scene.className="scene lens-on";scene.style.setProperty("--r",nf.r+"px");scene.querySelector(".off-msg").textContent="";drawCards()});
+    scene.className="scene lens-on"+(campfire?" lit":"");scene.style.setProperty("--r",nf.r+"px");scene.querySelector(".off-msg").textContent="";drawCards()});
   const setLight=(x,y)=>{lx=x;ly=y;scene.style.setProperty("--x",x+"px");scene.style.setProperty("--y",y+"px")};
   setLight(lx,ly);
   const pos=e=>{const r=scene.getBoundingClientRect();return [e.clientX-r.left,e.clientY-r.top]};
@@ -866,7 +875,7 @@ function p1Pull(nav,bindNav){
     const el=e.target.closest(".sn"); if(!el) return;
     if(!p.focus){toast("先選觀察焦點，打開頭燈");return}
     const R=FOCUS[p.focus].r;
-    const sr=scene.getBoundingClientRect();let near=false;
+    const sr=scene.getBoundingClientRect();let near=campfire;
     for(const rc of el.getClientRects()){const cx=Math.max(rc.left,Math.min(lx+sr.left,rc.right)),cy=Math.max(rc.top,Math.min(ly+sr.top,rc.bottom));if(Math.hypot(cx-lx-sr.left,cy-ly-sr.top)<R*0.8){near=true;break}}
     if(!near){toast("把光照過去，再點一次");return}
     const si=+el.dataset.i;
