@@ -142,6 +142,7 @@ function cleanRecord(r) {
   const orig = Number(p3r.originality);
   const p3 = {
     bg: intIn(p3r.bg, 0, 2) || 0,
+    to: ['author', 'hunter', 'me'].indexOf(p3r.to) >= 0 ? p3r.to : '',
     text: cut(p3r.text, LIMITS.text),
     originality: (orig >= 0 && orig <= 1) ? Math.round(orig * 100) / 100 : 0,
     stamp: STAMPS[p3r.stamp] ? p3r.stamp : ''

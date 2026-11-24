@@ -301,6 +301,18 @@ body.screen-mode{background:#f7f1e4}
 .scr-foot{margin-top:16px;color:#4b524d;font-size:18px;display:flex;justify-content:space-between}
 @media (max-width:1100px){.scr-grid{grid-template-columns:1fr}.scr-nums{grid-template-columns:repeat(2,1fr)}}
 
+.frame{background:#fffdf8;border:1px solid var(--line);border-radius:14px;padding:16px 18px}
+.frame-to{font-family:var(--serif);color:var(--moss);font-weight:600;border-bottom:1px solid var(--line);padding-bottom:8px;margin-bottom:10px}
+.fline{display:flex;gap:10px;align-items:flex-start;padding:10px 0;border-bottom:1px dashed var(--line)}
+.fline:last-child{border-bottom:none}
+.fnum{flex:none;width:24px;height:24px;border-radius:50%;background:var(--paper2);display:grid;place-items:center;font-size:13px;margin-top:6px}
+.fline.done .fnum{background:var(--moss);color:#fff}
+.ftext{flex:1;font-family:var(--serif);font-size:18px;line-height:2.4}
+.ftext input.blank{font-family:var(--serif);font-size:17px;border:none;border-bottom:2px solid var(--ember);background:#fff8ee;padding:2px 6px;margin:0 3px;min-width:9em;width:calc(100% - 1em);max-width:22em;border-radius:4px 4px 0 0}
+.ftext input.blank.q{border-bottom-style:dashed;border-bottom-color:var(--moss);background:#f2f6f0}
+.ftext input.blank:focus{outline:2px solid var(--ember-l)}
+.fok{flex:none;font-size:13px;color:var(--ember);margin-top:8px;white-space:nowrap}
+.fline.done .fok{color:var(--moss);font-weight:700}
 .padsteps{line-height:1.9;padding-left:1.3em;margin:14px 0}
 .padsteps li{margin-bottom:12px}
 .padsteps .btn{margin:6px 6px 0 0}
@@ -413,7 +425,8 @@ const SENTS=(()=>{const out=[];Object.keys(TEXT).forEach(n=>{(TEXT[n].match(/[^�
 const findSent=t=>SENTS.findIndex(x=>x.t.includes(t));
 function p1IsDone(p){return !!(p&&p.focus&&p.angle&&p.secs.every(s=>s.items.length)&&clen(p.cmp.sentence)>=10&&clen(p.theme.text)>=10)}
 function partStatus(){
-  const p=state.p1, r=state.p2.rounds.length, L=clen(state.p3.text), own=ownChars(state.p3.text);
+  if(!state.p3.blanks){state.p3.blanks={};state.p3.quote=-1;state.p3.extra=state.p3.extra||state.p3.text||"";state.p3.to=state.p3.to||""}
+  const p=state.p1, r=state.p2.rounds.length, L=clen(p3Student(state.p3)), own=p3Ok(state.p3)?OWN_MIN:0;
   return [
     {done:p1IsDone(p),started:!!p.angle,note:p1IsDone(p)?"已完成":p.angle?"進行中":"還沒開始"},
     {done:r>=3,started:r>0||!!state.p2.cur,note:r>=3?`已完成（${r} 回）`:r||state.p2.cur?`進行中（${r}/3 回）`:"還沒開始"},
@@ -455,13 +468,42 @@ const GOLDEN = [
  "許多山林的故事便在耳傳口述中綿綿不止","狩獵對泰雅男人是莊嚴的事","仍是泰雅鍾愛的孩子","只覺得徹夜出奇地溫暖"
 ];
 const TO_LINE = "致：八雅鞍部山上，那個還在找答案的「我」";
+/* 明信片收件人與三句骨架：[文字, 空格, 文字, 空格…]；q:true 的空格是引用課文，不算自己寫的字 */
+const RECIP={
+  author:{name:"作者",who:"瓦歷斯‧諾幹",to:"致：〈獵人〉的作者　瓦歷斯‧諾幹老師",desc:"以讀者的身分，告訴作者你的感受和疑問。",
+    lines:[["讀完〈獵人〉，我最有感觸的是",{k:"a1",ph:"哪一個情節或句子"},"，因為",{k:"a2",ph:"你的理由"},"。"],
+           ["我想問您：",{k:"a3",ph:"你想知道的事"},"？"],
+           ["這篇文章讓我想到自己：",{k:"a4",ph:"你生活中的經驗"},"。"]]},
+  hunter:{name:"老獵人",who:"雅隆‧諾基斯",to:"致：老獵人　雅隆‧諾基斯",desc:"回應老獵人說過的話，說說你懂了什麼。",
+    lines:[["您說「",{k:"h1",ph:"老獵人說過的一句話（可點下方金句）",q:true},"」，我本來覺得",{k:"h2",ph:"一開始的想法"},"，現在我懂了",{k:"h3",ph:"你懂了什麼"},"。"],
+           ["我想謝謝您／想問您：",{k:"h4",ph:"你想說的話"},"。"],
+           ["以後我遇到",{k:"h5",ph:"什麼情況"},"時，我會",{k:"h6",ph:"怎麼做"},"。"]]},
+  me:{name:"文中的「我」",who:"山林裡的「我」",to:"致：八雅鞍部山上，那個還在找答案的「我」",desc:"安慰那個心軟、沉默、還在懊惱的「我」。",
+    lines:[["我看見你在",{k:"m1",ph:"什麼時候"},"的時候，心裡其實",{k:"m2",ph:"他的感受"},"。"],
+           ["我想告訴你，你",{k:"m3",ph:"他做了什麼"},"並不是失敗，因為",{k:"m4",ph:"你的理由"},"。"],
+           ["以後我遇到",{k:"m5",ph:"什麼情況"},"的時候，我也會",{k:"m6",ph:"怎麼做"},"。"]]}
+};
+const LINE_MIN=8;
+function p3Line(p3,line){return line.map(x=>typeof x==="string"?x:((p3.blanks||{})[x.k]||"").trim()||"＿＿").join("")}
+function p3LineOwn(p3,line){return line.filter(x=>typeof x!=="string"&&!x.q).reduce((t,x)=>t+clen((p3.blanks||{})[x.k]),0)}
+function p3Ok(p3){const R=RECIP[p3.to];return !!R&&R.lines.every(l=>p3LineOwn(p3,l)>=LINE_MIN)}
+function p3Compose(p3){
+  const R=RECIP[p3.to]; if(!R) return (p3.text||"").trim();
+  let t=R.lines.map(l=>p3Line(p3,l)).join("");
+  if(p3.quote>=0&&p3.to!=="hunter") t+=`就像課文說的：「${GOLDEN[p3.quote]}」`;
+  if(clen(p3.extra)) t+="\n"+p3.extra.trim();
+  return t;
+}
+function p3Student(p3){const R=RECIP[p3.to];if(!R)return p3.text||"";return R.lines.flat().filter(x=>typeof x!=="string"&&!x.q).map(x=>(p3.blanks||{})[x.k]||"").join("")+(p3.extra||"")}
+function p3Stamp(p3){if(p3.stamp!==undefined&&p3.blanks===undefined)return p3.stamp||null;const o=originality(p3Student(p3));return clen(p3Student(p3))<LINE_MIN*3?null:(o.ratio>=0.7?"guard":"learn")}
+function p3ToLine(p3){return (RECIP[p3.to]||{}).to||TO_LINE}
 const STAMP_NAME={guard:"森林守護者",learn:"山林見習獵人"};
 
 /* ============ 狀態 ============ */
 const KEY = "hunter-journey-v5";
 function fresh(student){return {student:student||null,step:"pre",pre:{start:null,answers:[-1,-1,-1,-1,-1],open:{choice:-1,reason:""},submitted:false,local:false},
   p1:freshP1(),
-  p2:{rounds:[],cur:null,rot:0},p3:{bg:0,text:""},t:{start:null,p1:null,p2:null},submitted:null,report:null}}
+  p2:{rounds:[],cur:null,rot:0},p3:{bg:0,text:"",to:"",blanks:{},quote:-1,extra:""},t:{start:null,p1:null,p2:null},submitted:null,report:null}}
 function loadState(){try{return JSON.parse(localStorage.getItem(KEY))}catch(e){return null}}
 let state = loadState() || fresh();
 let PREVIEW=false, previewState=null;
@@ -740,7 +782,7 @@ function renderHub(){
      <h3 style="margin:0 0 6px">交出學習歷程</h3>
      <p class="note" style="margin:0 0 10px">${missing.length?`還沒完成：${missing.join("、")}。三個部分都完成後再交出最完整；交出後就不能修改。`:"三個部分都完成了！確認沒問題就可以交出。"}</p>
      <button class="btn ember" id="submitBtn" ${ownChars(state.p3.text)<OWN_MIN?"disabled":""}>交出學習歷程</button>
-     ${ownChars(state.p3.text)<OWN_MIN?`<span class="note" style="margin-left:8px">要先寫好森林明信片（用自己的話寫 ${OWN_MIN} 字以上）才能交出。</span>`:""}
+     ${ownChars(state.p3.text)<OWN_MIN?`<span class="note" style="margin-left:8px">要先寫好森林明信片（選收件人，三句話都填完）才能交出。</span>`:""}
      <div class="err" id="subErr"></div>
    </div></div>`;
   app.querySelectorAll("[data-part]").forEach(b=>b.onclick=()=>parts[+b.dataset.part].go());
@@ -1130,76 +1172,83 @@ function originality(text){
 }
 function stampType(o){if(o.len<20) return null; return o.ratio>=0.7?"guard":"learn"}
 const OWN_MIN=30;
-function ownChars(text){const o=originality(text);return Math.round(o.len*o.ratio)}
+function ownChars(){return p3Ok(state.p3)?OWN_MIN:0}
 
 function renderP3(){
   const P=state.p3;
+  if(!P.blanks){P.blanks={};P.quote=-1;P.extra=P.extra||P.text||"";P.to=P.to||""}
+  const R=RECIP[P.to];
   app.innerHTML=`<div class="wrap">
   <div class="kicker">第三部分｜森林明信片</div>
-  <h2>寫給山林裡的那個「我」</h2>
-  <p class="lead" style="font-size:16px">篝火旁，「我」用沉默代替回答。那份失落、猶豫，和對狩獵與規矩的困惑，還留在山上。<br>寫一張明信片給他：回應他、安頓他，也想想——將來你遇到相似的處境（面對規矩、面對環境、面對想要卻該放下的東西）時，會怎麼做？</p>
-  <div class="p3-grid">
-    <div class="preview"><img id="pcImg" alt="森林明信片預覽"><div class="note" style="margin-top:6px">iPad 若下載沒有反應，可以長按上面的明信片圖片儲存。</div></div>
+  <h2>這張山林明信片，你想寄給誰？</h2>
+  <p class="lead" style="font-size:16px">讀完〈獵人〉，選一位你最想對他說話的人。系統會給你三句話的骨架，底線的地方用<b>你自己的話</b>填。</p>
+  <div class="step-label"><b>1</b>選收件人</div>
+  <div class="pick-grid three">${Object.keys(RECIP).map(k=>`<button class="pick ${P.to===k?"on":""}" data-to="${k}"><b>寫給${RECIP[k].name}</b><small>${RECIP[k].who}｜${RECIP[k].desc}</small></button>`).join("")}</div>
+  ${R?`<div class="p3-grid">
     <div>
-      <div class="field">選一張底圖</div>
-      <div class="bgs">${BGS.map((b,k)=>`<button data-bg="${k}" class="${P.bg===k?"on":""}"><canvas width="240" height="160"></canvas><small>${b}</small></button>`).join("")}</div>
-      <div class="field" style="margin-top:16px">開頭語（點一句放進信裡，也可以不用）</div>
-      <div class="chips">${OPENINGS.map((o,k)=>`<button class="chip" data-op="${k}">${esc(o)}</button>`).join("")}</div>
-      <div class="field" style="margin-top:8px">課文金句（點一下放進信裡）</div>
-      <div class="chips">${GOLDEN.map((g,k)=>`<button class="chip" data-gd="${k}" style="font-family:var(--serif);font-size:14px">${esc(g)}</button>`).join("")}</div>
-      <textarea id="letter" maxlength="3000" style="min-height:200px;margin-top:8px" placeholder="寫下你想對山林裡的「我」說的話……&#10;可以寫：你懂他的失落嗎？那些規矩是什麼意思？以後當你面對＿＿時，你會……">${esc(P.text)}</textarea>
+      <div class="step-label"><b>2</b>把三句話填完整（每句自己寫的字至少 ${LINE_MIN} 字）</div>
+      <div class="frame">
+        <div class="frame-to">${esc(R.to)}</div>
+        ${R.lines.map((line,li)=>`<div class="fline" id="fl${li}"><span class="fnum">${li+1}</span><div class="ftext">${line.map(x=>typeof x==="string"?`<span>${esc(x)}</span>`:`<input class="blank ${x.q?"q":""}" data-k="${x.k}" placeholder="${esc(x.ph)}" value="${esc(P.blanks[x.k]||"")}" maxlength="120">`).join("")}</div><span class="fok" id="ok${li}"></span></div>
+          ${line.some(x=>x.q)?`<div class="chips" style="margin:-4px 0 8px 34px">${GOLDEN.map((g,k)=>`<button class="chip" data-gq="${line.find(x=>x.q).k}|${k}" style="font-size:13px;font-family:var(--serif)">${esc(g)}</button>`).join("")}</div>`:""}`).join("")}
+      </div>
+      ${P.to!=="hunter"?`<div class="step-label"><b>3</b>（選做）選一句課文，支持你的話</div>
+      <div class="chips" id="quoteChips">${GOLDEN.map((g,k)=>`<button class="chip ${P.quote===k?"on":""}" data-qt="${k}" style="font-family:var(--serif);font-size:14px">${esc(g)}</button>`).join("")}</div>`:""}
+      <div class="step-label"><b>${P.to!=="hunter"?4:3}</b>（選做）還想多說的話</div>
+      <textarea id="extra" maxlength="1000" style="min-height:80px" placeholder="想再多寫一點也可以">${esc(P.extra)}</textarea>
       <div class="orig" id="orig"></div>
+    </div>
+    <div>
+      <div class="preview"><img id="pcImg" alt="森林明信片預覽"></div>
+      <div class="field" style="margin-top:12px">選一張底圖</div>
+      <div class="bgs">${BGS.map((b,k)=>`<button data-bg="${k}" class="${P.bg===k?"on":""}"><canvas width="240" height="160"></canvas><small>${b}</small></button>`).join("")}</div>
       <div class="actions">
         <button class="btn ember" id="submitBtn">交出學習歷程</button>
-        <button class="btn ghost" id="copyBtn">一鍵複製完整學習歷程</button>
         <button class="btn ghost" id="dlBtn">下載明信片圖卡</button>
       </div>
       <div class="err" id="subErr"></div>
       <div class="note" style="margin-top:8px">按「交出學習歷程」後，所有內容會一起交給老師，交出後就不能再修改。${SUBMISSION_URL?"交出後會馬上出現「上傳到班級 Padlet」的步驟。":""}</div>
     </div>
-  </div>
+  </div>`:'<p class="note" style="margin-top:18px">選好收件人，就會出現三句話的骨架。</p>'}
   <nav class="st-nav"><button class="btn ghost" id="backP2">🗺 回旅程地圖</button><span></span></nav>
   </div>`;
+  app.querySelectorAll("[data-to]").forEach(b=>b.onclick=()=>{P.to=b.dataset.to;if(P.to==="hunter")P.quote=-1;save();renderP3()});
+  $("#backP2").onclick=()=>go("hub");
+  if(!R) return;
   app.querySelectorAll(".bgs button").forEach(b=>{
     const k=+b.dataset.bg, x=b.querySelector("canvas").getContext("2d");
     x.scale(.2,.2); drawBg(x,k);
     b.onclick=()=>{P.bg=k;save();app.querySelectorAll(".bgs button").forEach(y=>y.classList.toggle("on",y===b));refresh()};
   });
-  const ta=$("#letter");
-  ta.addEventListener("input",()=>{P.text=ta.value;save();refresh()});
-  app.querySelectorAll("[data-op]").forEach(b=>b.onclick=()=>{
-    const o=OPENINGS[+b.dataset.op]; let t=ta.value;
-    const cur=OPENINGS.find(x=>t.startsWith(x));
-    t=cur?o+t.slice(cur.length):(t.trim()?o+"\n"+t:o);
-    ta.value=t;P.text=t;save();refresh();ta.focus();ta.setSelectionRange(t.length,t.length);
-  });
-  app.querySelectorAll("[data-gd]").forEach(b=>b.onclick=()=>{
-    const g="「"+GOLDEN[+b.dataset.gd]+"」", s=ta.selectionStart??ta.value.length, e=ta.selectionEnd??s;
-    ta.value=ta.value.slice(0,s)+g+ta.value.slice(e);P.text=ta.value;save();refresh();
-    ta.focus();ta.setSelectionRange(s+g.length,s+g.length);
-  });
-  $("#copyBtn").onclick=()=>copyText(buildText(state.student,buildRecord()),"已複製完整學習歷程");
-  $("#dlBtn").onclick=()=>download(state.student,state.p3);
+  app.querySelectorAll("input.blank").forEach(inp=>inp.addEventListener("input",()=>{P.blanks[inp.dataset.k]=inp.value;save();refresh()}));
+  app.querySelectorAll("[data-gq]").forEach(b=>b.onclick=()=>{const [k,g]=b.dataset.gq.split("|");P.blanks[k]=GOLDEN[+g];app.querySelector(`input[data-k="${k}"]`).value=GOLDEN[+g];save();refresh()});
+  app.querySelectorAll("[data-qt]").forEach(b=>b.onclick=()=>{const k=+b.dataset.qt;P.quote=P.quote===k?-1:k;app.querySelectorAll("[data-qt]").forEach(x=>x.classList.toggle("on",+x.dataset.qt===P.quote));save();refresh()});
+  $("#extra").addEventListener("input",e=>{P.extra=e.target.value;save();refresh()});
+  $("#dlBtn").onclick=()=>download(state.student,{...P,text:p3Compose(P)});
   $("#submitBtn").onclick=submitAll;
-  $("#backP2").onclick=()=>go("hub");
   refresh();
 }
 let refT;
 function refresh(){
-  const o=originality(state.p3.text), st=stampType(o), el=$("#orig"), own=ownChars(state.p3.text);
-  if(el) el.innerHTML = (own<OWN_MIN?`<div style="color:var(--ember);font-weight:600">用自己的話再寫 ${OWN_MIN-own} 字，就可以交出（開頭語和課文金句不算）。</div>`:"")+(o.len<20
-    ? `再寫 ${20-o.len} 字左右，系統就會為明信片貼上郵票、蓋上郵戳。`
-    : `和課文不同的文字比例：約 ${Math.round(o.ratio*100)}%　→　郵票：<b>${STAMP_NAME[st]}</b><div class="meter"><i style="width:${Math.round(o.ratio*100)}%"></i></div><span style="font-size:13px">（用自己的話寫得越多，越接近「森林守護者」；以課文金句為主，會是「山林見習獵人」。兩種都是好的開始。）</span>`);
-  const btn=$("#submitBtn"); if(btn) btn.disabled=!PREVIEW&&own<OWN_MIN;
-  clearTimeout(refT); refT=setTimeout(()=>{drawPostcard(state.student,state.p3);const img=$("#pcImg");if(img) img.src=$("#pc").toDataURL("image/png")},120);
+  const P=state.p3, R=RECIP[P.to]; if(!R) return;
+  P.text=p3Compose(P);
+  const left=[];
+  R.lines.forEach((l,i)=>{const n=p3LineOwn(P,l),ok=n>=LINE_MIN,el=$("#ok"+i);if(el)el.textContent=ok?"✓":`還差 ${LINE_MIN-n} 字`;const fl=$("#fl"+i);if(fl)fl.classList.toggle("done",ok);if(!ok)left.push(i+1)});
+  const st=p3Stamp(P), o=originality(p3Student(P)), el=$("#orig");
+  if(el) el.innerHTML = left.length
+    ? `<span style="color:var(--ember);font-weight:600">還沒填完：第 ${left.join("、")} 句。三句都完成，就會貼上郵票、可以交出。</span>`
+    : `自己寫的話和課文不同的比例：約 ${Math.round(o.ratio*100)}%　→　郵票：<b>${STAMP_NAME[st]||"—"}</b><div class="meter"><i style="width:${Math.round(o.ratio*100)}%"></i></div>`;
+  const btn=$("#submitBtn"); if(btn) btn.disabled=!PREVIEW&&!!left.length;
+  clearTimeout(refT); refT=setTimeout(()=>{drawPostcard(state.student,P);const img=$("#pcImg");if(img) img.src=$("#pc").toDataURL("image/png")},120);
 }
 function buildRecord(){
-  const now=Date.now(), t=state.t, o=originality(state.p3.text);
+  const now=Date.now(), t=state.t, P3=state.p3; if(RECIP[P3.to]) P3.text=p3Compose(P3);
+  const o=originality(p3Student(P3));
   return {
     p1:{focus:state.p1.focus,angle:state.p1.angle,secs:state.p1.secs.map(s=>({items:s.items.map(it=>({si:it.si,text:it.text,p:it.p,custom:it.custom,tags:it.tags})),rel:s.rel})),
       cmp:{angle:state.p1.cmp.angle,focus:state.p1.cmp.focus,diffs:state.p1.cmp.diffs,sentence:state.p1.cmp.sentence},theme:{keys:state.p1.theme.keys,text:state.p1.theme.text}},
     p2:state.p2.rounds.map(r=>({id:r.id,shots:r.shots.map(s=>({arrow:s.arrow})),reason:r.reason})),
-    p3:{bg:state.p3.bg,text:state.p3.text,originality:Math.round(o.ratio*100)/100,stamp:stampType(o)||""},
+    p3:{bg:P3.bg,to:P3.to||"",text:P3.text,originality:Math.round(o.ratio*100)/100,stamp:p3Stamp(P3)||""},
     durationSec:t.start?Math.round((now-t.start)/1000):0,
     partSec:[t.p1&&t.start?Math.round((t.p1-t.start)/1000):0,t.p2&&t.p1?Math.round((t.p2-t.p1)/1000):0,t.p2?Math.round((now-t.p2)/1000):0]
   };
@@ -1309,11 +1358,11 @@ function drawPostcard(stu,p3){
   x.clearRect(0,0,1200,800);drawBg(x,p3.bg);
   x.fillStyle="#f7f2e8";rr(x,600,36,566,728,8);x.fill();
   x.fillStyle="#7c8a7e";x.font='14px sans-serif';x.textAlign="left";x.fillText("FOREST POSTCARD　森林明信片",632,78);
-  const st=stampType(originality(p3.text));
+  const st=p3Stamp(p3);
   drawStamp(x,st);drawPostmark(x,st);
-  x.fillStyle="#4a6650";x.font='600 21px "Noto Serif TC",serif';x.fillText(TO_LINE,632,244);
+  x.fillStyle="#4a6650";x.font='600 21px "Noto Serif TC",serif';x.fillText(p3ToLine(p3),632,244);
   x.strokeStyle="#d7ccb6";x.lineWidth=1;x.beginPath();x.moveTo(632,262);x.lineTo(1136,262);x.stroke();
-  const body=(p3.text||"").trim()||"（在右邊寫下你想說的話）";
+  const body=(p3.blanks?p3Compose(p3):(p3.text||"")).trim()||"（在左邊把三句話填完整）";
   let fs=27,lines,lh;
   for(;fs>=15;fs--){x.font=`${fs}px "Noto Serif TC",serif`;lines=wrapLines(x,body,500-fs);lh=fs*1.75;if(lines.length*lh<=410)break}
   if(lines.length*lh>410){const max=Math.floor(410/lh);lines=lines.slice(0,max);lines[max-1]=lines[max-1].slice(0,-1)+"…"}
@@ -1375,7 +1424,7 @@ function buildText(stu,rec,ts){
   L.push("━━ 第二部分｜獵人的遊戲 ━━");
   rec.p2.forEach((r,k)=>{const c=CLAIMS[r.id];L.push(`▍第 ${k+1} 回｜${c.tag}（${c.sdg.join("、")}）`,`假獵人說：「${c.say}」`,`我的箭：${r.shots.map(s=>ARROW_NAME[s.arrow]).join(" → ")}`,`反駁理由：${r.reason}`,"")});
   if(!rec.p2.length) L.push("（尚未完成）","");
-  L.push("━━ 第三部分｜森林明信片 ━━",`底圖：${BGS[rec.p3.bg]}`,TO_LINE,rec.p3.text||"（尚未書寫）",
+  L.push("━━ 第三部分｜森林明信片 ━━",`底圖：${BGS[rec.p3.bg]}`,p3ToLine(rec.p3),rec.p3.text||"（尚未書寫）",
     `與課文不同的文字比例：約 ${Math.round((rec.p3.originality||0)*100)}%　郵票：${STAMP_NAME[rec.p3.stamp]||"（字數未達）"}`);
   return L.join("\n");
 }
