@@ -283,6 +283,18 @@ const LENS = {
   macro:{name:"微距",desc:"貼近手、火、傷口與心裡細微的感覺",r:85}
 };
 
+/* ============ 前測（正解與解析只在後端） ============ */
+const LEVEL_NAMES=["檢索","推論整合","省思評鑑"];
+const QUESTIONS=[
+ {level:"檢索",stem:"根據課文，「我」年近三十才進行成年禮，主要原因是什麼？",opts:["雅爸一直反對他參加","國中畢業後一直在外地求學、服務，無法親自領受傳統禮儀","部落已經不再舉行成年禮","老獵人年事已高，無法帶他上山"]},
+ {level:"檢索",stem:"老獵人說出成年禮的禁忌時，規定「我」入山只許帶什麼？",opts:["一把番刀","長矛與藥草","番刀與火柴","一把獵槍"]},
+ {level:"推論整合",stem:"「我」看見三隻小山豬後，回到營地「頹然地怨恨自己」。根據上下文，最可能的原因是：",opts:["他害怕山豬攻擊而逃跑","他一時心軟，放過了帶著小山豬的山豬","他的長矛在追捕中折斷","老獵人事先要他不要動手"]},
+ {level:"推論整合",stem:"老獵人說：「何況山裡只有這一頭勇猛的山豬，你獵到了，以後泰雅的小孩要獵什麼？」這句話最能說明老獵人的哪一種想法？",opts:["責備「我」能力不足，才會空手而回","狩獵應該節制，為下一代留下山林","擔心山豬太凶猛，怕「我」受傷","泰雅的孩子已經不需要學狩獵"]},
+ {level:"省思評鑑",stem:"關於本文的寫作安排，下列評論何者最恰當？",opts:["以老獵人的第一人稱敘述，凸顯長者的智慧","結尾回到「八雅鞍部山脈的肩膀」，把個人的成年禮經驗放進世代口耳相傳的故事中","全文以說明為主，詳細介紹泰雅成年禮的流程","藉「我」狩獵成功，讚揚勇武是獵人唯一的價值"]}
+];
+const OPT="ABCD";
+const KEYPOINTS=["成年禮的意義不在獵到獵物，而在學會「勇敢、智慧與愛」","好獵人懂得節制，為山林與下一代留下未來","離鄉的「我」透過成年禮，重新找回泰雅的身分與歸屬","泰雅的山林知識與規矩，在老少之間口耳相傳、綿延不止"];
+
 /* ============ 第一部分：四個段落群 ============ */
 const STATIONS = [
 {range:"第一～四段",title:"抵達與生火",paras:[1,2,3,4],lens:"wide",
@@ -368,8 +380,8 @@ const TO_LINE = "致：八雅鞍部山上，那個還在找答案的「我」";
 const STAMP_NAME={guard:"森林守護者",learn:"山林見習獵人"};
 
 /* ============ 狀態 ============ */
-const KEY = "hunter-journey-v3";
-function fresh(student){return {student:student||null,step:"s0",
+const KEY = "hunter-journey-v4";
+function fresh(student){return {student:student||null,step:"pre",pre:{start:null,answers:[-1,-1,-1,-1,-1],open:{choice:-1,reason:""},submitted:false,local:false},
   p1:STATIONS.map(()=>({lens:"",clues:[],did:"",said:"",mood:"",thought:""})),
   p2:{rounds:[],cur:null,rot:0},p3:{bg:0,text:""},t:{start:null,p1:null,p2:null},submitted:null,report:null}}
 let state = (()=>{try{return JSON.parse(localStorage.getItem(KEY))}catch(e){return null}})() || fresh();
@@ -381,7 +393,7 @@ const esc = s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":
 const clen = s=>String(s||"").replace(/\s/g,"").length;
 let toastT;
 function toast(m){const t=$("#toast");t.textContent=m;t.classList.add("show");clearTimeout(toastT);toastT=setTimeout(()=>t.classList.remove("show"),2400)}
-const ERR = {"bad-password":"密碼錯誤。","locked":"密碼錯太多次，請 10 分鐘後再試。","bad-class":"這個班級不在老師設定的名單中，請確認班級。","bad-seat":"座號請填 1～60。","bad-name":"請填寫姓名。","already":"這個座號已經交過了。如果需要重新交出，請找老師開放重做；如果不是你交的，請告訴老師。","answers-not-set":"老師還沒在後端設定第二部分答案。","network":"連線不穩，請稍後再試。","local":"本機模式（尚未連接後端）。","not-found":"找不到紀錄。","empty":"內容是空的。","bad-code":"成績碼格式不正確。"};
+const ERR = {"bad-password":"密碼錯誤。","locked":"密碼錯太多次，請 10 分鐘後再試。","bad-class":"這個班級不在老師設定的名單中，請確認班級。","bad-seat":"座號請填 1～60。","bad-name":"請填寫姓名。","already":"這個座號已經交過了。如果需要重新交出，請找老師開放重做；如果不是你交的，請告訴老師。","answers-not-set":"老師還沒在後端設定第二部分答案。","network":"連線不穩，請稍後再試。","local":"本機模式（尚未連接後端）。","not-found":"找不到紀錄。","empty":"內容是空的。","bad-code":"成績碼格式不正確。","already-pretest":"這個座號已經交過前測了。","incomplete":"還有題目沒有作答，或第 6 題原因還沒寫。"};
 const errMsg = e=>ERR[e]||("發生錯誤："+e);
 function fmtTime(iso){if(!iso)return "";const d=new Date(iso);return `${d.getFullYear()}/${d.getMonth()+1}/${d.getDate()} ${String(d.getHours()).padStart(2,"0")}:${String(d.getMinutes()).padStart(2,"0")}`}
 function fmtDur(sec){sec=Math.round(sec||0);const m=Math.floor(sec/60),s=sec%60;return m?`${m} 分 ${s} 秒`:`${s} 秒`}
@@ -414,21 +426,22 @@ function localApi(action,d){
   const db=ldb();
   if(action==="check") return {ok:true,already:false};
   if(action==="judge") return {ok:false,error:"local"};
+  if(action==="pretest") return {ok:true,local:true,ts:new Date().toISOString()};
   if(action==="save"){
     const ts=new Date().toISOString(),ana=analyzeLocal(d.record);
     let r=db.rows.find(x=>x.cls===d.student.cls&&+x.seat===+d.student.seat);
     if(!r){r={cls:d.student.cls,seat:+d.student.seat,name:d.student.name,attempts:[]};db.rows.push(r)}
     r.name=d.student.name;r.attempts.push({ts,name:d.student.name,rec:d.record,ana});r.attempts=r.attempts.slice(-20);lsave(db);
-    return {ok:true,ts,report:{student:d.student,ts,rec:d.record,ana,published:false,answers:null}};
+    return {ok:true,ts,report:{student:d.student,ts,rec:d.record,ana,published:false,answers:null,pretest:null}};
   }
-  if(action==="report"){const r=db.rows.find(x=>x.cls===d.student.cls&&+x.seat===+d.student.seat);if(!r)return{ok:false,error:"not-found"};const a=r.attempts.at(-1);return{ok:true,report:{student:d.student,ts:a.ts,rec:a.rec,ana:a.ana,published:false,answers:null}}}
+  if(action==="report"){const r=db.rows.find(x=>x.cls===d.student.cls&&+x.seat===+d.student.seat);if(!r)return{ok:false,error:"not-found"};const a=r.attempts.at(-1);return{ok:true,report:{student:d.student,ts:a.ts,rec:a.rec,ana:a.ana,published:false,answers:null,pretest:null}}}
   if(action==="list"){if(d.password)return{ok:false,error:"local"};return{ok:true,teacher:false,published:false,board:db.rows.filter(r=>r.attempts.length).map(r=>{const a=r.attempts.at(-1);return{cls:r.cls,seat:r.seat,name:r.name,partsDone:a.ana.partsDone,words:a.ana.words,bulls:0,stamp:a.rec.p3.stamp}})}}
   if(action==="stats"){
     const classes={};db.rows.forEach(r=>{if(r.attempts.length)classes[r.cls]=(classes[r.cls]||0)+1});
     const mine=db.rows.filter(r=>r.cls===d.cls&&r.attempts.length);
     const lens=STATIONS.map(()=>({wide:0,mid:0,macro:0}));const stamps={guard:0,learn:0};
     mine.forEach(r=>{const a=r.attempts.at(-1);a.rec.p1.forEach((x,i)=>{if(x.lens)lens[i][x.lens]++});if(stamps[a.rec.p3.stamp]!=null)stamps[a.rec.p3.stamp]++});
-    return{ok:true,classes,cls:d.cls,count:mine.length,finished:mine.filter(r=>r.attempts.at(-1).ana.partsDone===3).length,lens,stamps,
+    return{ok:true,keypts:[0,0,0,0],preCount:0,preQ:QUESTIONS.map(q=>({level:q.level,n:0,right:0})),classes,cls:d.cls,count:mine.length,finished:mine.filter(r=>r.attempts.at(-1).ana.partsDone===3).length,lens,stamps,
       claims:CLAIMS.map(c=>({tag:c.tag,n:0,bulls:0})),top:mine.map(r=>({seat:r.seat,name:r.name,words:r.attempts.at(-1).ana.words})).sort((a,b)=>b.words-a.words).slice(0,5)};
   }
   return {ok:false,error:"local"};
@@ -452,12 +465,13 @@ function topbar(mode){
   const tb=$("#topbar");
   if(mode!=="quiz"){tb.innerHTML=`<a class="ttl" href="#">〈獵人〉山林旅程</a><a class="home" href="#">🏠 回主畫面</a>`;$(".top").style.display=mode==="screen"?"none":"";return}
   $(".top").style.display="";
-  const s=state.step;let p=0,f1=0,f2=0,f3=0;
-  if(s.startsWith("s")){p=1;f1=(+s.slice(1)+1)/STATIONS.length}
+  const s=state.step;let p=0,f0=state.pre.submitted?1:.3,f1=0,f2=0,f3=0;
+  if(s==="pre"){p=0}
+  if(s.startsWith("s")&&s!=="pre"){p=1;f1=(+s.slice(1)+1)/STATIONS.length}
   if(s==="p2"){p=2;f1=1;f2=Math.min(state.p2.rounds.length/3,1)}
   if(s==="p3"){p=3;f1=1;f2=1;f3=.5}
   const leg=(n,label,f)=>`<div class="leg ${p===n?"on":""}"><span>${label}</span><div class="bar"><i style="width:${f*100}%"></i></div></div>`;
-  tb.innerHTML=`<a class="ttl j" href="#">〈獵人〉山林旅程</a>${leg(1,"一｜頭燈與鏡頭",f1)}${leg(2,"二｜獵人的遊戲",f2)}${leg(3,"三｜森林明信片",f3)}`;
+  tb.innerHTML=`<a class="ttl j" href="#">〈獵人〉山林旅程</a>${leg(0,"前測",f0)}${leg(1,"一｜頭燈與鏡頭",f1)}${leg(2,"二｜獵人的遊戲",f2)}${leg(3,"三｜森林明信片",f3)}`;
 }
 function openModal(html,wide){$("#modalRoot").innerHTML=`<div class="modal"><div class="box ${wide?"wide":""}">${html}</div></div>`;document.body.classList.add("has-modal")}
 function closeModal(){$("#modalRoot").innerHTML="";document.body.classList.remove("has-modal")}
@@ -470,12 +484,12 @@ function homePage(){
   if(st){
     welcome=`<div class="welcome">歡迎，${esc(st.cls)} 班 ${esc(st.seat)} 號 ${esc(st.name)}。${state.submitted?`<br><b>✓ 已交出學習歷程</b>（${fmtTime(state.submitted.ts)}）`:state.t.start?"<br>你的旅程進度已保存在這台裝置上。":""}</div>`;
   }
-  const mainBtn = state.submitted?"查看作答狀態":(st&&state.t.start?"繼續旅程":"我是學生，開始旅程");
+  const mainBtn = state.submitted?"查看作答狀態":(st&&(state.t.start||state.pre.start)?"繼續旅程":"我是學生，開始旅程");
   app.innerHTML=`<div class="wrap">
   <div class="home-hero">
     <h1>獵人</h1>
     <div style="font-family:var(--serif);font-size:20px;color:#4a514b">瓦歷斯‧諾幹｜山林旅程：頭燈、箭與明信片</div>
-    <div style="margin-top:16px"><span class="tag">三段旅程</span><span class="tag">第一部分 4 關</span><span class="tag">課文第一～十五段</span><span class="tag">重思考歷程，不扣分</span><span class="tag">iPad／電腦皆可</span>${LOCAL?'<span class="tag" style="color:var(--warn)">本機模式：不計分、不收資料</span>':""}</div>
+    <div style="margin-top:16px"><span class="tag">前測 6 題</span><span class="tag">三段旅程</span><span class="tag">第一部分 4 關</span><span class="tag">課文第一～十五段</span><span class="tag">重思考歷程，不扣分</span><span class="tag">iPad／電腦皆可</span>${LOCAL?'<span class="tag" style="color:var(--warn)">本機模式：不計分、不收資料</span>':""}</div>
     ${welcome}
   </div>
   <div class="home-btns">
@@ -484,7 +498,8 @@ function homePage(){
     <a class="btn big ghost" href="#scores">老師入口</a>
   </div>
   <h3>旅程怎麼走</h3>
-  <ol class="steps">
+  <ol class="steps" style="grid-template-columns:repeat(auto-fit,minmax(200px,1fr))">
+    <li><b>前測</b>先回答 5 題選擇題，再選出你心中的全文重點、寫下原因，看看你現在讀懂了多少。</li>
     <li><b>一｜頭燈與鏡頭</b>你就是文章裡的「我」。每一段先選鏡頭，再用頭燈照亮線索，寫下看見的與感受到的。</li>
     <li><b>二｜獵人的遊戲</b>轉盤抽出假獵人的說法。你的判斷就是你的箭：選一支獵人哲學之箭反駁，再寫下理由。</li>
     <li><b>三｜森林明信片</b>寫一張明信片給山林裡失落、猶豫的「我」，交出後會看到你的個人報告書。</li>
@@ -523,7 +538,9 @@ function registerModal(){
     if(res.already){e.textContent=ERR.already;return}
     const prev=state.student;
     if(prev&&(prev.cls!==cls||+prev.seat!==seat)) state=fresh();
-    state.student={cls,seat,name};save();closeModal();quiz();
+    state.student={cls,seat,name};
+    if(res.pretestDone&&!state.pre.submitted){state.pre.submitted=true;if(state.step==="pre")state.step="s0"}
+    save();closeModal();quiz();
   };
 }
 
@@ -531,7 +548,6 @@ function registerModal(){
 function quiz(){
   if(!state.student){topbar("home");homePage();registerModal();return}
   if(state.submitted){statusPage();return}
-  if(!state.t.start){state.t.start=Date.now();save()}
   renderStep();
 }
 function statusPage(){
@@ -545,10 +561,11 @@ function statusPage(){
     const res=await api("check",{student:state.student});
     if(!res.ok){$("#redoErr").textContent=errMsg(res.error);return}
     if(res.already){$("#redoErr").textContent="老師還沒有開放重做喔。";return}
-    if(confirm("重新開始會清除這台裝置上的旅程內容（已交出的紀錄老師那邊還在）。確定嗎？")){const s=state.student;state=fresh(s);save();quiz()}
+    if(confirm("重新開始會清除這台裝置上的旅程內容（已交出的紀錄老師那邊還在）。確定嗎？")){const s=state.student;state=fresh(s);if(res.pretestDone){state.pre.submitted=true;state.step="s0"}save();quiz()}
   };
 }
 function go(step){
+  if(step==="s0"&&!state.t.start) state.t.start=Date.now();
   if(step==="p2"&&!state.t.p1) state.t.p1=Date.now();
   if(step==="p3"&&!state.t.p2) state.t.p2=Date.now();
   state.step=step;save();renderStep();window.scrollTo(0,0);
@@ -556,9 +573,56 @@ function go(step){
 function renderStep(){
   topbar("quiz");
   const s=state.step;
-  if(s.startsWith("s")) renderStation(+s.slice(1));
+  if(s==="pre") renderPretest();
+  else if(s.startsWith("s")){if(!state.t.start){state.t.start=Date.now();save()}renderStation(+s.slice(1))}
   else if(s==="p2") renderP2();
   else renderP3();
+}
+
+/* ---------- 前測 ---------- */
+function textPanel(){return `<details class="card" style="margin:14px 0"><summary style="cursor:pointer;font-weight:600">📖 展開課文（第一～十五段）</summary><div style="font-family:var(--serif);line-height:2;margin-top:10px">${Object.keys(TEXT).map(n=>`<p style="margin:0 0 10px"><b style="color:var(--moss);font-size:13px">${CN[n]}</b>　${esc(TEXT[n])}</p>`).join("")}</div></details>`}
+function qHTML(i,chosen,name){
+  const q=QUESTIONS[i];
+  return `<div class="card" style="margin-top:14px"><div class="note">第 ${i+1} 題｜${q.level}</div><div style="font-family:var(--serif);font-size:18px;line-height:1.8;margin:6px 0 10px">${esc(q.stem)}</div>
+   ${q.opts.map((o,k)=>`<label style="display:flex;gap:10px;align-items:flex-start;padding:10px 12px;border:1px solid ${chosen===k?"var(--ember)":"var(--line)"};background:${chosen===k?"#fffaf2":"#fff"};border-radius:10px;margin:6px 0;cursor:pointer;line-height:1.7"><input type="radio" name="${name}" value="${k}" ${chosen===k?"checked":""} style="margin-top:6px;width:18px;height:18px"><span><b>(${OPT[k]})</b> ${esc(o)}</span></label>`).join("")}</div>`;
+}
+function renderPretest(){
+  const P=state.pre;
+  if(!P.start){P.start=Date.now();save()}
+  if(P.submitted){
+    app.innerHTML=`<div class="wrap"><div class="kicker">前測｜已交出 ✓</div><h2>前測完成</h2>
+     <p class="lead" style="font-size:17px">${P.local?"（本機模式不計分。）":""}謝謝你誠實作答。帶著你心中的「全文重點」，戴上頭燈出發吧——走完旅程後，看看想法有沒有改變。</p>
+     <nav class="st-nav"><a class="btn ghost" href="#">🏠 回主畫面</a><span></span><button class="btn" id="startJ">戴上頭燈，開始旅程</button></nav></div>`;
+    $("#startJ").onclick=()=>go("s0");
+    return;
+  }
+  const o=P.open;
+  app.innerHTML=`<div class="wrap"><div class="kicker">前測｜出發前，先看看自己讀懂了多少</div><h2>前測</h2>
+   <p class="lead" style="font-size:16px">第 1～5 題是選擇題（兩題檢索、兩題推論整合、一題省思評鑑），第 6 題選出你心中的全文重點並寫下原因。可以展開課文回頭找。交出後就不能修改。</p>
+   ${textPanel()}
+   ${QUESTIONS.map((q,i)=>qHTML(i,P.answers[i],"q"+i)).join("")}
+   <div class="card" style="margin-top:14px"><div class="note">第 6 題｜開放題（沒有標準答案）</div>
+     <div style="font-family:var(--serif);font-size:18px;line-height:1.8;margin:6px 0 10px">讀完全文，你覺得這篇文章最重要的是什麼？先選一個最接近你想法的，再寫下原因。</div>
+     ${KEYPOINTS.map((t,k)=>`<label class="opt" style="display:flex;gap:10px;align-items:flex-start;padding:10px 12px;border:1px solid ${o.choice===k?"var(--ember)":"var(--line)"};background:${o.choice===k?"#fffaf2":"#fff"};border-radius:10px;margin:6px 0;cursor:pointer;line-height:1.7"><input type="radio" name="kp" value="${k}" ${o.choice===k?"checked":""} style="margin-top:6px;width:18px;height:18px"><span><b>(${OPT[k]})</b> ${esc(t)}</span></label>`).join("")}
+     <div class="field" style="margin-top:10px">我選這個的原因（可以引用課文中的句子）</div>
+     <textarea id="kpReason" maxlength="3000" placeholder="我選（　），因為課文中……，所以我覺得……">${esc(o.reason)}</textarea>
+   </div>
+   <nav class="st-nav"><a class="btn ghost" href="#">🏠 回主畫面</a><span class="gate" id="gateP"></span><button class="btn ember" id="preGo">交出前測</button></nav></div>`;
+  const paint=card=>card.querySelectorAll("label").forEach(l=>{const on=l.querySelector("input").checked;l.style.borderColor=on?"var(--ember)":"var(--line)";l.style.background=on?"#fffaf2":"#fff"});
+  const gate=()=>{const g=[];const n=P.answers.filter(a=>a<0).length;if(n)g.push(`第 1～5 題還有 ${n} 題沒作答`);if(o.choice<0)g.push("第 6 題還沒選");if(clen(o.reason)<10)g.push("第 6 題原因寫 10 字以上");
+    $("#gateP").textContent=g.join("、");$("#preGo").disabled=!!g.length};
+  app.querySelectorAll("input[type=radio]").forEach(r=>r.onchange=()=>{
+    if(r.name==="kp") o.choice=+r.value; else P.answers[+r.name.slice(1)]=+r.value;
+    save();paint(r.closest(".card"));gate()});
+  $("#kpReason").addEventListener("input",e=>{o.reason=e.target.value;save();gate()});
+  gate();
+  $("#preGo").onclick=async()=>{
+    if(!confirm("確定交出前測嗎？交出後就不能修改囉。")) return;
+    $("#preGo").disabled=true;$("#gateP").textContent="傳送中……";
+    const res=await api("pretest",{student:state.student,answers:P.answers,open:o,durationSec:Math.round((Date.now()-P.start)/1000)});
+    if(!res.ok&&res.error!=="already-pretest"){$("#preGo").disabled=false;$("#gateP").textContent=errMsg(res.error);return}
+    P.submitted=true;P.local=!!res.local;save();renderPretest();window.scrollTo(0,0);
+  };
 }
 
 /* ---------- 第一部分 ---------- */
@@ -595,7 +659,7 @@ function renderStation(i){
   <div class="chips">${st.starters.map((s,k)=>`<button class="chip" data-st="${k}">${esc(s)}</button>`).join("")}</div>
   <textarea id="thought" maxlength="3000" placeholder="從句型開始，或用自己的話寫……">${esc(d.thought)}</textarea>
   <nav class="st-nav">
-    <button class="btn ghost" id="prevBtn">${i===0?"🏠 回主畫面":"上一個段落群"}</button>
+    <button class="btn ghost" id="prevBtn">${i===0?"回到前測":"上一個段落群"}</button>
     <span class="gate" id="gate"></span>
     <button class="btn" id="nextBtn">${i===STATIONS.length-1?"前往第二部分":"繼續前進"}</button>
   </nav></div>`;
@@ -647,7 +711,7 @@ function renderStation(i){
     ta.value=ta.value.trim()?ta.value.replace(/\s*$/,"\n")+s:s;
     d.thought=ta.value;save();gate();ta.focus();ta.setSelectionRange(ta.value.length,ta.value.length);
   });
-  $("#prevBtn").onclick=()=>{if(i===0)location.hash="#";else go("s"+(i-1))};
+  $("#prevBtn").onclick=()=>go(i===0?"pre":"s"+(i-1));
   $("#nextBtn").onclick=()=>go(i===STATIONS.length-1?"p2":"s"+(i+1));
 }
 
@@ -987,6 +1051,11 @@ function buildText(stu,rec,ts){
   const d=ts?new Date(ts):new Date(), L=[];
   L.push("【瓦歷斯‧諾幹〈獵人〉學習歷程】");
   L.push(`班級：${stu.cls}　座號：${stu.seat}　姓名：${stu.name}　日期：${d.getFullYear()}/${d.getMonth()+1}/${d.getDate()}`);
+  if(state.pre&&state.pre.submitted&&state.student&&stu.seat==state.student.seat&&stu.cls===state.student.cls){
+    const po=state.pre.open||{};
+    L.push("","━━ 前測 ━━",`第 1～5 題：${state.pre.answers.map((a,i)=>(i+1)+"."+(OPT[a]||"-")).join("　")}`,
+      `第 6 題（全文重點）：(${OPT[po.choice]||"-"}) ${KEYPOINTS[po.choice]||""}`,`原因：${po.reason||"—"}`);
+  }
   L.push("","━━ 第一部分｜文章、手電筒、鏡頭 ━━");
   STATIONS.forEach((st,k)=>{
     const r=rec.p1[k]||{clues:[]};
@@ -1050,6 +1119,7 @@ function reportHTML(rep,opt={}){
   return `<div class="report">
    <h2>我的山林旅程報告書</h2>
    <div class="meta">${esc(s.cls)} 班 ${esc(s.seat)} 號 ${esc(s.name)}　｜　完成時間：${fmtTime(rep.ts)}　｜　用時：${fmtDur(rec.durationSec)}</div>
+   ${rep.pretest?preReportHTML(rep.pretest):""}
    <section><h3>我的旅程</h3><div class="levels">${lv(parts[0],"🔦","一｜頭燈與鏡頭")}${lv(parts[1],"🏹","二｜獵人的遊戲")}${lv(parts[2],"✉️","三｜森林明信片")}</div></section>
    <section><h3>各部分表現</h3><ul>
      <li><b>第一部分</b>：照亮 ${ana.clues} 條線索；有 ${lensMatch} 段的鏡頭和作者相近（鏡頭沒有對錯）；書寫約 ${ana.p1Words} 字。</li>
@@ -1062,6 +1132,18 @@ function reportHTML(rep,opt={}){
    ${p2detail?`<section><h3>獵人的遊戲：老師公布的解析</h3>${p2detail}</section>`:""}
    <section><h3>下一步可以這樣做</h3><ul>${next.map(g=>`<li>${esc(g)}</li>`).join("")}</ul></section>
   </div>`;
+}
+function preReportHTML(p){
+  const icon={"檢索":"🔎","推論整合":"🧩","省思評鑑":"⚖️"};
+  const lv=LEVEL_NAMES.map(l=>{const [r,n]=p.levels[l]||[0,0];const ok=n&&r===n;
+    return `<div class="level ${ok?"ok":""}"><div class="ic">${icon[l]}</div><b>${l}</b><div class="note">${ok?"過關":"還可以更穩"}（${r}/${n}）</div></div>`}).join("");
+  const weak=LEVEL_NAMES.filter(l=>{const [r,n]=p.levels[l]||[0,0];return n&&r<n});
+  const tip={"檢索":"讀題時先圈出關鍵詞，再回到課文找出對應的句子。","推論整合":"把前後段連起來讀，想想人物「為什麼」這樣做、這樣說。","省思評鑑":"讀完全文後，留意開頭與結尾的安排，想想作者想傳達什麼。"};
+  let items="";
+  if(p.items) items=`<div style="margin-top:10px">${p.items.map((it,i)=>`<div class="ans-row"><b>第 ${i+1} 題（${it.level}）</b>：你選 (${OPT[it.chosen]||"-"})${it.correct?" ✓":"，正解 ("+OPT[it.ans]+")"}<br><span class="mute">${esc(it.explain||"")}</span></div>`).join("")}</div>`;
+  return `<section><h3>我的閱讀層級（前測）</h3><div class="levels">${lv}</div>
+    ${p.open?`<p><b>出發前，我心中的全文重點</b>：(${OPT[p.open.choice]}) ${esc(KEYPOINTS[p.open.choice])}<br><span class="mute">我的原因：${esc(p.open.reason)}</span><br>走完旅程後，你的想法有沒有改變？可以在明信片裡說說看。</p>`:""}
+    <p>前測答對 ${p.score} / ${p.total} 題。${weak.length?"可以加強："+weak.map(l=>`<b>${l}</b>——${tip[l]}`).join(" "):"三個層級都過關了，閱讀很扎實！"}</p>${items}</section>`;
 }
 async function reportPage(){
   topbar("home");
@@ -1116,8 +1198,8 @@ function drawScores(){
   const rows=D.board.filter(b=>b.cls===T.cls).sort((a,b)=>b.partsDone-a.partsDone||b.words-a.words||a.seat-b.seat);
   let html=`<div class="cls-tabs">${classes.map(c=>`<button data-cls="${esc(c)}" class="${c===T.cls?"on":""}">${esc(c)} 班（${counts[c]}）</button>`).join("")}</div>
   <h3>旅程進度榜</h3><p class="note">依完成部分、書寫字數排列（鼓勵多寫，不比速度）。</p>
-  <div class="tbl-wrap"><table class="tbl"><tr><th>#</th><th>座號</th><th>姓名</th><th>完成</th><th>書寫字數</th><th>靶心回合</th><th>郵票</th>${D.teacher?"<th>最後交出</th><th>提醒次數</th>":""}</tr>
-  ${rows.map((b,k)=>`<tr><td>${k+1}</td><td>${b.seat}</td><td>${esc(b.name)}</td><td>${"●".repeat(b.partsDone)}${"○".repeat(3-b.partsDone)}</td><td>${b.words}</td><td>${b.bulls}</td><td>${STAMP_NAME[b.stamp]||"—"}</td>${D.teacher?`<td>${fmtTime(b.lastTs)}</td><td>${b.flagCount||""}</td>`:""}</tr>`).join("")}</table></div>`;
+  <div class="tbl-wrap"><table class="tbl"><tr><th>#</th><th>座號</th><th>姓名</th><th>完成</th><th>書寫字數</th><th>靶心回合</th><th>郵票</th>${D.teacher?"<th>前測</th><th>最後交出</th><th>提醒次數</th>":""}</tr>
+  ${rows.map((b,k)=>`<tr><td>${k+1}</td><td>${b.seat}</td><td>${esc(b.name)}</td><td>${"●".repeat(b.partsDone)}${"○".repeat(3-b.partsDone)}</td><td>${b.words}</td><td>${b.bulls}</td><td>${STAMP_NAME[b.stamp]||"—"}</td>${D.teacher?`<td>${b.pretest?b.pretest.score+"/5":"—"}</td><td>${fmtTime(b.lastTs)}</td><td>${b.flagCount||""}</td>`:""}</tr>`).join("")}</table></div>`;
   if(D.teacher) html+=teacherHTML(rows);
   sc.innerHTML=html;
   sc.querySelectorAll("[data-cls]").forEach(b=>b.onclick=()=>{T.cls=b.dataset.cls;drawScores()});
@@ -1165,6 +1247,7 @@ function teacherHTML(rows){
    <td style="white-space:nowrap"><button class="btn sm ghost" data-view="${b.seat}|${a.ts}">報告書</button> <button class="btn sm ghost" data-redo="${b.seat}">${b.redo?"取消重做":"開放重做"}</button> <button class="btn sm danger" data-del="${b.seat}|${a.ts}">刪除</button></td></tr>`).join("")||'<tr><td colspan="9" class="mute">沒有符合的紀錄</td></tr>'}
   </table></div>
 
+  ${preTeacherHTML(rows)}
   <h3 style="margin-top:28px">第二部分：各假獵人說法</h3>
   <div class="tbl-wrap"><table class="tbl"><tr><th>說法</th><th>回合數</th><th>第一箭靶心率</th><th>最後靶心率</th><th>最常見的第一箭</th><th>最能切中的角度</th></tr>
   ${cl.map(s=>{const top=Object.entries(s.firstArrow).sort((a,b)=>b[1]-a[1])[0];const ans=(D.answers||{})[s.c.id];
@@ -1179,6 +1262,20 @@ function teacherHTML(rows){
   <h3 style="margin-top:28px">學生診斷</h3>
   <div class="tools"><select id="diag" style="border:1px solid var(--line);border-radius:8px;padding:8px">${rows.slice().sort((a,b)=>a.seat-b.seat).map(b=>`<option value="${b.seat}">${b.seat} 號 ${esc(b.name)}</option>`).join("")}</select><button class="btn sm" id="diagBtn">開啟報告書</button></div>
   <p class="note" style="margin-top:22px">學生資料在 Google 試算表；密碼與答案只在 Apps Script，GitHub 上沒有。</p>`;
+}
+function preTeacherHTML(rows){
+  const D=T.data, pres=rows.filter(b=>b.pretest), A=(D.answers||{}).pretest||[];
+  const n=pres.length, pct=(a)=>n?Math.round(a/n*100):0;
+  const lvl=LEVEL_NAMES.map(l=>{let r=0,t=0;QUESTIONS.forEach((q,i)=>{if(q.level===l){t+=n;r+=pres.filter(b=>b.pretest.correct[i]).length}});return `<span class="tag">${l}：${t?Math.round(r/t*100):0}%</span>`}).join("");
+  return `<h3 style="margin-top:28px">前測（${n} 人）</h3><div>${lvl}</div>
+  <div class="tbl-wrap" style="margin-top:8px"><table class="tbl"><tr><th>題目</th><th>層次</th><th>答對率</th><th>選項分布 A／B／C／D</th><th>正解</th></tr>
+  ${QUESTIONS.map((q,i)=>{const right=pres.filter(b=>b.pretest.correct[i]).length;const dist=[0,1,2,3].map(k=>pres.filter(b=>b.pretest.answers[i]===k).length);
+    return `<tr><td>第 ${i+1} 題</td><td>${q.level}</td><td>${pct(right)}%</td><td>${dist.join("／")}</td><td>${A[i]?"("+OPT[A[i].ans]+")":'<span class="err">後端未貼答案</span>'}</td></tr>`}).join("")}</table></div>
+  <h3 style="margin-top:18px;font-size:17px">第 6 題：全文重點（開放題）</h3>
+  <div class="bars">${KEYPOINTS.map((t,k)=>{const c=pres.filter(b=>b.pretest.open&&b.pretest.open.choice===k).length;return `<div class="b"><span>(${OPT[k]}) ${esc(t.slice(0,10))}…</span><div class="t"><i style="width:${n?c/n*100:0}%"></i></div><span>${c} 人</span></div>`}).join("")}</div>
+  <details style="margin-top:8px"><summary style="cursor:pointer">逐一查看學生前測</summary>
+  <div class="tbl-wrap" style="margin-top:8px"><table class="tbl"><tr><th>座號</th><th>姓名</th><th>得分</th><th>第1～5題</th><th>全文重點與原因</th><th>用時</th><th></th></tr>
+  ${pres.sort((a,b)=>a.seat-b.seat).map(b=>{const p=b.pretest;return `<tr><td>${b.seat}</td><td>${esc(b.name)}</td><td>${p.score}/5</td><td>${p.answers.map((a,i)=>OPT[a]+(p.correct[i]?"":"✗")).join(" ")}</td><td>${p.open?`(${OPT[p.open.choice]}) ${esc(p.open.reason)}`:"—"}</td><td>${fmtDur(p.durationSec)}</td><td><button class="btn sm danger" data-delpre="${b.seat}">刪除前測</button></td></tr>`}).join("")}</table></div></details>`;
 }
 function bindTeacher(rows){
   const D=T.data, cls=T.cls;
@@ -1195,19 +1292,24 @@ function bindTeacher(rows){
   };
   $("#csv").onclick=()=>{
     const cell=v=>{let s=String(v??"");if(/^[=+\-@]/.test(s))s="'"+s;return '"'+s.replace(/"/g,'""')+'"'};
-    const head=["交出時間","班級","座號","姓名","用時(秒)","書寫總字數","靶心回合","郵票","原創比例","提醒","第一部分想法","第二部分反駁理由","明信片"];
+    const head=["交出時間","班級","座號","姓名","前測得分","前測選擇","全文重點","全文重點原因","用時(秒)","書寫總字數","靶心回合","郵票","原創比例","提醒","第一部分想法","第二部分反駁理由","明信片"];
     const lines=[head.map(cell).join(",")];
-    allAttempts(rows).forEach(({b,a})=>lines.push([fmtTime(a.ts),b.cls,b.seat,a.name,a.rec.durationSec,a.ana.words,a.ana.bulls,STAMP_NAME[a.rec.p3.stamp]||"",a.rec.p3.originality,a.flags.join("、"),
+    allAttempts(rows).forEach(({b,a})=>lines.push([fmtTime(a.ts),b.cls,b.seat,a.name,b.pretest?b.pretest.score:"",b.pretest?b.pretest.answers.map(x=>OPT[x]).join(""):"",b.pretest&&b.pretest.open?OPT[b.pretest.open.choice]:"",b.pretest&&b.pretest.open?b.pretest.open.reason:"",a.rec.durationSec,a.ana.words,a.ana.bulls,STAMP_NAME[a.rec.p3.stamp]||"",a.rec.p3.originality,a.flags.join("、"),
       a.rec.p1.map((x,i)=>`【${STATIONS[i].title}】${x.thought}`).join("\n"),a.rec.p2.map(r=>`【${CLAIMS[r.id].tag}】${r.reason}`).join("\n"),a.rec.p3.text].map(cell).join(",")));
     const blob=new Blob(["﻿"+lines.join("\r\n")],{type:"text/csv"});
     const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download=`獵人_${cls}班.csv`;document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},1500);
   };
   $("#impBtn").onclick=()=>{$("#impBox").innerHTML=`<div class="card" style="margin-top:10px"><div class="field">貼上學生給的成績碼</div><textarea id="impCode" style="min-height:80px"></textarea><div class="actions"><button class="btn sm" id="impGo">匯入</button></div></div>`;
     $("#impGo").onclick=()=>act("import",{code:$("#impCode").value},"已匯入")};
+  app.querySelectorAll("[data-delpre]").forEach(b=>b.onclick=()=>{const seat=b.dataset.delpre;if(confirm(`確定刪除 ${seat} 號的前測紀錄？刪除後該生可以重新作答。`))act("deletePretest",{cls,seat:+seat},"已刪除前測")});
   app.querySelectorAll("[data-del]").forEach(b=>b.onclick=()=>{const [seat,ts]=b.dataset.del.split("|");if(confirm(`確定刪除 ${seat} 號 ${fmtTime(ts)} 這次紀錄？`))act("deleteAttempt",{cls,seat:+seat,ts},"已刪除")});
   app.querySelectorAll("[data-redo]").forEach(b=>b.onclick=()=>{const s=find(b.dataset.redo);act("redo",{cls,seat:s.seat,value:!s.redo},s.redo?"已取消重做":"已開放重做")});
+  const preSum=p=>{if(!p)return null;const A=(D.answers||{}).pretest||[];const lv={};LEVEL_NAMES.forEach(l=>lv[l]=[0,0]);
+    QUESTIONS.forEach((q,i)=>{lv[q.level][1]++;if(p.correct[i])lv[q.level][0]++});
+    return {score:p.score,total:5,levels:lv,open:p.open||null,items:QUESTIONS.map((q,i)=>({level:q.level,chosen:p.answers[i],correct:p.correct[i],ans:A[i]?A[i].ans:-1,explain:A[i]?A[i].explain:""}))}};
   const view=(b,a)=>{
-    const rep={student:{cls:b.cls,seat:b.seat,name:a.name},ts:a.ts,rec:a.rec,ana:a.ana,published:true,answers:D.answers};
+    if(!a){toast("這位學生還沒交出旅程");return}
+    const rep={student:{cls:b.cls,seat:b.seat,name:a.name},ts:a.ts,rec:a.rec,ana:a.ana,published:true,answers:D.answers,pretest:preSum(b.pretest)};
     openModal(`<div class="noprint" style="display:flex;gap:10px;justify-content:flex-end"><button class="btn sm" id="mPrt">列印</button><button class="btn sm ghost" id="mTxt">複製學習歷程</button><button class="btn sm ghost" id="mCl">關閉</button></div>${reportHTML(rep)}`,true);
     $("#mPrt").onclick=()=>window.print();$("#mCl").onclick=closeModal;
     $("#mTxt").onclick=()=>copyText(buildText(rep.student,a.rec,a.ts),"已複製");
@@ -1251,6 +1353,10 @@ async function drawScreen(){
      </div>
      <div class="scr-panel"><h2>書寫最多</h2><ol class="scr-top">${res.top.map(t=>`<li>${t.seat} 號 ${esc(t.name)}　${t.words} 字</li>`).join("")||"<li>—</li>"}</ol></div>
    </div>
+   <div class="scr-panel" style="margin-top:18px"><h2>前測：各題答對率（${res.preCount} 人）</h2>
+     <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:0 24px">${(res.preQ||[]).map((q,i)=>{const p=q.n?Math.round(q.right/q.n*100):0;return `<div class="scr-row"><span>第 ${i+1} 題｜${q.level}</span><div class="t"><i style="width:${p}%"></i><em>${q.n?p+"%":"—"}</em></div></div>`}).join("")}</div></div>
+   <div class="scr-panel" style="margin-top:18px"><h2>出發前：大家心中的全文重點</h2>
+     ${KEYPOINTS.map((t,k)=>{const c=(res.keypts||[])[k]||0,n=res.preCount||0,p=n?Math.round(c/n*100):0;return `<div class="scr-row" style="grid-template-columns:minmax(0,1.6fr) 1fr"><span>(${OPT[k]}) ${esc(t)}</span><div class="t"><i style="width:${p}%"></i><em>${c} 人</em></div></div>`}).join("")}</div>
    <div class="scr-foot"><span>每 15 秒自動更新</span><span>更新時間 ${String(now.getHours()).padStart(2,"0")}:${String(now.getMinutes()).padStart(2,"0")}:${String(now.getSeconds()).padStart(2,"0")}</span></div>`;
   $("#scrCls").onchange=e=>{screenCls=e.target.value;drawScreen()};
 }
