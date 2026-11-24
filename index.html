@@ -371,7 +371,7 @@ const TAGS=["動作","想法","感情","背景說明"];
 const RELS=["順順承接","明顯轉折"];
 const DIFFS=["抓到的句子焦點完全不同","轉折點落在不同地方","一個看外在環境或行動，一個看內心轉變或文化意義","一個從「我」看，一個從「獵人」看","其實抓到相近的句子，只是切法不同"];
 const THEME_KEYS=["尊重生命","承擔責任","自我成長","懂得節制","文化傳承"];
-const P1STEPS=["選擇視角","拉文句","差異比對","主旨體悟"];
+const P1STEPS=["選三段結構","選焦點拉文句","差異比對","主旨體悟"];
 const SENTS=(()=>{const out=[];Object.keys(TEXT).forEach(n=>{(TEXT[n].match(/[^。！？]*[。！？]+」?|[^。！？]+$/g)||[]).forEach(t=>{if(t.trim())out.push({p:+n,t})})});return out})();
 const findSent=t=>SENTS.findIndex(x=>x.t.includes(t));
 function freshP1(){return {focus:"",angle:"",secs:[0,1,2].map(()=>({items:[],rel:""})),cmp:{i:-1,angle:"",focus:"",diffs:[],sentence:"",tpl:""},theme:{keys:[],text:""}}}
@@ -544,7 +544,7 @@ function homePage(){
   <h3>旅程怎麼走</h3>
   <ol class="steps" style="grid-template-columns:repeat(auto-fit,minmax(200px,1fr))">
     <li><b>前測</b>先回答 5 題選擇題，再選出你心中的全文重點、寫下原因，看看你現在讀懂了多少。</li>
-    <li><b>一｜頭燈與視角</b>選你的觀察焦點和切分角度，用頭燈把課文句子拉進三個區段；系統會再點亮另一盞燈，讓你比較差在哪裡。</li>
+    <li><b>一｜頭燈與視角</b>先選一種三段結構，再選觀察焦點、用頭燈把課文句子拉進三段；系統會再點亮另一盞燈，讓你比較差在哪裡。</li>
     <li><b>二｜獵人的遊戲</b>轉盤抽出假獵人的說法。你的判斷就是你的箭：選一支獵人哲學之箭反駁，再寫下理由。</li>
     <li><b>三｜森林明信片</b>寫一張明信片給山林裡失落、猶豫的「我」，交出後會看到你的個人報告書。</li>
   </ol>
@@ -696,18 +696,15 @@ function renderStation(i){
 /* 1. 選擇視角 */
 function p1Choose(nav,bindNav){
   const p=state.p1;
-  app.innerHTML=`<div class="wrap">${p1Head(0)}<h2>你想從哪裡看這篇文章？</h2>
-   <p class="lead" style="font-size:16px">每個人的起點不同。兩個選擇各管一件事：<b>切分角度＝把全文切成哪三段</b>；<b>觀察焦點＝在每一段裡，你要找誰的句子</b>（也決定你頭燈的光圈）。任何組合都可以。</p>
-   <div class="step-label"><b>A</b>觀察焦點：在每一段裡，你要找誰的句子？</div>
-   <div class="pick-grid three">${Object.keys(FOCUS).map(k=>`<button class="pick ${p.focus===k?"on":""}" data-f="${k}"><b>${FOCUS[k].name}</b><small>🔦 ${FOCUS[k].lamp}</small></button>`).join("")}</div>
-   <div class="step-label"><b>B</b>切分角度：你要把全文切成哪三段？</div>
+  app.innerHTML=`<div class="wrap">${p1Head(0)}<h2>你要怎麼切這篇文章？</h2>
+   <p class="lead" style="font-size:16px">每個人的起點不同。先選一種<b>三段結構</b>：你要把整篇〈獵人〉切成哪三段來讀？</p>
+   <div class="step-label"><b>1</b>三段結構：你要把全文切成哪三段？</div>
    <div class="pick-grid">${Object.keys(ANGLES).map(k=>`<button class="pick ${p.angle===k?"on":""}" data-a="${k}"><b>角度 ${k}｜${ANGLES[k].name}</b><span class="chain">${ANGLES[k].secs.map(x=>`<em>${x}</em>`).join("<i>➔</i>")}</span></button>`).join("")}</div>
    <div class="combo" id="combo"></div>
    ${nav("","下一步：拉文句")}</div>`;
-  const combo=()=>{const el=$("#combo");if(!p.focus||!p.angle){el.innerHTML="";return}const A=ANGLES[p.angle],F=FOCUS[p.focus];
-    el.innerHTML=`<b>你的任務</b>：把全文切成 ${A.secs.map(x=>`「${x}」`).join(" ➔ ")}，在每一段裡找出——${F.ask}<br><span class="note">例如在「${A.secs[0]}」這段，就找${p.focus==="me"?"「我」的行動或心裡話":p.focus==="hunter"?"老獵人的動作、話語或沉默":"「我」和老獵人看法不同的地方"}。</span>`};
-  const gate=()=>{const g=[];if(!p.focus)g.push("選觀察焦點");if(!p.angle)g.push("選切分角度");$("#gate").textContent=g.length?"還差："+g.join("、"):"";bindNav(!g.length);combo()};
-  app.querySelectorAll("[data-f]").forEach(b=>b.onclick=()=>{p.focus=b.dataset.f;save();app.querySelectorAll("[data-f]").forEach(x=>x.classList.toggle("on",x===b));gate()});
+  const combo=()=>{const el=$("#combo");if(!p.angle){el.innerHTML="";return}const A=ANGLES[p.angle];
+    el.innerHTML=`<b>你的三段</b>：${A.secs.map(x=>`「${x}」`).join(" ➔ ")}<br><span class="note">下一步，你會戴上頭燈，從課文裡為這三段各拉 1～2 句。</span>`};
+  const gate=()=>{const g=[];if(!p.angle)g.push("選一種三段結構");$("#gate").textContent=g.length?"還差："+g.join("、"):"";bindNav(!g.length);combo()};
   app.querySelectorAll("[data-a]").forEach(b=>b.onclick=()=>{p.angle=b.dataset.a;save();app.querySelectorAll("[data-a]").forEach(x=>x.classList.toggle("on",x===b));gate()});
   gate();
 }
@@ -718,19 +715,27 @@ function sceneHTML(markFn,paras){
 }
 function p1Pull(nav,bindNav){
   const p=state.p1;
-  if(!p.focus||!p.angle){go("s0");return}
-  const A=ANGLES[p.angle], F=FOCUS[p.focus];
-  app.innerHTML=`<div class="wrap wide">${p1Head(1)}<h2>戴上頭燈，把文句拉進你的三個區段</h2>
-   <div class="combo">🔦 <b>${F.lamp}｜在每一段裡找：</b>${F.ask}</div>
-   <p class="lead" style="font-size:16px">切法是<b>${A.name}</b>。在暗處移動頭燈（平板可直接點），點一下被照亮的句子，選擇要放進哪一個區段。每個區段放 1～2 句。</p>
+  if(!p.angle){go("s0");return}
+  const A=ANGLES[p.angle];
+  const F=p.focus?FOCUS[p.focus]:null;
+  app.innerHTML=`<div class="wrap wide">${p1Head(1)}<h2>選好焦點，戴上頭燈拉文句</h2>
+   <div class="step-label"><b>A</b>觀察焦點：在每一段裡，你要找誰的句子？（也決定你頭燈的光圈）</div>
+   <div class="pick-grid three">${Object.keys(FOCUS).map(k=>`<button class="pick ${p.focus===k?"on":""}" data-f="${k}"><b>${FOCUS[k].name}</b><small>🔦 ${FOCUS[k].lamp}</small></button>`).join("")}</div>
+   <div class="combo" id="fbanner">${F?`🔦 <b>${F.lamp}｜在每一段裡找：</b>${F.ask}`:""}</div>
+   <div class="step-label"><b>B</b>照亮課文，把句子拉進你的三段（${A.name}）</div>
+   <p class="note" style="font-size:15px;margin-top:-4px">在暗處移動頭燈（平板可直接點），點一下被照亮的句子，選擇要放進哪一段。每段放 1～2 句。</p>
    <div class="pull-grid">
-     <div class="scene lens-on" id="scene"><div class="text">${sceneHTML()}</div><div class="shade"></div></div>
+     <div class="scene ${F?"lens-on":"lens-off"}" id="scene"><div class="text">${sceneHTML()}</div><div class="shade"></div><div class="off-msg">${F?"":"先選上面的觀察焦點，頭燈就會亮起"}</div></div>
      <div class="cards" id="cards"></div>
    </div>
    ${nav("","下一步：差異比對")}</div>`;
   const scene=$("#scene");
-  scene.style.setProperty("--r",F.r+"px");
+  scene.style.setProperty("--r",(F?F.r:120)+"px");
   let lx=scene.clientWidth/2, ly=110;
+  app.querySelectorAll("[data-f]").forEach(b=>b.onclick=()=>{p.focus=b.dataset.f;save();const nf=FOCUS[p.focus];
+    app.querySelectorAll("[data-f]").forEach(x=>x.classList.toggle("on",x===b));
+    $("#fbanner").innerHTML=`🔦 <b>${nf.lamp}｜在每一段裡找：</b>${nf.ask}`;
+    scene.className="scene lens-on";scene.style.setProperty("--r",nf.r+"px");scene.querySelector(".off-msg").textContent="";drawCards()});
   const setLight=(x,y)=>{lx=x;ly=y;scene.style.setProperty("--x",x+"px");scene.style.setProperty("--y",y+"px")};
   setLight(lx,ly);
   const pos=e=>{const r=scene.getBoundingClientRect();return [e.clientX-r.left,e.clientY-r.top]};
@@ -740,8 +745,10 @@ function p1Pull(nav,bindNav){
     scene.querySelectorAll(".sn").forEach(el=>{const k=m[el.dataset.i];el.classList.toggle("pulled",!!k);if(k)el.dataset.sec=["①","②","③"][k-1];else delete el.dataset.sec})};
   scene.addEventListener("click",e=>{
     const el=e.target.closest(".sn"); if(!el) return;
+    if(!p.focus){toast("先選觀察焦點，打開頭燈");return}
+    const R=FOCUS[p.focus].r;
     const sr=scene.getBoundingClientRect();let near=false;
-    for(const rc of el.getClientRects()){const cx=Math.max(rc.left,Math.min(lx+sr.left,rc.right)),cy=Math.max(rc.top,Math.min(ly+sr.top,rc.bottom));if(Math.hypot(cx-lx-sr.left,cy-ly-sr.top)<F.r*0.8){near=true;break}}
+    for(const rc of el.getClientRects()){const cx=Math.max(rc.left,Math.min(lx+sr.left,rc.right)),cy=Math.max(rc.top,Math.min(ly+sr.top,rc.bottom));if(Math.hypot(cx-lx-sr.left,cy-ly-sr.top)<R*0.8){near=true;break}}
     if(!near){toast("把光照過去，再點一次");return}
     const si=+el.dataset.i;
     openPullMenu(e.clientX,e.clientY,si);
@@ -770,7 +777,7 @@ function p1Pull(nav,bindNav){
     const c=$("#cards");
     c.innerHTML=A.secs.map((n,k)=>{const s=p.secs[k];
       return `<div class="seccard"><div class="sec-h"><b>${["①","②","③"][k]} ${n}</b><span class="note">${s.items.length}/2</span></div>
-       <div class="note" style="margin:-2px 0 4px">在「${n}」裡找：${FOCUS[p.focus].ask}</div>
+       ${p.focus?`<div class="note" style="margin:-2px 0 4px">在「${n}」裡找：${FOCUS[p.focus].ask}</div>`:""}
        ${s.items.map((it,j)=>`<div class="pulled-item"><div class="pi-t">「${esc(it.text)}」<span class="note">${it.custom?"自己輸入":"第"+CN[it.p]+"段"}</span><button class="x" data-rm="${k}|${j}" aria-label="拿掉">×</button></div>
          <div class="mini">這句主要呈現：${TAGS.map(t=>`<button class="tg ${it.tags.includes(t)?"on":""}" data-tag="${k}|${j}|${t}">${t}</button>`).join("")}</div></div>`).join("")||'<div class="note" style="padding:6px 0">用頭燈照亮課文，點句子拉進來</div>'}
        ${s.items.length<2?`<div class="custom"><input placeholder="也可以自己貼上課文句子" data-cin="${k}" maxlength="300"><button class="btn sm ghost" data-cadd="${k}">加入</button></div>`:""}
@@ -785,6 +792,7 @@ function p1Pull(nav,bindNav){
   }
   function gate(){
     const g=[];
+    if(!p.focus) g.push("選觀察焦點");
     if(p.secs.some(s=>!s.items.length)) g.push("每個區段至少拉 1 句");
     if(p.secs.some(s=>s.items.some(it=>!it.tags.length))) g.push("每句選「主要呈現」");
     if(p.secs.slice(1).some(s=>!s.rel)) g.push("選區段②③和前一段的關係");
@@ -797,7 +805,8 @@ document.addEventListener("pointerdown",e=>{const m=$("#pullmenu");if(m&&!m.cont
 /* 3. 系統丟出不同視角，雙燈比對 */
 function p1Compare(nav,bindNav){
   const p=state.p1, c=p.cmp;
-  if(!p.focus||!p.angle){go("s0");return}
+  if(!p.angle){go("s0");return}
+  if(!p.focus){go("s1");return}
   const A=ANGLES[p.angle];
   const mineFirst=(p.secs.find(s=>s.items.length)||{items:[{text:""}]}).items[0].text;
   let body="";
