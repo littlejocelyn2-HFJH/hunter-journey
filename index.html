@@ -215,6 +215,9 @@ input:focus,textarea:focus{outline:2px solid var(--ember-l);border-color:var(--e
 .arrow-btn .aq{font-size:13px;color:var(--mute);line-height:1.6;margin-top:4px}
 .arrow-btn.last{border-color:var(--ember);background:#fffaf2}
 .arrow-btn:disabled{opacity:.45}
+.ringkey{font-size:14px;color:#4a514b;margin:4px 0 2px;line-height:2}
+.ringkey span{display:inline-block;border-radius:999px;padding:0 10px;font-weight:700;margin-right:4px}
+.ringkey .k3{background:#c98b5a;color:#fff}.ringkey .k2{background:#e2d6bd;color:#4a3d22}.ringkey .k1{background:#efe7d6;color:#6b5f48;border:1px solid #c9bb9f}
 .target-row{display:flex;gap:16px;align-items:center;margin-top:14px;flex-wrap:wrap}
 .target{position:relative;width:200px;height:200px;flex:none}
 .target svg{width:200px;height:200px}
@@ -1092,11 +1095,13 @@ function drawPlay(){
   const c=CLAIMS[P.cur.id], last=P.cur.shots.at(-1);
   area.innerHTML=`
    <div class="claim"><div class="who">假獵人說</div><div class="say">「${esc(c.say)}」</div>${c.sdg.map(s=>`<span class="sdg">${s}</span>`).join("")}</div>
-   <div class="step-label" style="margin-top:18px"><b>箭</b>選一支箭反駁（可以換角度重射）</div>
+   <div class="step-label" style="margin-top:18px"><b>箭</b>選一支最能反駁這句話的箭（可以換一支重射）</div>
+   <div class="ringkey"><span class="k3">靶心</span>最能反駁這句話　<span class="k2">內環</span>有關係，但不是最準的　<span class="k1">外環</span>關係不大</div>
    <div class="arrows">${ARROWS.map(a=>`<button class="arrow-btn ${last&&last.arrow===a.id?"last":""}" data-a="${a.id}"><div class="an">${a.name}</div><div class="aq">${esc(a.q)}</div></button>`).join("")}</div>
    <div class="target-row">
-     <div class="target" id="target"><svg viewBox="0 0 200 200"><circle cx="100" cy="100" r="96" fill="#efe7d6" stroke="#c9bb9f"/><circle cx="100" cy="100" r="64" fill="#e2d6bd" stroke="#bfae8c"/><circle cx="100" cy="100" r="30" fill="#c98b5a" stroke="#a96d40"/><circle cx="100" cy="100" r="3" fill="#fff"/></svg></div>
-     <div class="fb" id="fb">${last?fbHTML(last):'<span class="mute">還沒射箭。讀一讀假獵人的話，想想它錯在哪裡。</span>'}</div>
+     <div class="target" id="target"><svg viewBox="0 0 200 200"><circle cx="100" cy="100" r="96" fill="#efe7d6" stroke="#c9bb9f"/><circle cx="100" cy="100" r="64" fill="#e2d6bd" stroke="#bfae8c"/><circle cx="100" cy="100" r="30" fill="#c98b5a" stroke="#a96d40"/>
+       <text x="100" y="20" text-anchor="middle" font-size="12" fill="#7a6d55" font-weight="700">外環</text><text x="100" y="52" text-anchor="middle" font-size="12" fill="#6b5a3a" font-weight="700">內環</text><text x="100" y="95" text-anchor="middle" font-size="13" fill="#fff" font-weight="700">靶心</text></svg></div>
+     <div class="fb" id="fb" data-x="1">${last?fbHTML(last):'<span class="mute">還沒射箭。讀一讀假獵人的話，想想它錯在哪裡。</span>'}</div>
    </div>
    <div id="reasonBox"></div>`;
   P.cur.shots.forEach((s,idx)=>placeDart(s,idx<P.cur.shots.length-1,false));
@@ -1104,8 +1109,8 @@ function drawPlay(){
   drawReason();
 }
 function dartPos(s){
-  const ring={3:[0,20],2:[38,56],1:[70,88],0:[44,80]}[s.acc||0];
-  const r=ring[0]+(s.seed%100)/100*(ring[1]-ring[0]), ang=(s.seed*137)%360*Math.PI/180;
+  const ring={3:[8,16],2:[42,54],1:[74,86],0:[44,80]}[s.acc||0];
+  const r=ring[0]+(s.seed%100)/100*(ring[1]-ring[0]), ang=(40+(s.seed*137)%100)*Math.PI/180;
   return [100+r*Math.cos(ang),100+r*Math.sin(ang)];
 }
 function placeDart(s,old,animate){
@@ -1121,9 +1126,9 @@ function fbHTML(s){
     if(s.err==="local") return `<div class="lv">箭已射出</div>本機模式（未連接後端）無法判定準度，僅供介面試用。直接寫下你的理由吧。`;
     return `<div class="lv">箭已射出</div>${esc(errMsg(s.err))}先寫下你的理由吧。`;
   }
-  if(s.acc===3) return `<div class="lv">正中靶心</div>${esc(s.text)}<br><span class="mute">把你的理由寫下來吧。</span>`;
-  if(s.acc===2) return `<div class="lv">射進內環——方向對了</div>再想一下：${esc(s.text)}<br><span class="mute">可以換個角度再射一次，也可以直接寫下你的理由。</span>`;
-  return `<div class="lv">擦過靶邊</div>「${name}」說的道理沒錯，但和這句話的核心還有距離。<br>線索：${esc(s.text)}`;
+  if(s.acc===3) return `<div class="lv">🎯 正中靶心！</div><b>「${name}」最能反駁這句話。</b><br>${esc(s.text)}<br><span class="mute">把你的理由寫下來吧。</span>`;
+  if(s.acc===2) return `<div class="lv">射進內環：有關係，但還不是最準的一支</div>「${name}」和這句話有關，但<b>還有一支箭更能直接反駁它</b>。<br>提示：${esc(s.text)}<br><span class="mute">想射中靶心，就換一支箭再試；也可以直接寫下你的理由。</span>`;
+  return `<div class="lv">射到外環：離核心還很遠</div>「${name}」本身的道理沒錯，但<b>和這句話關係不大</b>，換一支箭試試。<br>提示：${esc(s.text)}`;
 }
 async function shoot(aid){
   const P=state.p2; if(shooting||!P.cur) return;
