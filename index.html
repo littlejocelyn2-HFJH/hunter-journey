@@ -162,6 +162,8 @@ input:focus,textarea:focus{outline:2px solid var(--ember-l);border-color:var(--e
 .scene.dual .sn.mine{color:#fff3dc;background:rgba(240,195,143,.22);box-shadow:0 0 22px rgba(240,170,90,.35)}
 .scene.dual .sn.sys{color:#eef6ff;background:rgba(140,184,230,.2);box-shadow:0 0 22px rgba(120,170,230,.4)}
 .scene.dual .sn.mine.sys{background:linear-gradient(90deg,rgba(240,195,143,.3),rgba(140,184,230,.3))}
+.combo{background:#fffaf2;border:1px solid #efd3b0;border-left:4px solid var(--ember);border-radius:10px;padding:12px 16px;margin:16px 0 4px;line-height:1.8;font-size:16px}
+.combo:empty{display:none}
 .sysbar{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:10px;background:#eef3f7;border:1px solid #c9d8e6;border-radius:12px;padding:12px 16px;font-size:16px}
 .cmp-table{display:flex;flex-direction:column;gap:8px;margin-top:14px}
 .cmp-row{display:grid;grid-template-columns:1fr 1fr;gap:8px}
@@ -343,9 +345,9 @@ const KEYPOINTS=["成年禮的意義不在獵到獵物，而在學會「勇敢�
 
 /* ============ 第一部分：選視角 ➔ 拉文句 ➔ 差異比對 ➔ 主旨體悟 ============ */
 const FOCUS={
-  me:{name:"「我」的行動、猶豫與內心想法",short:"「我」",lamp:"微距頭燈",r:100},
-  hunter:{name:"「獵人」的精準動作、沉默與背景底蘊",short:"獵人",lamp:"中距頭燈",r:135},
-  gap:{name:"「我」與「獵人」在山林裡的視角落差",short:"視角落差",lamp:"廣角頭燈",r:175}
+  me:{name:"「我」的行動、猶豫與內心想法",short:"「我」",lamp:"微距頭燈",r:100,ask:"「我」做了什麼、猶豫什麼、心裡怎麼想？"},
+  hunter:{name:"「獵人」的精準動作、沉默與背景底蘊",short:"獵人",lamp:"中距頭燈",r:135,ask:"老獵人做了什麼、說了（或沒說）什麼、背後有什麼文化？"},
+  gap:{name:"「我」與「獵人」在山林裡的視角落差",short:"視角落差",lamp:"廣角頭燈",r:175,ask:"「我」和老獵人面對同一件事，看法有什麼不一樣？"}
 };
 const ANGLES={
   A:{name:"事件推進線",secs:["與獵人上山","入山打獵","沒有獵得的對話"],picks:[
@@ -695,13 +697,16 @@ function renderStation(i){
 function p1Choose(nav,bindNav){
   const p=state.p1;
   app.innerHTML=`<div class="wrap">${p1Head(0)}<h2>你想從哪裡看這篇文章？</h2>
-   <p class="lead" style="font-size:16px">每個人的起點不同。先選你的<b>觀察焦點</b>（它決定你頭燈的光圈），再選把全文切成三段的<b>切分角度</b>。</p>
-   <div class="step-label"><b>A</b>觀察焦點</div>
+   <p class="lead" style="font-size:16px">每個人的起點不同。兩個選擇各管一件事：<b>切分角度＝把全文切成哪三段</b>；<b>觀察焦點＝在每一段裡，你要找誰的句子</b>（也決定你頭燈的光圈）。任何組合都可以。</p>
+   <div class="step-label"><b>A</b>觀察焦點：在每一段裡，你要找誰的句子？</div>
    <div class="pick-grid three">${Object.keys(FOCUS).map(k=>`<button class="pick ${p.focus===k?"on":""}" data-f="${k}"><b>${FOCUS[k].name}</b><small>🔦 ${FOCUS[k].lamp}</small></button>`).join("")}</div>
-   <div class="step-label"><b>B</b>三區段切分角度</div>
+   <div class="step-label"><b>B</b>切分角度：你要把全文切成哪三段？</div>
    <div class="pick-grid">${Object.keys(ANGLES).map(k=>`<button class="pick ${p.angle===k?"on":""}" data-a="${k}"><b>角度 ${k}｜${ANGLES[k].name}</b><span class="chain">${ANGLES[k].secs.map(x=>`<em>${x}</em>`).join("<i>➔</i>")}</span></button>`).join("")}</div>
+   <div class="combo" id="combo"></div>
    ${nav("","下一步：拉文句")}</div>`;
-  const gate=()=>{const g=[];if(!p.focus)g.push("選觀察焦點");if(!p.angle)g.push("選切分角度");$("#gate").textContent=g.length?"還差："+g.join("、"):"";bindNav(!g.length)};
+  const combo=()=>{const el=$("#combo");if(!p.focus||!p.angle){el.innerHTML="";return}const A=ANGLES[p.angle],F=FOCUS[p.focus];
+    el.innerHTML=`<b>你的任務</b>：把全文切成 ${A.secs.map(x=>`「${x}」`).join(" ➔ ")}，在每一段裡找出——${F.ask}<br><span class="note">例如在「${A.secs[0]}」這段，就找${p.focus==="me"?"「我」的行動或心裡話":p.focus==="hunter"?"老獵人的動作、話語或沉默":"「我」和老獵人看法不同的地方"}。</span>`};
+  const gate=()=>{const g=[];if(!p.focus)g.push("選觀察焦點");if(!p.angle)g.push("選切分角度");$("#gate").textContent=g.length?"還差："+g.join("、"):"";bindNav(!g.length);combo()};
   app.querySelectorAll("[data-f]").forEach(b=>b.onclick=()=>{p.focus=b.dataset.f;save();app.querySelectorAll("[data-f]").forEach(x=>x.classList.toggle("on",x===b));gate()});
   app.querySelectorAll("[data-a]").forEach(b=>b.onclick=()=>{p.angle=b.dataset.a;save();app.querySelectorAll("[data-a]").forEach(x=>x.classList.toggle("on",x===b));gate()});
   gate();
@@ -716,7 +721,8 @@ function p1Pull(nav,bindNav){
   if(!p.focus||!p.angle){go("s0");return}
   const A=ANGLES[p.angle], F=FOCUS[p.focus];
   app.innerHTML=`<div class="wrap wide">${p1Head(1)}<h2>戴上頭燈，把文句拉進你的三個區段</h2>
-   <p class="lead" style="font-size:16px">你的焦點是<b>${F.short}</b>（${F.lamp}），切法是<b>${A.name}</b>。在暗處移動頭燈（平板可直接點），點一下被照亮的句子，選擇要放進哪一個區段。每個區段放 1～2 句。</p>
+   <div class="combo">🔦 <b>${F.lamp}｜在每一段裡找：</b>${F.ask}</div>
+   <p class="lead" style="font-size:16px">切法是<b>${A.name}</b>。在暗處移動頭燈（平板可直接點），點一下被照亮的句子，選擇要放進哪一個區段。每個區段放 1～2 句。</p>
    <div class="pull-grid">
      <div class="scene lens-on" id="scene"><div class="text">${sceneHTML()}</div><div class="shade"></div></div>
      <div class="cards" id="cards"></div>
@@ -764,6 +770,7 @@ function p1Pull(nav,bindNav){
     const c=$("#cards");
     c.innerHTML=A.secs.map((n,k)=>{const s=p.secs[k];
       return `<div class="seccard"><div class="sec-h"><b>${["①","②","③"][k]} ${n}</b><span class="note">${s.items.length}/2</span></div>
+       <div class="note" style="margin:-2px 0 4px">在「${n}」裡找：${FOCUS[p.focus].ask}</div>
        ${s.items.map((it,j)=>`<div class="pulled-item"><div class="pi-t">「${esc(it.text)}」<span class="note">${it.custom?"自己輸入":"第"+CN[it.p]+"段"}</span><button class="x" data-rm="${k}|${j}" aria-label="拿掉">×</button></div>
          <div class="mini">這句主要呈現：${TAGS.map(t=>`<button class="tg ${it.tags.includes(t)?"on":""}" data-tag="${k}|${j}|${t}">${t}</button>`).join("")}</div></div>`).join("")||'<div class="note" style="padding:6px 0">用頭燈照亮課文，點句子拉進來</div>'}
        ${s.items.length<2?`<div class="custom"><input placeholder="也可以自己貼上課文句子" data-cin="${k}" maxlength="300"><button class="btn sm ghost" data-cadd="${k}">加入</button></div>`:""}
