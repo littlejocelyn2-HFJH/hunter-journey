@@ -825,7 +825,7 @@ function p1Compare(nav,bindNav){
   const mineFirst=(p.secs.find(s=>s.items.length)||{items:[{text:""}]}).items[0].text;
   let body="";
   if(c.i<0){
-    body=`<div class="card" style="text-align:center;padding:34px"><p class="lead" style="font-size:17px">同一篇課文，換個角度看，抓出來的句子會一樣嗎？</p><button class="btn ember big" id="throwBtn">系統為你丟出另一種不同視角</button></div>`;
+    body=`<div class="card" style="text-align:center;padding:34px"><p class="lead" style="font-size:17px">同一篇課文，換個角度看，抓出來的句子會一樣嗎？</p><button class="btn ember big" id="throwBtn">比較其他切分法</button></div>`;
   }else{
     const o=sysOption(p,c.i), OA=ANGLES[o.angle], OF=FOCUS[o.focus];
     const sysIdx=OA.picks.map(pk=>findSent(pk[o.focus]));
@@ -853,7 +853,7 @@ function p1Compare(nav,bindNav){
   }
   app.innerHTML=`<div class="wrap">${p1Head(2)}<h2>換一盞燈看看：同一篇課文，差在哪裡？</h2>
    <p class="lead" style="font-size:16px">你已經用自己的燈拉好句子了。現在系統換一種切法、換一個焦點，再點亮<b>第二盞燈</b>。比比看：同一篇課文，換個角度，抓到的句子一樣嗎？</p>${body}${nav("","下一步：主旨體悟")}</div>`;
-  const gate=()=>{const g=[];if(c.i<0)g.push("讓系統丟出另一種視角");else{if(!c.diffs.length)g.push("勾選差異點");const own=c.sentence.startsWith(c.tpl)?clen(c.sentence.slice(c.tpl.length)):clen(c.sentence)-clen(c.tpl);if(own<8)g.push("把比較句寫完（8 字以上）")}
+  const gate=()=>{const g=[];if(c.i<0)g.push("按「比較其他切分法」");else{if(!c.diffs.length)g.push("勾選差異點");const own=c.sentence.startsWith(c.tpl)?clen(c.sentence.slice(c.tpl.length)):clen(c.sentence)-clen(c.tpl);if(own<8)g.push("把比較句寫完（8 字以上）")}
     $("#gate").textContent=g.length?"還差："+g.join("、"):"";bindNav(!g.length)};
   if($("#throwBtn")) $("#throwBtn").onclick=()=>{c.i=0;save();p1Compare(nav,bindNav)};
   if($("#againBtn")) $("#againBtn").onclick=()=>{c.i=(c.i+1)%6;save();p1Compare(nav,bindNav)};
