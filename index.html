@@ -157,11 +157,25 @@ input:focus,textarea:focus{outline:2px solid var(--ember-l);border-color:var(--e
 .scene .sn.pulled{background:rgba(240,195,143,.25);color:#fff3dc;border-bottom:2px solid var(--ember-l)}
 .scene .sn.pulled::after{content:attr(data-sec);font-size:13px;color:var(--ember-l);margin-left:2px;vertical-align:super}
 .pullmenu{position:fixed;z-index:80;background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:10px;box-shadow:0 10px 30px rgba(0,0,0,.25);display:flex;flex-direction:column;gap:6px;max-width:300px}
-.scene.dual .text{color:#5d665f;font-size:18px}
-.scene.dual .sn{cursor:default}
-.scene.dual .sn.mine{color:#fff3dc;background:rgba(240,195,143,.22);box-shadow:0 0 22px rgba(240,170,90,.35)}
-.scene.dual .sn.sys{color:#eef6ff;background:rgba(140,184,230,.2);box-shadow:0 0 22px rgba(120,170,230,.4)}
-.scene.dual .sn.mine.sys{background:linear-gradient(90deg,rgba(240,195,143,.3),rgba(140,184,230,.3))}
+.scene.dual .text{color:#5d665f;font-size:18px;line-height:2.3}
+.scene.dual .sn{cursor:default;transition:all .25s}
+.scene.dual .sn.mine{color:#ffd9a0;background:rgba(255,166,60,.16);border-bottom:3px solid #f0a040}
+.scene.dual .sn.sys{color:#c4e6ff;background:rgba(70,150,255,.18);border-bottom:3px dashed #4aa3ff}
+.scene.dual .sn.mine.sys{color:#fff;background:linear-gradient(90deg,rgba(255,166,60,.25),rgba(70,150,255,.25));border-bottom:3px solid #fff}
+.scene.dual .sn.mine::before,.scene.dual .sn.sys::before{display:inline-block;font-family:var(--sans);font-size:12px;font-weight:700;line-height:1;padding:4px 7px;border-radius:999px;margin-right:6px;vertical-align:middle}
+.scene.dual .sn.mine::before{content:"你";background:#f0a040;color:#2a1a08}
+.scene.dual .sn.sys::before{content:"系統";background:#4aa3ff;color:#06203a}
+.scene.dual .sn.mine.sys::before{content:"你＋系統";background:linear-gradient(90deg,#f0a040,#4aa3ff);color:#111}
+.scene.dual.only-mine .sn.sys:not(.mine),.scene.dual.only-sys .sn.mine:not(.sys){color:#5d665f;background:none;border-bottom-color:transparent}
+.scene.dual.only-mine .sn.sys:not(.mine)::before,.scene.dual.only-sys .sn.mine:not(.sys)::before{display:none}
+.lamp-tg{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0}
+.lamp-tg button{border:1px solid var(--line);background:#fff;border-radius:999px;padding:8px 14px;font-size:15px;min-height:40px}
+.lamp-tg button.on{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+.howto{background:#fff;border:1px solid var(--line);border-radius:12px;padding:12px 16px;line-height:1.9;font-size:16px;margin-top:12px}
+.howto .w{display:inline-block;background:#f0a040;color:#2a1a08;border-radius:999px;padding:0 9px;font-weight:700;font-size:14px}
+.howto .c{display:inline-block;background:#4aa3ff;color:#06203a;border-radius:999px;padding:0 9px;font-weight:700;font-size:14px}
+.cmp-cell.mine{border-left:5px solid #f0a040}
+.cmp-cell.sys{border-left:5px dashed #4aa3ff}
 .combo{background:#fffaf2;border:1px solid #efd3b0;border-left:4px solid var(--ember);border-radius:10px;padding:12px 16px;margin:16px 0 4px;line-height:1.8;font-size:16px}
 .combo:empty{display:none}
 .sysbar{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:10px;background:#eef3f7;border:1px solid #c9d8e6;border-radius:12px;padding:12px 16px;font-size:16px}
@@ -356,7 +370,7 @@ const ANGLES={
     {me:"我用沉默代替回答",hunter:"你獵到了，以後泰雅的小孩要獵什麼",gap:"還懊惱著嗎"}]},
   B:{name:"空間與光影線",secs:["有營火的山林邊緣","漆黑無光的荒野","重返營地與歸途"],picks:[
     {me:"幾點星火緩緩地自柴堆中冒起",hunter:"老獵人吩咐不得讓篝火停息",gap:"只覺得徹夜出奇地溫暖"},
-    {me:"芒草擦過肌膚，馬上就泌出明亮的血痕",hunter:"黑暗是森林的鬼魅",gap:"濃密而深黑的樹林沉靜地霸占山頭"},
+    {me:"芒草擦過肌膚，馬上就泌出明亮的血痕",hunter:"要我獨自進入山的心臟地帶",gap:"似乎有一對眼睛審視著我"},
     {me:"我心虛地靠坐過去",hunter:"老獵人逕自生起篝火",gap:"這夜晚一如泰雅的每一個夜晚"}]},
   C:{name:"敘事焦點線",secs:["以「獵人」為中心","以「我」為中心","匯入「泰雅文化」"],picks:[
     {me:"我一邊撥著火，一邊看獵人嫻熟地處理狐狸",hunter:"狩獵對泰雅男人是莊嚴的事",gap:"老獵人枯藤一般的左手已拎了隻狐狸"},
@@ -818,24 +832,32 @@ function p1Compare(nav,bindNav){
     const mineIdx=new Set();p.secs.forEach(s=>s.items.forEach(it=>{if(it.si>=0)mineIdx.add(it.si)}));
     const paras=[...new Set([...mineIdx,...sysIdx].filter(k=>k>=0).map(k=>SENTS[k].p))].sort((a,b)=>a-b);
     const markFn=k=>(mineIdx.has(k)?"mine ":"")+(sysIdx.includes(k)?"sys":"");
-    const tpl=`我原本選【${A.name}】，拉了「${mineFirst}」這句；當系統丟出【${OA.name}】來對照「${sysIdx[0]>=0?SENTS[sysIdx[0]].t:OA.picks[0][o.focus]}」時，我發現最大的不同是`;
+    const short=t=>{t=String(t).replace(/^「|」$/g,"");return t.length>18?t.slice(0,18)+"……":t};
+    const tpl=`我原本選【${A.name}】，拉了「${short(mineFirst)}」這句；當系統丟出【${OA.name}】來對照「${short(sysIdx[0]>=0?SENTS[sysIdx[0]].t:OA.picks[0][o.focus])}」時，我發現最大的不同是`;
     if(!c.sentence.trim()||c.sentence.trim()===c.tpl.trim()){c.sentence=tpl}
     c.tpl=tpl;c.angle=o.angle;c.focus=o.focus;save();
-    body=`<div class="sysbar"><span>系統丟出：<b>角度 ${o.angle}｜${OA.name}</b> × <b>焦點：${OF.short}</b></span><button class="btn sm ghost" id="againBtn">換另一個比較</button></div>
-     <div class="legend" style="margin:10px 0 6px"><i style="background:#f0c38f"></i>暖光＝你拉的句子 <i style="background:#8cb8e6"></i>冷光＝系統對照的句子</div>
-     <div class="scene dual"><div class="text">${sceneHTML(markFn,paras)}</div></div>
-     <div class="cmp-table">${[0,1,2].map(k=>`<div class="cmp-row"><div class="cmp-cell mine"><div class="note">你的 ${["①","②","③"][k]} ${A.secs[k]}</div>${p.secs[k].items.map(it=>`<div>「${esc(it.text)}」</div>`).join("")}</div>
-       <div class="cmp-cell sys"><div class="note">系統的 ${["①","②","③"][k]} ${OA.secs[k]}</div><div>「${esc(sysIdx[k]>=0?SENTS[sysIdx[k]].t:OA.picks[k][o.focus])}」</div></div></div>`).join("")}</div>
+    const same=[...mineIdx].filter(k=>sysIdx.includes(k)).length;
+    body=`<div class="sysbar"><span>系統的另一盞燈：<b>${OA.name}</b>（${OA.secs.join(" ➔ ")}）× 焦點 <b>${OF.short}</b></span><button class="btn sm ghost" id="againBtn">換另一盞燈比較</button></div>
+     <div class="howto">怎麼看：<span class="w">你</span> 是你在上一步用<b>${A.name}</b>、焦點<b>${FOCUS[p.focus].short}</b>拉進來的句子；<span class="c">系統</span> 是如果換成<b>${OA.name}</b>、焦點<b>${OF.short}</b>來讀，會拉出來的句子。<br>
+       比一比：兩盞燈照到的地方一樣嗎？${same?`有 <b>${same}</b> 句兩盞燈都照到了（標「你＋系統」）。`:"這一次，兩盞燈<b>沒有照到同一句</b>——換個角度，抓到的重點完全不同。"}</div>
+     <div class="step-label" style="margin-top:18px"><b>看</b>三段並排比一比</div>
+     <div class="cmp-table" style="margin-top:0">${[0,1,2].map(k=>`<div class="cmp-row"><div class="cmp-cell mine"><div class="note">🔥 你的第 ${k+1} 段：${A.secs[k]}</div>${p.secs[k].items.map(it=>`<div>「${esc(it.text)}」</div>`).join("")||'<div class="note">（沒有拉句子）</div>'}</div>
+       <div class="cmp-cell sys"><div class="note">❄️ 系統的第 ${k+1} 段：${OA.secs[k]}</div><div>「${esc(sysIdx[k]>=0?SENTS[sysIdx[k]].t:OA.picks[k][o.focus])}」</div></div></div>`).join("")}</div>
+     <div class="step-label" style="margin-top:18px"><b>照</b>回到課文：兩盞燈各照在哪裡？</div>
+     <div class="lamp-tg" id="lampTg"><button data-lamp="both" class="on">兩盞一起亮</button><button data-lamp="only-mine">只開我的燈</button><button data-lamp="only-sys">只開系統的燈</button></div>
+     <div class="scene dual" id="dual"><div class="text">${sceneHTML(markFn,paras)}</div></div>
      <div class="step-label"><b>1</b>勾選差異點：這兩組文句與切法相比，最大的不同是什麼？（可複選）</div>
      <div class="chips">${DIFFS.map((d,k)=>`<button class="chip ${c.diffs.includes(k)?"on":""}" data-d="${k}">${d}</button>`).join("")}</div>
      <div class="step-label"><b>2</b>一句話比較：把句子寫完</div>
      <textarea id="cmpS" maxlength="3000">${esc(c.sentence)}</textarea>`;
   }
-  app.innerHTML=`<div class="wrap">${p1Head(2)}<h2>換一盞燈看看：同一篇課文，差在哪裡？</h2>${body}${nav("","下一步：主旨體悟")}</div>`;
+  app.innerHTML=`<div class="wrap">${p1Head(2)}<h2>換一盞燈看看：同一篇課文，差在哪裡？</h2>
+   <p class="lead" style="font-size:16px">你已經用自己的燈拉好句子了。現在系統換一種切法、換一個焦點，再點亮<b>第二盞燈</b>。比比看：同一篇課文，換個角度，抓到的句子一樣嗎？</p>${body}${nav("","下一步：主旨體悟")}</div>`;
   const gate=()=>{const g=[];if(c.i<0)g.push("讓系統丟出另一種視角");else{if(!c.diffs.length)g.push("勾選差異點");const own=c.sentence.startsWith(c.tpl)?clen(c.sentence.slice(c.tpl.length)):clen(c.sentence)-clen(c.tpl);if(own<8)g.push("把比較句寫完（8 字以上）")}
     $("#gate").textContent=g.length?"還差："+g.join("、"):"";bindNav(!g.length)};
   if($("#throwBtn")) $("#throwBtn").onclick=()=>{c.i=0;save();p1Compare(nav,bindNav)};
   if($("#againBtn")) $("#againBtn").onclick=()=>{c.i=(c.i+1)%6;save();p1Compare(nav,bindNav)};
+  app.querySelectorAll("[data-lamp]").forEach(b=>b.onclick=()=>{const d=$("#dual");d.classList.remove("only-mine","only-sys");if(b.dataset.lamp!=="both")d.classList.add(b.dataset.lamp);app.querySelectorAll("[data-lamp]").forEach(x=>x.classList.toggle("on",x===b))});
   app.querySelectorAll("[data-d]").forEach(b=>b.onclick=()=>{const k=+b.dataset.d;c.diffs=c.diffs.includes(k)?c.diffs.filter(x=>x!==k):[...c.diffs,k];b.classList.toggle("on");save();gate()});
   const ta=$("#cmpS");if(ta)ta.addEventListener("input",()=>{c.sentence=ta.value;save();gate()});
   gate();
