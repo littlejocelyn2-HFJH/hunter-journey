@@ -8,7 +8,7 @@
    報告書頁會出現「分享明信片到 Padlet」。留空則不顯示。
    （學習歷程本身會自動送到老師的 Google 試算表）
    ====================================================== */
-const SUBMISSION_URL = "";
+const SUBMISSION_URL = "https://padlet.com/littlejocelyn2/breakout-room/6RDZ2ybxY7gzqyej-Dl7yzEE7qywQznAm";
 </script>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>〈獵人〉山林旅程｜九年級國文</title>
@@ -1356,7 +1356,7 @@ async function reportPage(){
   const res=await api("report",{student:state.student});
   if(res.ok){rep=res.report;state.report=rep;save()}
   if(!rep){$("#rep").innerHTML=`<p class="mute">還沒有報告書。交出學習歷程後就會出現。</p>`;return}
-  $("#rep").innerHTML=(SUBMISSION_URL?`<div class="share noprint"><div><b>📮 把明信片分享到班級 Padlet</b><div class="note">按下後會下載明信片、複製圖片，並打開班級 Padlet。</div></div><button class="btn ember" id="padBtn">分享明信片到 Padlet</button></div>`:"")+reportHTML(rep);
+  $("#rep").innerHTML=(SUBMISSION_URL?`<div class="share noprint"><div><b>📮 把山林明信片上傳到班級 Padlet</b><div class="note">按下後會下載明信片、複製圖片，並打開班級 Padlet。</div></div><button class="btn ember" id="padBtn">上傳明信片到 Padlet</button></div>`:"")+reportHTML(rep);
   if($("#padBtn")) $("#padBtn").onclick=()=>sharePadlet(rep.student,rep.rec.p3);
   $("#dl2").onclick=()=>download(rep.student,rep.rec.p3);
   $("#cp2").onclick=()=>copyText(buildText(rep.student,rep.rec,rep.ts),"已複製完整學習歷程");
