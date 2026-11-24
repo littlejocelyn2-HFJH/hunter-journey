@@ -297,6 +297,9 @@ body.screen-mode{background:#f7f1e4}
 .scr-foot{margin-top:16px;color:#4b524d;font-size:18px;display:flex;justify-content:space-between}
 @media (max-width:1100px){.scr-grid{grid-template-columns:1fr}.scr-nums{grid-template-columns:repeat(2,1fr)}}
 
+.padsteps{line-height:1.9;padding-left:1.3em;margin:14px 0}
+.padsteps li{margin-bottom:12px}
+.padsteps .btn{margin:6px 6px 0 0}
 .share{display:flex;flex-wrap:wrap;gap:12px;justify-content:space-between;align-items:center;background:#fff6ea;border:1px solid #f0d2ad;border-radius:14px;padding:16px 20px;margin-top:20px}
 .foot{text-align:center;margin-top:40px;font-size:13px;color:var(--mute)}
 .foot button{background:none;border:none;color:var(--mute);text-decoration:underline;font-size:13px}
@@ -1218,27 +1221,30 @@ function download(stu,p3){
 /* ---- 分享到 Padlet ---- */
 function sharePadlet(stu,p3){
   drawPostcard(stu,p3);
-  const cv=$("#pc");
-  const w=window.open(SUBMISSION_URL,"_blank");try{if(w)w.opener=null}catch(e){}
-  let copied=false;
-  try{
-    if(navigator.clipboard&&window.ClipboardItem){
-      navigator.clipboard.write([new ClipboardItem({"image/png":new Promise(res=>cv.toBlob(res,"image/png"))})]).then(()=>{copied=true;const el=$("#cpState");if(el)el.textContent="✓ 明信片圖片已複製，可以直接貼上。"}).catch(()=>{});
-    }
-  }catch(e){}
-  download(stu,p3);
-  const name=`${stu.cls}班 ${stu.seat}號 ${stu.name}`;
-  openModal(`<h2 style="margin-top:0">分享到 Padlet</h2>
-   ${w?"":`<p><a class="btn" href="${esc(SUBMISSION_URL)}" target="_blank" rel="noopener">打開班級 Padlet</a></p>`}
-   <ol style="line-height:2;padding-left:1.3em;margin:8px 0">
-     <li>在 Padlet 按 <b>＋</b> 新增一則貼文。</li>
-     <li>標題寫：<b>${esc(name)}</b> <button class="btn sm ghost" id="cpName">複製</button></li>
-     <li>直接<b>貼上</b>明信片圖片（電腦按 Ctrl+V，平板長按 → 貼上）。<br><span class="note" id="cpState">貼不上的話，改按「上傳」，選剛剛下載的明信片圖片。</span></li>
-     <li>按 <b>發布</b>，就完成了。</li>
+  const cv=$("#pc"), url=cv.toDataURL("image/png");
+  const name=`${stu.cls}班${stu.seat}號 ${stu.name}`;
+  openModal(`<h2 style="margin-top:0">上傳山林明信片到 Padlet</h2>
+   <img src="${url}" alt="我的山林明信片" style="display:block;max-width:100%;max-height:38vh;margin:0 auto;border-radius:8px;box-shadow:0 4px 14px rgba(0,0,0,.15)">
+   <p class="note" style="margin:6px 0 0">平板也可以：長按上面的明信片 →「加入照片」或「拷貝」。</p>
+   <ol class="padsteps">
+     <li><b>先把明信片存起來</b><br>
+       <button class="btn sm" id="cpImg">複製明信片圖片</button>
+       <button class="btn sm ghost" id="dlImg">下載明信片圖片</button>
+       <span class="note" id="cpState"></span></li>
+     <li><b>打開班級 Padlet</b><br><a class="btn sm ember" href="${esc(SUBMISSION_URL)}" target="_blank" rel="noopener">打開班級 Padlet ↗</a></li>
+     <li><b>在 Padlet 發布</b><br>按 <b>＋</b> → <b>貼上</b>明信片（電腦 Ctrl+V；平板長按 → 貼上），或按「上傳」選剛存的圖片 → 標題打上 <b>${esc(name)}</b> → 按 <b>發布</b>。</li>
    </ol>
-   <div class="actions"><button class="btn ghost" id="dlAgain">再下載一次明信片</button><button class="btn" id="mClose">關閉</button></div>`);
-  $("#cpName").onclick=()=>copyText(name,"已複製標題");
-  $("#dlAgain").onclick=()=>download(stu,p3);
+   <div class="actions"><button class="btn ghost" id="mClose">關閉</button></div>`,true);
+  $("#cpImg").onclick=()=>{
+    const st=$("#cpState");
+    try{
+      if(!(navigator.clipboard&&window.ClipboardItem)) throw 0;
+      navigator.clipboard.write([new ClipboardItem({"image/png":new Promise(res=>cv.toBlob(res,"image/png"))})])
+        .then(()=>{st.textContent="✓ 已複製，到 Padlet 直接貼上";toast("已複製明信片圖片")})
+        .catch(()=>{st.textContent="這台裝置不能複製圖片，請改按「下載」或長按圖片存起來"});
+    }catch(e){st.textContent="這台裝置不能複製圖片，請改按「下載」或長按圖片存起來"}
+  };
+  $("#dlImg").onclick=()=>{download(stu,p3);$("#cpState").textContent="✓ 已下載，到 Padlet 按「上傳」選這張圖"};
   $("#mClose").onclick=closeModal;
 }
 
@@ -1356,7 +1362,7 @@ async function reportPage(){
   const res=await api("report",{student:state.student});
   if(res.ok){rep=res.report;state.report=rep;save()}
   if(!rep){$("#rep").innerHTML=`<p class="mute">還沒有報告書。交出學習歷程後就會出現。</p>`;return}
-  $("#rep").innerHTML=(SUBMISSION_URL?`<div class="share noprint"><div><b>📮 把山林明信片上傳到班級 Padlet</b><div class="note">按下後會下載明信片、複製圖片，並打開班級 Padlet。</div></div><button class="btn ember" id="padBtn">上傳明信片到 Padlet</button></div>`:"")+reportHTML(rep);
+  $("#rep").innerHTML=(SUBMISSION_URL?`<div class="share noprint"><div><b>📮 把山林明信片上傳到班級 Padlet</b><div class="note">交出後，把你的明信片分享給全班看。</div></div><button class="btn ember" id="padBtn">上傳明信片到 Padlet</button></div>`:"")+reportHTML(rep);
   if($("#padBtn")) $("#padBtn").onclick=()=>sharePadlet(rep.student,rep.rec.p3);
   $("#dl2").onclick=()=>download(rep.student,rep.rec.p3);
   $("#cp2").onclick=()=>copyText(buildText(rep.student,rep.rec,rep.ts),"已複製完整學習歷程");
