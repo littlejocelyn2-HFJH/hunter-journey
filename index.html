@@ -66,6 +66,7 @@ input:focus,textarea:focus{outline:2px solid var(--ember-l);border-color:var(--e
 .chips{display:flex;flex-wrap:wrap;gap:8px;margin:8px 0}
 .chip{border:1px solid var(--line);background:#fff;border-radius:999px;padding:8px 14px;font-size:15px;color:var(--ink);min-height:40px;text-align:left}
 .chip:hover{border-color:var(--ember)}
+.chip.on{background:var(--ink);color:var(--paper);border-color:var(--ink)}
 .tag{display:inline-block;border:1px solid var(--line);background:#fff;border-radius:999px;padding:4px 12px;font-size:14px;color:#4a514b;margin:0 6px 6px 0}
 .toast{position:fixed;left:50%;bottom:28px;transform:translateX(-50%);background:var(--ink);color:var(--paper);padding:10px 18px;border-radius:999px;font-size:15px;opacity:0;transition:opacity .25s;pointer-events:none;z-index:90;max-width:90vw;text-align:center}
 .toast.show{opacity:1}
@@ -118,6 +119,57 @@ input:focus,textarea:focus{outline:2px solid var(--ember-l);border-color:var(--e
 @media (max-width:700px){.rec-grid,.lenses{grid-template-columns:1fr}}
 .st-nav{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-top:22px}
 .gate{font-size:14px;color:var(--ember);text-align:center;flex:1}
+
+.wrap.wide{max-width:1240px}
+.p1steps{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin:8px 0 4px;font-size:14px;color:var(--mute)}
+.p1steps span{padding:4px 12px;border-radius:999px;border:1px solid var(--line);background:#fff}
+.p1steps span.on{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+.p1steps span.done{border-color:var(--moss);color:var(--moss)}
+.p1steps i{font-style:normal;color:var(--line)}
+.pick-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.pick-grid.three{grid-template-columns:repeat(3,minmax(0,1fr))}
+@media (max-width:760px){.pick-grid,.pick-grid.three{grid-template-columns:1fr}}
+.pick{border:1px solid var(--line);background:#fff;border-radius:12px;padding:14px;text-align:left;display:flex;flex-direction:column;gap:8px;min-height:80px;font-size:17px;line-height:1.6}
+.pick b{font-family:var(--serif)}
+.pick small{color:var(--mute);font-size:14px}
+.pick.on{border-color:var(--ember);box-shadow:0 0 0 2px var(--ember-l) inset;background:#fffaf2}
+.chain{display:flex;flex-wrap:wrap;gap:4px;align-items:center;font-size:14px}
+.chain em{font-style:normal;background:var(--paper2);border-radius:6px;padding:2px 8px}
+.chain i{font-style:normal;color:var(--mute)}
+.pull-grid{display:grid;grid-template-columns:minmax(0,1fr) 360px;gap:18px;align-items:start;margin-top:14px}
+@media (max-width:900px){.pull-grid{grid-template-columns:1fr}}
+.cards{position:sticky;top:70px;display:flex;flex-direction:column;gap:10px;max-height:calc(100vh - 90px);overflow:auto}
+@media (max-width:900px){.cards{position:static;max-height:none}}
+.seccard{background:#fffdf8;border:1px solid var(--line);border-radius:12px;padding:12px 14px}
+.sec-h{display:flex;justify-content:space-between;align-items:center;font-family:var(--serif);font-size:17px;margin-bottom:6px}
+.pulled-item{border-top:1px dashed var(--line);padding:8px 0}
+.pi-t{font-family:var(--serif);line-height:1.7;position:relative;padding-right:24px}
+.pi-t .note{margin-left:6px}
+.pi-t .x{position:absolute;right:0;top:0;border:none;background:none;font-size:20px;color:var(--mute);min-height:auto}
+.mini{font-size:13px;color:var(--mute);display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-top:6px}
+.tg{border:1px solid var(--line);background:#fff;border-radius:999px;padding:4px 10px;font-size:14px;min-height:32px}
+.tg.on{background:var(--moss);color:#fff;border-color:var(--moss)}
+.custom{display:flex;gap:6px;margin-top:8px}
+.custom input{flex:1;min-width:0;border:1px solid var(--line);border-radius:8px;padding:6px 10px;font-size:15px}
+.scene{touch-action:pan-y}
+.scene.lens-on .text{font-size:18px}
+.scene .sn{cursor:pointer;border-radius:3px}
+.scene .sn.pulled{background:rgba(240,195,143,.25);color:#fff3dc;border-bottom:2px solid var(--ember-l)}
+.scene .sn.pulled::after{content:attr(data-sec);font-size:13px;color:var(--ember-l);margin-left:2px;vertical-align:super}
+.pullmenu{position:fixed;z-index:80;background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:10px;box-shadow:0 10px 30px rgba(0,0,0,.25);display:flex;flex-direction:column;gap:6px;max-width:300px}
+.scene.dual .text{color:#5d665f;font-size:18px}
+.scene.dual .sn{cursor:default}
+.scene.dual .sn.mine{color:#fff3dc;background:rgba(240,195,143,.22);box-shadow:0 0 22px rgba(240,170,90,.35)}
+.scene.dual .sn.sys{color:#eef6ff;background:rgba(140,184,230,.2);box-shadow:0 0 22px rgba(120,170,230,.4)}
+.scene.dual .sn.mine.sys{background:linear-gradient(90deg,rgba(240,195,143,.3),rgba(140,184,230,.3))}
+.sysbar{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:10px;background:#eef3f7;border:1px solid #c9d8e6;border-radius:12px;padding:12px 16px;font-size:16px}
+.cmp-table{display:flex;flex-direction:column;gap:8px;margin-top:14px}
+.cmp-row{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+@media (max-width:640px){.cmp-row{grid-template-columns:1fr}}
+.cmp-cell{border-radius:10px;padding:10px 12px;font-family:var(--serif);line-height:1.7}
+.cmp-cell.mine{background:#fff6ea;border:1px solid #f0d2ad}
+.cmp-cell.sys{background:#eef4fa;border:1px solid #c9d8e6}
+.cmp-cell .note{font-family:var(--sans)}
 
 /* 第二部分 */
 .p2-grid{display:grid;grid-template-columns:330px 1fr;gap:22px;align-items:start;margin-top:18px}
@@ -277,12 +329,6 @@ const TEXT = {
 15:"在八雅鞍部山脈的肩膀，這夜晚一如泰雅的每一個夜晚，老獵人指引著年輕人的腳步，許多山林的故事便在耳傳口述中綿綿不止。"
 };
 const CN = ["","一","二","三","四","五","六","七","八","九","十","十一","十二","十三","十四","十五"];
-const LENS = {
-  wide:{name:"廣角",desc:"把山、天空與人一起放進畫面",r:175},
-  mid:{name:"中距",desc:"看見人與人、人與獸之間的距離",r:125},
-  macro:{name:"微距",desc:"貼近手、火、傷口與心裡細微的感覺",r:85}
-};
-
 /* ============ 前測（正解與解析只在後端） ============ */
 const LEVEL_NAMES=["檢索","推論整合","省思評鑑"];
 const QUESTIONS=[
@@ -295,55 +341,39 @@ const QUESTIONS=[
 const OPT="ABCD";
 const KEYPOINTS=["成年禮的意義不在獵到獵物，而在學會「勇敢、智慧與愛」","好獵人懂得節制，為山林與下一代留下未來","離鄉的「我」透過成年禮，重新找回泰雅的身分與歸屬","泰雅的山林知識與規矩，在老少之間口耳相傳、綿延不止"];
 
-/* ============ 第一部分：四個段落群 ============ */
-const STATIONS = [
-{range:"第一～四段",title:"抵達與生火",paras:[1,2,3,4],lens:"wide",
- why:"作者先把畫面拉得很遠——天空、樹林、山谷，人顯得很小；再慢慢拉近到火堆邊的「我」，和他近三十年的遺憾。",
- clues:[
-  {t:"整片天空宛如張大翅膀的蒼鷹迅速撲掠而下",n:"天色像蒼鷹一樣撲下來：是黃昏急速降臨，還是山給初來者的一種壓迫感？"},
-  {t:"濃密而深黑的樹林沉靜地霸占山頭",n:"「霸占」把樹林寫成山的主人。人在這裡，像個客人。"},
-  {t:"把命令像流星拋進我的耳朵裡",n:"只有兩個字的命令，又快又亮——老獵人不多話。"},
-  {t:"身影已像是隻蝙蝠飄然消逝在林子裡",n:"老獵人和夜裡的森林融為一體，「我」卻被留在原地。"},
-  {t:"我希望能夠討好獵人",n:"為什麼要「討好」？「我」在擔心什麼？"},
-  {t:"仍是泰雅鍾愛的孩子",n:"老獵人用這句話，接住了「我」的不安。"},
-  {t:"一直是我心中的遺憾",n:"年近三十才補上的成年禮，補的是儀式，還是身分？"}],
- starters:["站在山的肩膀上，「我」的心情是……","年近三十才來補成年禮，我覺得「我」心中的遺憾是……","老獵人說「我」仍是泰雅鍾愛的孩子，這句話可能讓「我」……"]},
-{range:"第五～六段",title:"火塘與禁忌",paras:[5,6],lens:"mid",
- why:"鏡頭停在火塘邊的兩個人：一個嫻熟地處理獵物、絮絮叨叨交代禁忌，一個聽著、迷迷糊糊睡去——規矩就在人與人之間傳遞。",
- clues:[
-  {t:"狩獵對泰雅男人是莊嚴的事",n:"「莊嚴」不是殘忍，也不是遊戲。你覺得莊嚴在哪裡？"},
-  {t:"沒有獵物就餵不飽你的家人",n:"狩獵和責任連在一起：為了家人，不是為了炫耀。"},
-  {t:"只消沾上粗鹽入口",n:"不加任何添加物：最原始的方法，也最貼近山。"},
-  {t:"老獵人吩咐不得讓篝火停息",n:"火不能熄：這是禁忌，也是在山裡活下去的經驗。"},
-  {t:"黑暗是森林的鬼魅",n:"把寒冷與危險說成鬼魅與使者——用故事讓人記住規矩。"},
-  {t:"你只許有一把番刀",n:"只許一把刀：限制自己，也是對獵物的公平。"},
-  {t:"只覺得徹夜出奇地溫暖",n:"「我」忘了顧火，火卻沒熄。是誰整夜守著？"}],
- starters:["老獵人說狩獵是「莊嚴的事」，我覺得莊嚴的意思是……","我猜老獵人訂下「＿＿」這個禁忌，用意可能是……","「我」睡著了，篝火卻整夜溫暖，我想是因為……"]},
-{range:"第七～十一段",title:"獨自入山",paras:[7,8,9,10,11],lens:"macro",
- why:"鏡頭貼近身體與地面：芒草割出的血痕、泥地上的蹄跡、被撥開的身軀，以及心裡那艘猶豫的扁舟，直到看見三隻小山豬。",
- clues:[
-  {t:"我便像是在大海中猶豫的扁舟",n:"山變成大海，「我」變成小舟——不知方向的心情。"},
-  {t:"馬上就泌出明亮的血痕",n:"山林在身上留下記號：這裡不是都市。"},
-  {t:"溼潤的泥地可發現不同的蹄跡",n:"鏡頭貼近地面：學著讀懂山的語言。"},
-  {t:"我興奮著自己將要成為「泰雅」",n:"加了引號的「泰雅」：不只是族名，是一種被認可的身分。"},
-  {t:"牠必然也感覺到我的存在",n:"獵人與獵物彼此感知——山豬也是有感覺的生命。"},
-  {t:"把我的身軀像葉片般撥開",n:"人在山豬面前輕得像葉片：力量對比翻轉了。"},
-  {t:"似乎有一對眼睛審視著我",n:"是老獵人？是山？是祖靈？這雙眼睛在看什麼？"},
-  {t:"「等待是獵人的美德」",n:"獵人的本事不只是出手，還有忍耐。"},
-  {t:"還有三隻淘氣的小山豬",n:"刪節號停在這裡：「我」看見了什麼，又想到了什麼？"}],
- starters:["一個人進山時，「我」像猶豫的扁舟，因為……","看見三隻小山豬的那一刻，我猜「我」心裡……","「一對眼睛審視著我」，我覺得那雙眼睛可能是……"]},
-{range:"第十二～十五段",title:"篝火旁的回答",paras:[12,13,14,15],lens:"wide",
- why:"結尾鏡頭慢慢拉遠：篝火、山的肩膀、泰雅的每一個夜晚，故事在一代代之間綿延。",
- clues:[
-  {t:"彷彿那是尊千百年來就在此庇佑山林的神祇",n:"老獵人像守護山林的神，而不只是會打獵的人。"},
-  {t:"因為一時心軟而失去作為「泰雅」的榮譽",n:"「我」以為心軟是失敗。真的是嗎？"},
-  {t:"我用沉默代替回答",n:"沉默裡有懊惱、羞愧，也許還有說不清的東西。"},
-  {t:"牠是這座山最後的山豬",n:"「最後的」——如果獵到了，山就少了什麼？"},
-  {t:"勇敢、智慧與愛就是一個好獵人的全部財產",n:"三樣財產，「我」在山谷裡用到了哪一樣？"},
-  {t:"以後泰雅的小孩要獵什麼",n:"老獵人用玩笑說出最重要的事：為下一代留下山林。"},
-  {t:"許多山林的故事便在耳傳口述中綿綿不止",n:"鏡頭拉遠：這個夜晚，也將成為下一個故事。"}],
- starters:["「我」以為心軟是失敗，但老獵人的話讓我覺得……","如果我是那個沉默的「我」，我想回答老獵人……"]}
-];
+/* ============ 第一部分：選視角 ➔ 拉文句 ➔ 差異比對 ➔ 主旨體悟 ============ */
+const FOCUS={
+  me:{name:"「我」的行動、猶豫與內心想法",short:"「我」",lamp:"微距頭燈",r:100},
+  hunter:{name:"「獵人」的精準動作、沉默與背景底蘊",short:"獵人",lamp:"中距頭燈",r:135},
+  gap:{name:"「我」與「獵人」在山林裡的視角落差",short:"視角落差",lamp:"廣角頭燈",r:175}
+};
+const ANGLES={
+  A:{name:"事件推進線",secs:["與獵人上山","入山打獵","沒有獵得的對話"],picks:[
+    {me:"我希望能夠討好獵人",hunter:"把命令像流星拋進我的耳朵裡",gap:"仍是泰雅鍾愛的孩子"},
+    {me:"我便像是在大海中猶豫的扁舟",hunter:"似乎有一對眼睛審視著我",gap:"牠必然也感覺到我的存在"},
+    {me:"我用沉默代替回答",hunter:"你獵到了，以後泰雅的小孩要獵什麼",gap:"還懊惱著嗎"}]},
+  B:{name:"空間與光影線",secs:["有營火的山林邊緣","漆黑無光的荒野","重返營地與歸途"],picks:[
+    {me:"幾點星火緩緩地自柴堆中冒起",hunter:"老獵人吩咐不得讓篝火停息",gap:"只覺得徹夜出奇地溫暖"},
+    {me:"芒草擦過肌膚，馬上就泌出明亮的血痕",hunter:"黑暗是森林的鬼魅",gap:"濃密而深黑的樹林沉靜地霸占山頭"},
+    {me:"我心虛地靠坐過去",hunter:"老獵人逕自生起篝火",gap:"這夜晚一如泰雅的每一個夜晚"}]},
+  C:{name:"敘事焦點線",secs:["以「獵人」為中心","以「我」為中心","匯入「泰雅文化」"],picks:[
+    {me:"我一邊撥著火，一邊看獵人嫻熟地處理狐狸",hunter:"狩獵對泰雅男人是莊嚴的事",gap:"老獵人枯藤一般的左手已拎了隻狐狸"},
+    {me:"我興奮著自己將要成為「泰雅」",hunter:"要我獨自進入山的心臟地帶",gap:"我懷疑是不是老獵人"},
+    {me:"因為一時心軟而失去作為「泰雅」的榮譽",hunter:"勇敢、智慧與愛就是一個好獵人的全部財產",gap:"許多山林的故事便在耳傳口述中綿綿不止"}]},
+  D:{name:"成長試煉線",secs:["依賴與觀察期","受挫與抉擇期","認證與領悟期"],picks:[
+    {me:"一直是我心中的遺憾",hunter:"要我一早準備番刀和鹽巴就好",gap:"老獵人依然絮絮叨叨地說出成年禮的諸多禁忌"},
+    {me:"把我的身軀像葉片般撥開",hunter:"「等待是獵人的美德」",gap:"還有三隻淘氣的小山豬"},
+    {me:"我頹然地怨恨自己",hunter:"牠是這座山最後的山豬，也是最凶猛的",gap:"彷彿那是尊千百年來就在此庇佑山林的神祇"}]}
+};
+const TAGS=["動作","想法","感情","背景說明"];
+const RELS=["順順承接","明顯轉折"];
+const DIFFS=["抓到的句子焦點完全不同","轉折點落在不同地方","一個看外在環境或行動，一個看內心轉變或文化意義","一個從「我」看，一個從「獵人」看","其實抓到相近的句子，只是切法不同"];
+const THEME_KEYS=["尊重生命","承擔責任","自我成長","懂得節制","文化傳承"];
+const P1STEPS=["選擇視角","拉文句","差異比對","主旨體悟"];
+const SENTS=(()=>{const out=[];Object.keys(TEXT).forEach(n=>{(TEXT[n].match(/[^。！？]*[。！？]+」?|[^。！？]+$/g)||[]).forEach(t=>{if(t.trim())out.push({p:+n,t})})});return out})();
+const findSent=t=>SENTS.findIndex(x=>x.t.includes(t));
+function freshP1(){return {focus:"",angle:"",secs:[0,1,2].map(()=>({items:[],rel:""})),cmp:{i:-1,angle:"",focus:"",diffs:[],sentence:"",tpl:""},theme:{keys:[],text:""}}}
+function sysOption(p,i){const oa=Object.keys(ANGLES).filter(k=>k!==p.angle),of=Object.keys(FOCUS).filter(k=>k!==p.focus);return {angle:oa[i%oa.length],focus:of[Math.floor(i/oa.length)%of.length]}}
 
 /* ============ 第二部分（準度與回饋由後端判定，前端不放答案） ============ */
 const ARROWS = [
@@ -380,9 +410,9 @@ const TO_LINE = "致：八雅鞍部山上，那個還在找答案的「我」";
 const STAMP_NAME={guard:"森林守護者",learn:"山林見習獵人"};
 
 /* ============ 狀態 ============ */
-const KEY = "hunter-journey-v4";
+const KEY = "hunter-journey-v5";
 function fresh(student){return {student:student||null,step:"pre",pre:{start:null,answers:[-1,-1,-1,-1,-1],open:{choice:-1,reason:""},submitted:false,local:false},
-  p1:STATIONS.map(()=>({lens:"",clues:[],did:"",said:"",mood:"",thought:""})),
+  p1:freshP1(),
   p2:{rounds:[],cur:null,rot:0},p3:{bg:0,text:""},t:{start:null,p1:null,p2:null},submitted:null,report:null}}
 function loadState(){try{return JSON.parse(localStorage.getItem(KEY))}catch(e){return null}}
 let state = loadState() || fresh();
@@ -417,11 +447,12 @@ const LKEY="hunter-localdb";
 function ldb(){try{return JSON.parse(localStorage.getItem(LKEY))||{rows:[]}}catch(e){return {rows:[]}}}
 function lsave(d){try{localStorage.setItem(LKEY,JSON.stringify(d))}catch(e){}}
 function analyzeLocal(rec){
-  const p1Words=rec.p1.reduce((t,x)=>t+clen(x.thought)+clen(x.did)+clen(x.said)+clen(x.mood),0);
+  const p=rec.p1, pulled=p.secs.reduce((t,s)=>t+s.items.length,0);
+  const p1Words=clen(p.cmp.sentence)+clen(p.theme.text)+p.secs.reduce((t,s)=>t+s.items.filter(i=>i.custom).reduce((a,i)=>a+clen(i.text),0),0);
   const p2Words=rec.p2.reduce((t,x)=>t+clen(x.reason),0), p3Words=clen(rec.p3.text);
-  const p1Done=rec.p1.length>=STATIONS.length&&rec.p1.every(x=>x.lens&&x.clues.length&&clen(x.thought)>=10);
+  const p1Done=!!(p.focus&&p.angle&&p.secs.every(s=>s.items.length)&&clen(p.cmp.sentence)>=10&&clen(p.theme.text)>=10);
   const parts=[p1Done,rec.p2.length>=3,p3Words>=20];
-  return {p1Words,p2Words,p3Words,words:p1Words+p2Words+p3Words,clues:rec.p1.reduce((t,x)=>t+x.clues.length,0),
+  return {p1Words,p2Words,p3Words,words:p1Words+p2Words+p3Words,clues:pulled,
     rounds:rec.p2.map(x=>({id:x.id,shots:x.shots.length})),bulls:0,parts,partsDone:parts.filter(Boolean).length};
 }
 function localApi(action,d){
@@ -441,9 +472,9 @@ function localApi(action,d){
   if(action==="stats"){
     const classes={};db.rows.forEach(r=>{if(r.attempts.length)classes[r.cls]=(classes[r.cls]||0)+1});
     const mine=db.rows.filter(r=>r.cls===d.cls&&r.attempts.length);
-    const lens=STATIONS.map(()=>({wide:0,mid:0,macro:0}));const stamps={guard:0,learn:0};
-    mine.forEach(r=>{const a=r.attempts.at(-1);a.rec.p1.forEach((x,i)=>{if(x.lens)lens[i][x.lens]++});if(stamps[a.rec.p3.stamp]!=null)stamps[a.rec.p3.stamp]++});
-    return{ok:true,keypts:[0,0,0,0],preCount:0,preQ:QUESTIONS.map(q=>({level:q.level,n:0,right:0})),classes,cls:d.cls,count:mine.length,finished:mine.filter(r=>r.attempts.at(-1).ana.partsDone===3).length,lens,stamps,
+    const angles={A:0,B:0,C:0,D:0},focus={me:0,hunter:0,gap:0};const stamps={guard:0,learn:0};
+    mine.forEach(r=>{const a=r.attempts.at(-1);if(a.rec.p1.angle)angles[a.rec.p1.angle]++;if(a.rec.p1.focus)focus[a.rec.p1.focus]++;if(stamps[a.rec.p3.stamp]!=null)stamps[a.rec.p3.stamp]++});
+    return{ok:true,keypts:[0,0,0,0],preCount:0,preQ:QUESTIONS.map(q=>({level:q.level,n:0,right:0})),classes,cls:d.cls,count:mine.length,finished:mine.filter(r=>r.attempts.at(-1).ana.partsDone===3).length,angles,focus,topSents:[],stamps,
       claims:CLAIMS.map(c=>({tag:c.tag,n:0,bulls:0})),top:mine.map(r=>({seat:r.seat,name:r.name,words:r.attempts.at(-1).ana.words})).sort((a,b)=>b.words-a.words).slice(0,5)};
   }
   return {ok:false,error:"local"};
@@ -471,18 +502,18 @@ function topbar(mode){
   $(".top").style.display="";
   const s=state.step;let p=0,f0=state.pre.submitted?1:.3,f1=0,f2=0,f3=0;
   if(s==="pre"){p=0}
-  if(s.startsWith("s")&&s!=="pre"){p=1;f1=(+s.slice(1)+1)/STATIONS.length}
+  if(s.startsWith("s")&&s!=="pre"){p=1;f1=(+s.slice(1)+1)/P1STEPS.length}
   if(s==="p2"){p=2;f1=1;f2=Math.min(state.p2.rounds.length/3,1)}
   if(s==="p3"){p=3;f1=1;f2=1;f3=.5}
   const leg=(n,label,f)=>`<div class="leg ${p===n?"on":""}"><span>${label}</span><div class="bar"><i style="width:${f*100}%"></i></div></div>`;
   if(PREVIEW){
-    const jumps=[["pre","前測"],...STATIONS.map((st,i)=>["s"+i,"一-"+(i+1)]),["p2","二"],["p3","三"],["rep","報告書"]];
+    const jumps=[["pre","前測"],...P1STEPS.map((st,i)=>["s"+i,"一-"+(i+1)]),["p2","二"],["p3","三"],["rep","報告書"]];
     tb.innerHTML=`<span class="ttl" style="color:var(--ember)">👩‍🏫 老師預覽</span><div style="display:flex;gap:6px;flex-wrap:wrap;flex:1">${jumps.map(([k,l])=>`<button class="btn sm ${state.step===k||(k==="rep"&&state.step==="rep")?"":"ghost"}" data-jump="${k}">${l}</button>`).join("")}</div><button class="btn sm ghost" id="pvReset">清空預覽</button><a class="home" href="#scores">離開預覽</a>`;
     tb.querySelectorAll("[data-jump]").forEach(b=>b.onclick=()=>{const k=b.dataset.jump;if(k==="pre"){state.pre.submitted=false}go(k)});
     $("#pvReset").onclick=()=>{previewState=fresh({cls:"000",seat:0,name:"老師預覽"});state=previewState;renderStep()};
     return;
   }
-  tb.innerHTML=`<a class="ttl j" href="#">〈獵人〉山林旅程</a>${leg(0,"前測",f0)}${leg(1,"一｜頭燈與鏡頭",f1)}${leg(2,"二｜獵人的遊戲",f2)}${leg(3,"三｜森林明信片",f3)}`;
+  tb.innerHTML=`<a class="ttl j" href="#">〈獵人〉山林旅程</a>${leg(0,"前測",f0)}${leg(1,"一｜頭燈與視角",f1)}${leg(2,"二｜獵人的遊戲",f2)}${leg(3,"三｜森林明信片",f3)}`;
 }
 function openModal(html,wide){$("#modalRoot").innerHTML=`<div class="modal"><div class="box ${wide?"wide":""}">${html}</div></div>`;document.body.classList.add("has-modal")}
 function closeModal(){$("#modalRoot").innerHTML="";document.body.classList.remove("has-modal")}
@@ -500,7 +531,7 @@ function homePage(){
   <div class="home-hero">
     <h1>獵人</h1>
     <div style="font-family:var(--serif);font-size:20px;color:#4a514b">瓦歷斯‧諾幹｜山林旅程：頭燈、箭與明信片</div>
-    <div style="margin-top:16px"><span class="tag">前測 6 題</span><span class="tag">三段旅程</span><span class="tag">第一部分 4 關</span><span class="tag">課文第一～十五段</span><span class="tag">重思考歷程，不扣分</span><span class="tag">iPad／電腦皆可</span>${LOCAL?'<span class="tag" style="color:var(--warn)">本機模式：不計分、不收資料</span>':""}</div>
+    <div style="margin-top:16px"><span class="tag">前測 6 題</span><span class="tag">三段旅程</span><span class="tag">課文第一～十五段</span><span class="tag">重思考歷程，不扣分</span><span class="tag">iPad／電腦皆可</span>${LOCAL?'<span class="tag" style="color:var(--warn)">本機模式：不計分、不收資料</span>':""}</div>
     ${welcome}
   </div>
   <div class="home-btns">
@@ -511,7 +542,7 @@ function homePage(){
   <h3>旅程怎麼走</h3>
   <ol class="steps" style="grid-template-columns:repeat(auto-fit,minmax(200px,1fr))">
     <li><b>前測</b>先回答 5 題選擇題，再選出你心中的全文重點、寫下原因，看看你現在讀懂了多少。</li>
-    <li><b>一｜頭燈與鏡頭</b>你就是文章裡的「我」。每一段先選鏡頭，再用頭燈照亮線索，寫下看見的與感受到的。</li>
+    <li><b>一｜頭燈與視角</b>選你的觀察焦點和切分角度，用頭燈把課文句子拉進三個區段；系統會再點亮另一盞燈，讓你比較差在哪裡。</li>
     <li><b>二｜獵人的遊戲</b>轉盤抽出假獵人的說法。你的判斷就是你的箭：選一支獵人哲學之箭反駁，再寫下理由。</li>
     <li><b>三｜森林明信片</b>寫一張明信片給山林裡失落、猶豫的「我」，交出後會看到你的個人報告書。</li>
   </ol>
@@ -646,93 +677,171 @@ function renderPretest(){
 }
 
 /* ---------- 第一部分 ---------- */
-function paraHTML(st){
-  return st.paras.map(n=>{
-    let h=esc(TEXT[n]);
-    st.clues.forEach((c,ci)=>{h=h.replace(esc(c.t),`<span class="clue" data-ci="${ci}">${esc(c.t)}</span>`)});
-    return `<p><span class="pno">${CN[n]}</span>${h}</p>`;
-  }).join("");
-}
-function lensFeedback(st,d){
-  if(!d.lens) return "";
-  const me=LENS[d.lens], sug=LENS[st.lens];
-  if(d.lens===st.lens) return `你和作者的鏡頭很靠近。${st.why}`;
-  return `你選了<b>${me.name}</b>：${me.desc}。作者在這裡比較像用<b>${sug.name}</b>——${st.why} 兩種看法都可以，寫下你從自己的鏡頭看見了什麼。`;
-}
 function ownLen(text,starters){let o=text||"";starters.forEach(s=>{o=o.split(s).join("")});return clen(o)}
+function p1Head(i){
+  return `<div class="kicker">第一部分｜頭燈與視角</div>
+  <div class="p1steps">${P1STEPS.map((t,k)=>`<span class="${k===i?"on":k<i?"done":""}">${k+1}. ${t}</span>`).join('<i>➔</i>')}</div>`;
+}
 function renderStation(i){
-  const st=STATIONS[i], d=state.p1[i];
-  app.innerHTML=`<div class="wrap">
-  <div class="kicker">第一部分｜文章、手電筒、鏡頭　${i+1} / ${STATIONS.length}</div>
-  <h2>${st.range}｜${st.title}</h2>
-  <div class="step-label"><b>1</b>選鏡頭：你想用什麼距離看這一段？</div>
-  <div class="lenses">${Object.keys(LENS).map(k=>`<button class="lens-btn ${d.lens===k?"on":""}" data-lens="${k}"><span class="ln">${LENS[k].name}</span><span class="ld">${LENS[k].desc}</span></button>`).join("")}</div>
-  <p class="lens-fb" id="lensFb">${lensFeedback(st,d)}</p>
-  <div class="step-label"><b>2</b>戴上頭燈：在暗處拖曳光圈，點選你發現的關鍵句或意象</div>
-  <div class="scene lens-${d.lens||"off"}" id="scene">
-    <div class="text">${paraHTML(st)}</div><div class="shade"></div>
-    <div class="off-msg">${d.lens?"":"先選一個鏡頭，頭燈就會亮起"}</div>
-  </div>
-  <div class="bag" id="bag"></div>
-  <div class="step-label"><b>3</b>寫下你的觀察與想法</div>
-  <div class="field">可以寫「我／獵人」做了什麼、說了什麼、你感受到什麼氛圍。點一個句型開頭，接著寫（寫多一點也沒關係）</div>
-  <div class="chips">${st.starters.map((s,k)=>`<button class="chip" data-st="${k}">${esc(s)}</button>`).join("")}</div>
-  <textarea id="thought" maxlength="3000" placeholder="從句型開始，或用自己的話寫……">${esc(d.thought)}</textarea>
-  <nav class="st-nav">
-    <button class="btn ghost" id="prevBtn">${i===0?"回到前測":"上一個段落群"}</button>
-    <span class="gate" id="gate"></span>
-    <button class="btn" id="nextBtn">${i===STATIONS.length-1?"前往第二部分":"繼續前進"}</button>
-  </nav></div>`;
-
+  const p=state.p1;
+  const nav=(gateTxt,nextLabel)=>`<nav class="st-nav"><button class="btn ghost" id="prevBtn">${i===0?"回到前測":"上一步"}</button><span class="gate" id="gate">${gateTxt||""}</span><button class="btn" id="nextBtn">${nextLabel}</button></nav>`;
+  const bindNav=(ok)=>{$("#nextBtn").disabled=!PREVIEW&&!ok;$("#prevBtn").onclick=()=>go(i===0?"pre":"s"+(i-1));$("#nextBtn").onclick=()=>go(i===P1STEPS.length-1?"p2":"s"+(i+1))};
+  if(i===0) return p1Choose(nav,bindNav);
+  if(i===1) return p1Pull(nav,bindNav);
+  if(i===2) return p1Compare(nav,bindNav);
+  return p1Theme(nav,bindNav);
+}
+/* 1. 選擇視角 */
+function p1Choose(nav,bindNav){
+  const p=state.p1;
+  app.innerHTML=`<div class="wrap">${p1Head(0)}<h2>你想從哪裡看這篇文章？</h2>
+   <p class="lead" style="font-size:16px">每個人的起點不同。先選你的<b>觀察焦點</b>（它決定你頭燈的光圈），再選把全文切成三段的<b>切分角度</b>。</p>
+   <div class="step-label"><b>A</b>觀察焦點</div>
+   <div class="pick-grid three">${Object.keys(FOCUS).map(k=>`<button class="pick ${p.focus===k?"on":""}" data-f="${k}"><b>${FOCUS[k].name}</b><small>🔦 ${FOCUS[k].lamp}</small></button>`).join("")}</div>
+   <div class="step-label"><b>B</b>三區段切分角度</div>
+   <div class="pick-grid">${Object.keys(ANGLES).map(k=>`<button class="pick ${p.angle===k?"on":""}" data-a="${k}"><b>角度 ${k}｜${ANGLES[k].name}</b><span class="chain">${ANGLES[k].secs.map(x=>`<em>${x}</em>`).join("<i>➔</i>")}</span></button>`).join("")}</div>
+   ${nav("","下一步：拉文句")}</div>`;
+  const gate=()=>{const g=[];if(!p.focus)g.push("選觀察焦點");if(!p.angle)g.push("選切分角度");$("#gate").textContent=g.length?"還差："+g.join("、"):"";bindNav(!g.length)};
+  app.querySelectorAll("[data-f]").forEach(b=>b.onclick=()=>{p.focus=b.dataset.f;save();app.querySelectorAll("[data-f]").forEach(x=>x.classList.toggle("on",x===b));gate()});
+  app.querySelectorAll("[data-a]").forEach(b=>b.onclick=()=>{p.angle=b.dataset.a;save();app.querySelectorAll("[data-a]").forEach(x=>x.classList.toggle("on",x===b));gate()});
+  gate();
+}
+/* 2. 用頭燈拉文句 */
+function sceneHTML(markFn,paras){
+  const ps=paras||Object.keys(TEXT).map(Number);
+  return ps.map(n=>`<p><span class="pno">${CN[n]}</span>${SENTS.map((x,k)=>x.p===n?`<span class="sn ${markFn?markFn(k):""}" data-i="${k}">${esc(x.t)}</span>`:"").join("")}</p>`).join("");
+}
+function p1Pull(nav,bindNav){
+  const p=state.p1;
+  if(!p.focus||!p.angle){go("s0");return}
+  const A=ANGLES[p.angle], F=FOCUS[p.focus];
+  app.innerHTML=`<div class="wrap wide">${p1Head(1)}<h2>戴上頭燈，把文句拉進你的三個區段</h2>
+   <p class="lead" style="font-size:16px">你的焦點是<b>${F.short}</b>（${F.lamp}），切法是<b>${A.name}</b>。在暗處移動頭燈（平板可直接點），點一下被照亮的句子，選擇要放進哪一個區段。每個區段放 1～2 句。</p>
+   <div class="pull-grid">
+     <div class="scene lens-on" id="scene"><div class="text">${sceneHTML()}</div><div class="shade"></div></div>
+     <div class="cards" id="cards"></div>
+   </div>
+   ${nav("","下一步：差異比對")}</div>`;
   const scene=$("#scene");
-  scene.style.setProperty("--r",(LENS[d.lens]?.r||120)+"px");
-  let lx=scene.clientWidth/2, ly=90;
+  scene.style.setProperty("--r",F.r+"px");
+  let lx=scene.clientWidth/2, ly=110;
   const setLight=(x,y)=>{lx=x;ly=y;scene.style.setProperty("--x",x+"px");scene.style.setProperty("--y",y+"px")};
   setLight(lx,ly);
   const pos=e=>{const r=scene.getBoundingClientRect();return [e.clientX-r.left,e.clientY-r.top]};
-  scene.addEventListener("pointermove",e=>{const [x,y]=pos(e);setLight(x,y)});
+  scene.addEventListener("pointermove",e=>{if(e.pointerType!=="touch"){const [x,y]=pos(e);setLight(x,y)}});
   scene.addEventListener("pointerdown",e=>{const [x,y]=pos(e);setLight(x,y)});
+  const mark=()=>{const m={};p.secs.forEach((s,k)=>s.items.forEach(it=>{if(it.si>=0)m[it.si]=k+1}));
+    scene.querySelectorAll(".sn").forEach(el=>{const k=m[el.dataset.i];el.classList.toggle("pulled",!!k);if(k)el.dataset.sec=["①","②","③"][k-1];else delete el.dataset.sec})};
   scene.addEventListener("click",e=>{
-    const el=e.target.closest(".clue"); if(!el) return;
-    if(!d.lens){toast("先選鏡頭，打開頭燈");return}
-    const sr=scene.getBoundingClientRect(), R=LENS[d.lens].r;
-    let near=false;
-    for(const rc of el.getClientRects()){
-      const cx=Math.max(rc.left,Math.min(lx+sr.left,rc.right)), cy=Math.max(rc.top,Math.min(ly+sr.top,rc.bottom));
-      if(Math.hypot(cx-lx-sr.left,cy-ly-sr.top)<R*0.75){near=true;break}
-    }
+    const el=e.target.closest(".sn"); if(!el) return;
+    const sr=scene.getBoundingClientRect();let near=false;
+    for(const rc of el.getClientRects()){const cx=Math.max(rc.left,Math.min(lx+sr.left,rc.right)),cy=Math.max(rc.top,Math.min(ly+sr.top,rc.bottom));if(Math.hypot(cx-lx-sr.left,cy-ly-sr.top)<F.r*0.8){near=true;break}}
     if(!near){toast("把光照過去，再點一次");return}
-    const ci=+el.dataset.ci;
-    if(!d.clues.includes(ci)){d.clues.push(ci);d.clues.sort((a,b)=>a-b);save();markClues();drawBag();gate()}
+    const si=+el.dataset.i;
+    openPullMenu(e.clientX,e.clientY,si);
   });
-  function markClues(){scene.querySelectorAll(".clue").forEach(el=>el.classList.toggle("found",d.clues.includes(+el.dataset.ci)))}
-  function drawBag(){
-    $("#bag").innerHTML=d.clues.length?d.clues.map(ci=>`<div class="item"><div class="q">「${esc(st.clues[ci].t.replace(/^「|」$/g,""))}」</div><div class="n">${esc(st.clues[ci].n)}</div></div>`).join("")
-      :`<div class="empty">線索袋還是空的。這一段藏著 ${st.clues.length} 條線索，找到一條以上就可以前進。</div>`;
+  function openPullMenu(x,y,si){
+    closePullMenu();
+    const where=p.secs.findIndex(s=>s.items.some(it=>it.si===si));
+    const m=document.createElement("div");m.className="pullmenu";m.id="pullmenu";
+    m.innerHTML=`<div class="note" style="margin-bottom:6px">「${esc(SENTS[si].t.slice(0,18))}${SENTS[si].t.length>18?"…":""}」放進：</div>`+
+      A.secs.map((n,k)=>{const full=p.secs[k].items.length>=2&&where!==k;return `<button class="btn sm ${where===k?"":"ghost"}" data-to="${k}" ${full?"disabled":""}>${["①","②","③"][k]} ${n}${full?"（已滿）":""}</button>`}).join("")+
+      (where>=0?`<button class="btn sm danger" data-to="x">從區段拿掉</button>`:"")+`<button class="btn sm ghost" data-to="c">取消</button>`;
+    document.body.appendChild(m);
+    const w=m.offsetWidth,h=m.offsetHeight;
+    m.style.left=Math.max(8,Math.min(x-w/2,innerWidth-w-8))+"px";m.style.top=(y+h+20>innerHeight?Math.max(8,y-h-14):y+14)+"px";
+    m.querySelectorAll("[data-to]").forEach(b=>b.onclick=()=>{
+      const t=b.dataset.to;
+      if(t!=="c"){
+        let old=null;if(where>=0){const arr=p.secs[where].items;const idx=arr.findIndex(it=>it.si===si);old=arr.splice(idx,1)[0]}
+        if(t!=="x"){const k=+t;p.secs[k].items.push(old&&where!==k?old:(old||{si,text:SENTS[si].t,p:SENTS[si].p,custom:false,tags:[]}));toast(`已放進「${A.secs[k]}」`)}
+        save();mark();drawCards();
+      }
+      closePullMenu();
+    });
+  }
+  function drawCards(){
+    const c=$("#cards");
+    c.innerHTML=A.secs.map((n,k)=>{const s=p.secs[k];
+      return `<div class="seccard"><div class="sec-h"><b>${["①","②","③"][k]} ${n}</b><span class="note">${s.items.length}/2</span></div>
+       ${s.items.map((it,j)=>`<div class="pulled-item"><div class="pi-t">「${esc(it.text)}」<span class="note">${it.custom?"自己輸入":"第"+CN[it.p]+"段"}</span><button class="x" data-rm="${k}|${j}" aria-label="拿掉">×</button></div>
+         <div class="mini">這句主要呈現：${TAGS.map(t=>`<button class="tg ${it.tags.includes(t)?"on":""}" data-tag="${k}|${j}|${t}">${t}</button>`).join("")}</div></div>`).join("")||'<div class="note" style="padding:6px 0">用頭燈照亮課文，點句子拉進來</div>'}
+       ${s.items.length<2?`<div class="custom"><input placeholder="也可以自己貼上課文句子" data-cin="${k}" maxlength="300"><button class="btn sm ghost" data-cadd="${k}">加入</button></div>`:""}
+       ${k>0?`<div class="mini" style="margin-top:6px">和前一段的關係：${RELS.map(r=>`<button class="tg ${s.rel===r?"on":""}" data-rel="${k}|${r}">${r}</button>`).join("")}</div>`:""}
+      </div>`}).join("");
+    c.querySelectorAll("[data-rm]").forEach(b=>b.onclick=()=>{const [k,j]=b.dataset.rm.split("|").map(Number);p.secs[k].items.splice(j,1);save();mark();drawCards()});
+    c.querySelectorAll("[data-tag]").forEach(b=>b.onclick=()=>{const [k,j,t]=b.dataset.tag.split("|");const it=p.secs[+k].items[+j];it.tags=it.tags.includes(t)?it.tags.filter(x=>x!==t):[...it.tags,t];save();drawCards()});
+    c.querySelectorAll("[data-rel]").forEach(b=>b.onclick=()=>{const [k,r]=b.dataset.rel.split("|");p.secs[+k].rel=r;save();drawCards()});
+    c.querySelectorAll("[data-cadd]").forEach(b=>b.onclick=()=>{const k=+b.dataset.cadd,inp=c.querySelector(`[data-cin="${k}"]`),v=inp.value.trim();if(clen(v)<4){toast("請貼上一句完整的句子");return}
+      const si=findSent(v.replace(/^「|」$/g,"").slice(0,12));p.secs[k].items.push({si:-1,text:v,p:si>=0?SENTS[si].p:0,custom:true,tags:[]});save();drawCards()});
+    gate();
   }
   function gate(){
-    const g=[]; if(!d.lens)g.push("選鏡頭"); if(!d.clues.length)g.push("在上方頭燈畫面點選一條線索（虛線底的句子）");
-    if(ownLen(d.thought,st.starters)<10)g.push("接著句型寫下想法（10 字以上）");
-    $("#gate").textContent=g.length?"還差："+g.join("、"):"";
-    $("#nextBtn").disabled=!PREVIEW&&!!g.length;
+    const g=[];
+    if(p.secs.some(s=>!s.items.length)) g.push("每個區段至少拉 1 句");
+    if(p.secs.some(s=>s.items.some(it=>!it.tags.length))) g.push("每句選「主要呈現」");
+    if(p.secs.slice(1).some(s=>!s.rel)) g.push("選區段②③和前一段的關係");
+    $("#gate").textContent=g.length?"還差："+g.join("、"):"";bindNav(!g.length);
   }
-  markClues();drawBag();gate();
-  app.querySelectorAll(".lens-btn").forEach(b=>b.onclick=()=>{
-    d.lens=b.dataset.lens;save();
-    app.querySelectorAll(".lens-btn").forEach(x=>x.classList.toggle("on",x===b));
-    scene.className="scene lens-"+d.lens;scene.style.setProperty("--r",LENS[d.lens].r+"px");
-    scene.querySelector(".off-msg").textContent="";
-    $("#lensFb").innerHTML=lensFeedback(st,d);gate();
-  });
-  const ta=$("#thought");
-  ta.addEventListener("input",()=>{d.thought=ta.value;save();gate()});
-  app.querySelectorAll("[data-st]").forEach(b=>b.onclick=()=>{
-    const s=st.starters[+b.dataset.st];
-    ta.value=ta.value.trim()?ta.value.replace(/\s*$/,"\n")+s:s;
-    d.thought=ta.value;save();gate();ta.focus();ta.setSelectionRange(ta.value.length,ta.value.length);
-  });
-  $("#prevBtn").onclick=()=>go(i===0?"pre":"s"+(i-1));
-  $("#nextBtn").onclick=()=>go(i===STATIONS.length-1?"p2":"s"+(i+1));
+  mark();drawCards();
+}
+function closePullMenu(){const m=$("#pullmenu");if(m)m.remove()}
+document.addEventListener("pointerdown",e=>{const m=$("#pullmenu");if(m&&!m.contains(e.target)&&!e.target.closest(".sn"))m.remove()});
+/* 3. 系統丟出不同視角，雙燈比對 */
+function p1Compare(nav,bindNav){
+  const p=state.p1, c=p.cmp;
+  if(!p.focus||!p.angle){go("s0");return}
+  const A=ANGLES[p.angle];
+  const mineFirst=(p.secs.find(s=>s.items.length)||{items:[{text:""}]}).items[0].text;
+  let body="";
+  if(c.i<0){
+    body=`<div class="card" style="text-align:center;padding:34px"><p class="lead" style="font-size:17px">同一篇課文，換個角度看，抓出來的句子會一樣嗎？</p><button class="btn ember big" id="throwBtn">系統為你丟出另一種不同視角</button></div>`;
+  }else{
+    const o=sysOption(p,c.i), OA=ANGLES[o.angle], OF=FOCUS[o.focus];
+    const sysIdx=OA.picks.map(pk=>findSent(pk[o.focus]));
+    const mineIdx=new Set();p.secs.forEach(s=>s.items.forEach(it=>{if(it.si>=0)mineIdx.add(it.si)}));
+    const paras=[...new Set([...mineIdx,...sysIdx].filter(k=>k>=0).map(k=>SENTS[k].p))].sort((a,b)=>a-b);
+    const markFn=k=>(mineIdx.has(k)?"mine ":"")+(sysIdx.includes(k)?"sys":"");
+    const tpl=`我原本選【${A.name}】，拉了「${mineFirst}」這句；當系統丟出【${OA.name}】來對照「${sysIdx[0]>=0?SENTS[sysIdx[0]].t:OA.picks[0][o.focus]}」時，我發現最大的不同是`;
+    if(!c.sentence.trim()||c.sentence.trim()===c.tpl.trim()){c.sentence=tpl}
+    c.tpl=tpl;c.angle=o.angle;c.focus=o.focus;save();
+    body=`<div class="sysbar"><span>系統丟出：<b>角度 ${o.angle}｜${OA.name}</b> × <b>焦點：${OF.short}</b></span><button class="btn sm ghost" id="againBtn">換另一個比較</button></div>
+     <div class="legend" style="margin:10px 0 6px"><i style="background:#f0c38f"></i>暖光＝你拉的句子 <i style="background:#8cb8e6"></i>冷光＝系統對照的句子</div>
+     <div class="scene dual"><div class="text">${sceneHTML(markFn,paras)}</div></div>
+     <div class="cmp-table">${[0,1,2].map(k=>`<div class="cmp-row"><div class="cmp-cell mine"><div class="note">你的 ${["①","②","③"][k]} ${A.secs[k]}</div>${p.secs[k].items.map(it=>`<div>「${esc(it.text)}」</div>`).join("")}</div>
+       <div class="cmp-cell sys"><div class="note">系統的 ${["①","②","③"][k]} ${OA.secs[k]}</div><div>「${esc(sysIdx[k]>=0?SENTS[sysIdx[k]].t:OA.picks[k][o.focus])}」</div></div></div>`).join("")}</div>
+     <div class="step-label"><b>1</b>勾選差異點：這兩組文句與切法相比，最大的不同是什麼？（可複選）</div>
+     <div class="chips">${DIFFS.map((d,k)=>`<button class="chip ${c.diffs.includes(k)?"on":""}" data-d="${k}">${d}</button>`).join("")}</div>
+     <div class="step-label"><b>2</b>一句話比較：把句子寫完</div>
+     <textarea id="cmpS" maxlength="3000">${esc(c.sentence)}</textarea>`;
+  }
+  app.innerHTML=`<div class="wrap">${p1Head(2)}<h2>換一盞燈看看：同一篇課文，差在哪裡？</h2>${body}${nav("","下一步：主旨體悟")}</div>`;
+  const gate=()=>{const g=[];if(c.i<0)g.push("讓系統丟出另一種視角");else{if(!c.diffs.length)g.push("勾選差異點");const own=c.sentence.startsWith(c.tpl)?clen(c.sentence.slice(c.tpl.length)):clen(c.sentence)-clen(c.tpl);if(own<8)g.push("把比較句寫完（8 字以上）")}
+    $("#gate").textContent=g.length?"還差："+g.join("、"):"";bindNav(!g.length)};
+  if($("#throwBtn")) $("#throwBtn").onclick=()=>{c.i=0;save();p1Compare(nav,bindNav)};
+  if($("#againBtn")) $("#againBtn").onclick=()=>{c.i=(c.i+1)%6;save();p1Compare(nav,bindNav)};
+  app.querySelectorAll("[data-d]").forEach(b=>b.onclick=()=>{const k=+b.dataset.d;c.diffs=c.diffs.includes(k)?c.diffs.filter(x=>x!==k):[...c.diffs,k];b.classList.toggle("on");save();gate()});
+  const ta=$("#cmpS");if(ta)ta.addEventListener("input",()=>{c.sentence=ta.value;save();gate()});
+  gate();
+}
+/* 4. 主旨體悟 */
+const THEME_STARTER="讀完〈獵人〉，我體會到：「我」在山林裡雖然";
+function p1Theme(nav,bindNav){
+  const p=state.p1, t=p.theme;
+  if(!t.text) t.text=THEME_STARTER;
+  const all=[];p.secs.forEach(s=>s.items.forEach(it=>all.push(it.text)));
+  app.innerHTML=`<div class="wrap">${p1Head(3)}<h2>收束：這篇文章讓你體會到什麼？</h2>
+   <p class="lead" style="font-size:16px">回頭看看你拉過的句子，和系統丟給你的另一盞燈。把它們收成一句屬於你的體悟。</p>
+   <div class="card" style="line-height:1.9;font-family:var(--serif)">${all.map(x=>`<span class="tag" style="font-family:var(--serif)">「${esc(x)}」</span>`).join("")}</div>
+   <div class="step-label"><b>1</b>你覺得最重要的關鍵詞（可複選）</div>
+   <div class="chips">${THEME_KEYS.map((k,i)=>`<button class="chip ${t.keys.includes(i)?"on":""}" data-k="${i}">${k}</button>`).join("")}</div>
+   <div class="step-label"><b>2</b>寫下你的體悟（也可以寫你還有點困惑的地方）</div>
+   <textarea id="thm" maxlength="3000">${esc(t.text)}</textarea>
+   ${nav("","前往第二部分")}</div>`;
+  const gate=()=>{const g=[];if(ownLen(t.text,[THEME_STARTER])<12)g.push("接著寫完你的體悟（12 字以上）");$("#gate").textContent=g.length?"還差："+g.join("、"):"";bindNav(!g.length)};
+  app.querySelectorAll("[data-k]").forEach(b=>b.onclick=()=>{const k=+b.dataset.k;t.keys=t.keys.includes(k)?t.keys.filter(x=>x!==k):[...t.keys,k];b.classList.toggle("on");save()});
+  $("#thm").addEventListener("input",e=>{t.text=e.target.value;save();gate()});
+  gate();
 }
 
 /* ---------- 第二部分 ---------- */
@@ -764,7 +873,7 @@ function renderP2(){
   </nav></div>`;
   drawPlay();drawRounds();
   $("#spinBtn").onclick=spin;
-  $("#backP1").onclick=()=>go("s"+(STATIONS.length-1));
+  $("#backP1").onclick=()=>go("s"+(P1STEPS.length-1));
   $("#toP3").onclick=()=>go("p3");
 }
 function spin(){
@@ -935,7 +1044,8 @@ function refresh(){
 function buildRecord(){
   const now=Date.now(), t=state.t, o=originality(state.p3.text);
   return {
-    p1:state.p1.map(x=>({lens:x.lens,clues:x.clues,did:x.did,said:x.said,mood:x.mood,thought:x.thought})),
+    p1:{focus:state.p1.focus,angle:state.p1.angle,secs:state.p1.secs.map(s=>({items:s.items.map(it=>({si:it.si,text:it.text,p:it.p,custom:it.custom,tags:it.tags})),rel:s.rel})),
+      cmp:{angle:state.p1.cmp.angle,focus:state.p1.cmp.focus,diffs:state.p1.cmp.diffs,sentence:state.p1.cmp.sentence},theme:{keys:state.p1.theme.keys,text:state.p1.theme.text}},
     p2:state.p2.rounds.map(r=>({id:r.id,shots:r.shots.map(s=>({arrow:s.arrow})),reason:r.reason})),
     p3:{bg:state.p3.bg,text:state.p3.text,originality:Math.round(o.ratio*100)/100,stamp:stampType(o)||""},
     durationSec:t.start?Math.round((now-t.start)/1000):0,
@@ -1077,13 +1187,8 @@ function buildText(stu,rec,ts){
     L.push("","━━ 前測 ━━",`第 1～5 題：${state.pre.answers.map((a,i)=>(i+1)+"."+(OPT[a]||"-")).join("　")}`,
       `第 6 題（全文重點）：(${OPT[po.choice]||"-"}) ${KEYPOINTS[po.choice]||""}`,`原因：${po.reason||"—"}`);
   }
-  L.push("","━━ 第一部分｜文章、手電筒、鏡頭 ━━");
-  STATIONS.forEach((st,k)=>{
-    const r=rec.p1[k]||{clues:[]};
-    L.push(`▍${st.range}｜${st.title}`,`鏡頭：${r.lens?LENS[r.lens].name:"（未選）"}`,
-      `照亮的線索：${r.clues.length?r.clues.map(ci=>"「"+st.clues[ci].t.replace(/^「|」$/g,"")+"」").join("、"):"（無）"}`,
-      `我的想法：${r.thought||"—"}`,"");
-  });
+  L.push("","━━ 第一部分｜頭燈與視角 ━━");
+  L.push(...p1Lines(rec.p1),"");
   L.push("━━ 第二部分｜獵人的遊戲 ━━");
   rec.p2.forEach((r,k)=>{const c=CLAIMS[r.id];L.push(`▍第 ${k+1} 回｜${c.tag}（${c.sdg.join("、")}）`,`假獵人說：「${c.say}」`,`我的箭：${r.shots.map(s=>ARROW_NAME[s.arrow]).join(" → ")}`,`反駁理由：${r.reason}`,"")});
   if(!rec.p2.length) L.push("（尚未完成）","");
@@ -1092,12 +1197,21 @@ function buildText(stu,rec,ts){
   return L.join("\n");
 }
 
+function p1Lines(p){
+  if(!p||!p.angle) return ["（尚未完成）"];
+  const A=ANGLES[p.angle], L=[`觀察焦點：${FOCUS[p.focus]?FOCUS[p.focus].name:"—"}`,`切分角度：${A.name}（${A.secs.join(" ➔ ")}）`];
+  p.secs.forEach((s,k)=>{L.push(`【${["①","②","③"][k]} ${A.secs[k]}】${k&&s.rel?"（和前一段："+s.rel+"）":""}`);s.items.forEach(it=>L.push(`　・「${it.text}」${it.custom?"（自己輸入）":"（第"+CN[it.p]+"段）"}〔${it.tags.join("、")||"—"}〕`))});
+  if(p.cmp.angle) L.push(`系統對照：${ANGLES[p.cmp.angle].name} × ${FOCUS[p.cmp.focus].short}`,`差異點：${p.cmp.diffs.map(k=>DIFFS[k]).join("；")||"—"}`,`我的比較：${p.cmp.sentence||"—"}`);
+  L.push(`主旨體悟：${p.theme.keys.length?"〔"+p.theme.keys.map(k=>THEME_KEYS[k]).join("、")+"〕":""}${p.theme.text||"—"}`);
+  return L;
+}
+
 /* ============ 個人報告書 ============ */
 function reportHTML(rep,opt={}){
   const {student:s,rec,ana}=rep;
-  const lensMatch=rec.p1.filter((x,i)=>x.lens&&x.lens===STATIONS[i].lens).length;
-  const p1Own=rec.p1.map((x,i)=>ownLen(x.thought,STATIONS[i].starters));
-  const best=p1Own.indexOf(Math.max(...p1Own));
+  const P=rec.p1||freshP1(), PA=ANGLES[P.angle]||{name:"—",secs:[]};
+  const turns=P.secs.filter(s=>s.rel==="明顯轉折").length;
+  const themeOwn=ownLen(P.theme.text,[THEME_STARTER]);
   const totalShots=rec.p2.reduce((t,r)=>t+r.shots.length,0);
   const adjusted=rec.p2.filter(r=>r.shots.length>1).length;
   const text=rec.p3.text||"";
@@ -1106,17 +1220,18 @@ function reportHTML(rep,opt={}){
   const lv=(ok,ic,name)=>`<div class="level ${ok?"ok":""}"><div class="ic">${ok?ic:"○"}</div><b>${name}</b><div class="note">${ok?"已完成":"未完成"}</div></div>`;
   // 優勢
   const good=[];
-  if(ana.p1Words>=400) good.push("你在第一部分寫得很充實，把看見的、感受到的都記了下來。");
-  if(ana.clues>=10) good.push(`你很會找線索，一共照亮了 ${ana.clues} 條關鍵句。`);
-  if(p1Own[best]>=40) good.push(`寫得最用心的是「${STATIONS[best].title}」這一段，看得出你真的停下來想了。`);
+  if(ana.clues>=6) good.push(`你為三個區段拉了 ${ana.clues} 句文句，用自己的「${PA.name}」把全文切得很清楚。`);
+  if(turns) good.push("你注意到區段之間的「明顯轉折」，讀出了文章情節或心境的變化。");
+  if(P.cmp.diffs.length>=2) good.push("和系統的另一盞燈比較時，你看見了不只一種差異。");
+  if(themeOwn>=40) good.push("你的主旨體悟寫得很完整，看得出你真的停下來想了。");
   if(adjusted) good.push(`第二部分有 ${adjusted} 回，你願意調整角度再射一次——換個角度想，就是思考。`);
   if(ratio>=0.7&&clen(text)>=20) good.push("明信片大多用自己的話寫成，這是屬於你的回應。");
   else if(/「/.test(text)) good.push("你懂得借用課文金句，把老獵人的話帶進自己的信裡。");
   if(!good.length) good.push("你完整走過了這趟山林旅程。");
   // 可以加強
   const more=[];
-  const weak=p1Own.map((n,i)=>[n,i]).filter(([n])=>n<25).map(([,i])=>STATIONS[i].title);
-  if(weak.length) more.push(`「${weak.slice(0,3).join("」「")}」的想法可以再多寫一點：除了感覺，也試著說說「為什麼」。`);
+  const weak=themeOwn<25;
+  if(weak) more.push("主旨體悟可以再多寫一點：從「失落」寫到「學會了什麼」，也試著說說「為什麼」。");
   if(rec.p2.some(r=>clen(r.reason)<25)) more.push("反駁理由可以加上課文證據，用「課文中……，所以我認為……」把理由說完整。");
   if(ratio<0.7&&clen(text)>=20) more.push("明信片可以試著多寫一段自己的話，不必只靠課文金句。");
   // 開放題回饋
@@ -1128,7 +1243,8 @@ function reportHTML(rep,opt={}){
   else fb.push("可以再加一句：以後遇到相似的處境（想要、卻該放手的時候），你會怎麼做？");
   // 下一步
   const next=[];
-  next.push(weak.length?`回到「${weak[0]}」再讀一次，換一個鏡頭看看，會不會看到不一樣的東西？`:"挑一段你最有感覺的課文，換一個鏡頭重讀，寫下新的發現。");
+  const other=Object.keys(ANGLES).find(k=>k!==P.angle&&k!==P.cmp.angle);
+  next.push(other?`換成「${ANGLES[other].name}」（${ANGLES[other].secs.join(" ➔ ")}）再讀一次，看看會抓到哪些不一樣的句子。`:"換一種切法重讀全文，寫下新的發現。");
   next.push("想一想：在你的生活裡，有沒有像「最後的山豬」一樣，需要你忍住、留給別人的東西？");
   next.push("把你的明信片念給同學聽，聽聽別人怎麼安頓那個「我」。");
   // 第二部分（公布後）
@@ -1141,9 +1257,9 @@ function reportHTML(rep,opt={}){
    <h2>我的山林旅程報告書</h2>
    <div class="meta">${esc(s.cls)} 班 ${esc(s.seat)} 號 ${esc(s.name)}　｜　完成時間：${fmtTime(rep.ts)}　｜　用時：${fmtDur(rec.durationSec)}</div>
    ${rep.pretest?preReportHTML(rep.pretest):""}
-   <section><h3>我的旅程</h3><div class="levels">${lv(parts[0],"🔦","一｜頭燈與鏡頭")}${lv(parts[1],"🏹","二｜獵人的遊戲")}${lv(parts[2],"✉️","三｜森林明信片")}</div></section>
+   <section><h3>我的旅程</h3><div class="levels">${lv(parts[0],"🔦","一｜頭燈與視角")}${lv(parts[1],"🏹","二｜獵人的遊戲")}${lv(parts[2],"✉️","三｜森林明信片")}</div></section>
    <section><h3>各部分表現</h3><ul>
-     <li><b>第一部分</b>：照亮 ${ana.clues} 條線索；有 ${lensMatch} 段的鏡頭和作者相近（鏡頭沒有對錯）；書寫約 ${ana.p1Words} 字。</li>
+     <li><b>第一部分</b>：焦點「${FOCUS[P.focus]?FOCUS[P.focus].short:"—"}」、切法「${PA.name}」，拉了 ${ana.clues} 句文句${P.cmp.angle?`，和系統的「${ANGLES[P.cmp.angle].name}」做了比對`:""}。<br><span class="mute">我的主旨體悟：${esc(P.theme.text||"—")}</span></li>
      <li><b>第二部分</b>：完成 ${rec.p2.length} 回，共射出 ${totalShots} 支箭，其中 ${adjusted} 回調整過角度；反駁理由約 ${ana.p2Words} 字。</li>
      <li><b>第三部分</b>：明信片約 ${ana.p3Words} 字，和課文不同的文字比例約 ${Math.round(ratio*100)}%，郵票：${STAMP_NAME[rec.p3.stamp]||"—"}。</li>
    </ul></section>
@@ -1237,14 +1353,16 @@ function teacherHTML(rows){
   if(T.onlyFlag) att=att.filter(x=>x.a.flags.length);
   // 第二部分分析
   const cl=CLAIMS.map(c=>({c,n:0,first3:0,fin3:0,firstArrow:{}}));
-  // 第一部分鏡頭
-  const lens=STATIONS.map(()=>({wide:0,mid:0,macro:0}));
-  rows.forEach(b=>{const a=b.attempts.at(-1);
-    a.rec.p1.forEach((x,i)=>{if(x.lens)lens[i][x.lens]++});
+  // 第一部分：切法與焦點
+  const angCnt={A:0,B:0,C:0,D:0},focCnt={me:0,hunter:0,gap:0},sentCnt={};
+  rows.forEach(b=>{const a=b.attempts.at(-1);if(!a)return;const P=a.rec.p1;
+    if(P.angle)angCnt[P.angle]++;if(P.focus)focCnt[P.focus]++;
+    P.secs.forEach(s=>s.items.forEach(it=>{const k=it.text;sentCnt[k]=(sentCnt[k]||0)+1}));
     a.rec.p2.forEach((r,k)=>{const s=cl[r.id];s.n++;const ar=(a.ana.rounds||[])[k]||{};if(ar.accs&&ar.accs[0]===3)s.first3++;if(ar.final===3)s.fin3++;const f=r.shots[0]&&r.shots[0].arrow;if(f)s.firstArrow[f]=(s.firstArrow[f]||0)+1});
   });
   const pct=(a,n)=>n?Math.round(a/n*100):0;
-  const colors={wide:"#7f9282",mid:"#bf6b33",macro:"#34493a"};
+  const nP=rows.filter(b=>b.attempts.length).length||0;
+  const topS=Object.entries(sentCnt).sort((a,b)=>b[1]-a[1]).slice(0,8);
   return `
   <h3 style="margin-top:34px">教師區</h3>
   <div class="card tools">
@@ -1275,10 +1393,11 @@ function teacherHTML(rows){
     return `<tr><td>${s.c.tag}</td><td>${s.n}</td><td>${pct(s.first3,s.n)}%</td><td>${pct(s.fin3,s.n)}%</td><td>${top?ARROW_NAME[top[0]]+"（"+top[1]+"）":"—"}</td><td>${ans?ans.best.join("、"):'<span class="err">後端未貼答案</span>'}</td></tr>`}).join("")}
   </table></div>
 
-  <h3 style="margin-top:28px">第一部分：鏡頭選擇</h3>
-  <div class="legend">${Object.keys(colors).map(k=>`<i style="background:${colors[k]}"></i>${LENS[k].name}`).join("")}　（★ 為作者較接近的鏡頭，僅供討論）</div>
-  <div class="bars">${STATIONS.map((st,i)=>{const L=lens[i],n=L.wide+L.mid+L.macro;
-    return `<div class="b"><span>${st.title} ★${LENS[st.lens].name}</span><div class="stack">${Object.keys(colors).map(k=>`<i style="width:${n?L[k]/n*100:0}%;background:${colors[k]}"></i>`).join("")}</div><span>${n} 人</span></div>`}).join("")}</div>
+  <h3 style="margin-top:28px">第一部分：切法與焦點</h3>
+  <div class="bars">${Object.keys(ANGLES).map(k=>`<div class="b"><span>${ANGLES[k].name}</span><div class="t"><i style="width:${nP?angCnt[k]/nP*100:0}%"></i></div><span>${angCnt[k]} 人</span></div>`).join("")}
+  ${Object.keys(FOCUS).map(k=>`<div class="b"><span>焦點：${FOCUS[k].short}</span><div class="t"><i style="width:${nP?focCnt[k]/nP*100:0}%;background:var(--ember)"></i></div><span>${focCnt[k]} 人</span></div>`).join("")}</div>
+  <p class="note" style="margin-top:10px">最常被拉進區段的句子：</p>
+  <ol style="line-height:1.9;font-family:var(--serif)">${topS.map(([t,c])=>`<li>「${esc(t)}」（${c} 人）</li>`).join("")||"<li>—</li>"}</ol>
 
   <h3 style="margin-top:28px">學生診斷</h3>
   <div class="tools"><select id="diag" style="border:1px solid var(--line);border-radius:8px;padding:8px">${rows.slice().sort((a,b)=>a.seat-b.seat).map(b=>`<option value="${b.seat}">${b.seat} 號 ${esc(b.name)}</option>`).join("")}</select><button class="btn sm" id="diagBtn">開啟報告書</button></div>
@@ -1313,10 +1432,10 @@ function bindTeacher(rows){
   };
   $("#csv").onclick=()=>{
     const cell=v=>{let s=String(v??"");if(/^[=+\-@]/.test(s))s="'"+s;return '"'+s.replace(/"/g,'""')+'"'};
-    const head=["交出時間","班級","座號","姓名","前測得分","前測選擇","全文重點","全文重點原因","用時(秒)","書寫總字數","靶心回合","郵票","原創比例","提醒","第一部分想法","第二部分反駁理由","明信片"];
+    const head=["交出時間","班級","座號","姓名","前測得分","前測選擇","全文重點","全文重點原因","用時(秒)","書寫總字數","靶心回合","郵票","原創比例","提醒","第一部分","第二部分反駁理由","明信片"];
     const lines=[head.map(cell).join(",")];
     allAttempts(rows).forEach(({b,a})=>lines.push([fmtTime(a.ts),b.cls,b.seat,a.name,b.pretest?b.pretest.score:"",b.pretest?b.pretest.answers.map(x=>OPT[x]).join(""):"",b.pretest&&b.pretest.open?OPT[b.pretest.open.choice]:"",b.pretest&&b.pretest.open?b.pretest.open.reason:"",a.rec.durationSec,a.ana.words,a.ana.bulls,STAMP_NAME[a.rec.p3.stamp]||"",a.rec.p3.originality,a.flags.join("、"),
-      a.rec.p1.map((x,i)=>`【${STATIONS[i].title}】${x.thought}`).join("\n"),a.rec.p2.map(r=>`【${CLAIMS[r.id].tag}】${r.reason}`).join("\n"),a.rec.p3.text].map(cell).join(",")));
+      p1Lines(a.rec.p1).join("\n"),a.rec.p2.map(r=>`【${CLAIMS[r.id].tag}】${r.reason}`).join("\n"),a.rec.p3.text].map(cell).join(",")));
     const blob=new Blob(["﻿"+lines.join("\r\n")],{type:"text/csv"});
     const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download=`獵人_${cls}班.csv`;document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},1500);
   };
@@ -1365,9 +1484,10 @@ async function drawScreen(){
      <div class="scr-num"><div class="v">${res.stamps.learn}</div><div class="k">山林見習獵人郵票</div></div>
    </div>
    <div class="scr-grid">
-     <div class="scr-panel"><h2>第一部分：大家用什麼鏡頭看？</h2>
-       <div style="font-size:18px;color:#4b524d;margin-bottom:6px">${Object.keys(colors).map(k=>`<span style="display:inline-block;width:16px;height:16px;border-radius:3px;background:${colors[k]};margin:0 6px 0 14px;vertical-align:middle"></span>${LENS[k].name}`).join("")}</div>
-       ${STATIONS.map((st,i)=>{const L=res.lens[i],n=L.wide+L.mid+L.macro;return `<div class="scr-row"><span>${st.title}</span><div class="stack">${Object.keys(colors).map(k=>`<i style="width:${n?L[k]/n*100:0}%;background:${colors[k]}"></i>`).join("")}</div></div>`}).join("")}
+     <div class="scr-panel"><h2>第一部分：大家怎麼切、從哪裡看？</h2>
+       ${Object.keys(ANGLES).map(k=>{const n=res.count||0,c=(res.angles||{})[k]||0;return `<div class="scr-row"><span>${ANGLES[k].name}</span><div class="t"><i style="width:${n?c/n*100:0}%"></i><em>${c} 人</em></div></div>`}).join("")}
+       ${Object.keys(FOCUS).map(k=>{const n=res.count||0,c=(res.focus||{})[k]||0;return `<div class="scr-row"><span>焦點：${FOCUS[k].short}</span><div class="t"><i style="width:${n?c/n*100:0}%;background:#b8622e"></i><em>${c} 人</em></div></div>`}).join("")}
+       ${(res.topSents||[]).length?`<div style="font-size:20px;margin-top:12px;font-family:var(--serif)">最常被拉的句子：「${esc(res.topSents[0].t)}」</div>`:""}
      </div>
      <div class="scr-panel"><h2>第二部分：射中靶心的比例</h2>
        ${res.claims.map(c=>{const p=c.n?Math.round(c.bulls/c.n*100):0;return `<div class="scr-row"><span>${c.tag}</span><div class="t"><i style="width:${p}%"></i><em>${c.n?p+"%":"—"}</em></div></div>`}).join("")}

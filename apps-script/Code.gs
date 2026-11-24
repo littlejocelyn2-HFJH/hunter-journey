@@ -98,17 +98,36 @@ function cleanStudent(s) {
   return { cls: cls, seat: seat, name: name };
 }
 
-function cleanRecord(r) {
-  r = r || {};
-  const p1 = (Array.isArray(r.p1) ? r.p1 : []).slice(0, 7).map(x => {
-    x = x || {};
+const P1_TAGS = ['動作', '想法', '感情', '背景說明'];
+const P1_RELS = ['順順承接', '明顯轉折'];
+const ANGLE_NAMES = { A: '事件推進線', B: '空間與光影線', C: '敘事焦點線', D: '成長試煉線' };
+const FOCUS_NAMES = { me: '「我」', hunter: '獵人', gap: '視角落差' };
+function intList(a) { return (Array.isArray(a) ? a : []).map(n => intIn(n, 0, 9)).filter(n => n != null).slice(0, 10); }
+function cleanP1(x) {
+  x = x || {};
+  const secs = (Array.isArray(x.secs) ? x.secs : []).slice(0, 3).map(s => {
+    s = s || {};
     return {
-      lens: ['wide', 'mid', 'macro'].indexOf(x.lens) >= 0 ? x.lens : '',
-      clues: (Array.isArray(x.clues) ? x.clues : []).map(n => intIn(n, 0, 9)).filter(n => n != null).slice(0, 10),
-      did: cut(x.did, LIMITS.short), said: cut(x.said, LIMITS.short), mood: cut(x.mood, LIMITS.short),
-      thought: cut(x.thought, LIMITS.text)
+      items: (Array.isArray(s.items) ? s.items : []).slice(0, 4).map(it => {
+        it = it || {};
+        const si = parseInt(it.si, 10);
+        return { si: (si >= -1 && si <= 999) ? si : -1, text: cut(it.text, 300), p: intIn(it.p, 0, 15) || 0, custom: !!it.custom,
+          tags: (Array.isArray(it.tags) ? it.tags : []).filter(t => P1_TAGS.indexOf(t) >= 0) };
+      }).filter(it => it.text),
+      rel: P1_RELS.indexOf(s.rel) >= 0 ? s.rel : ''
     };
   });
+  while (secs.length < 3) secs.push({ items: [], rel: '' });
+  const c = x.cmp || {}, t = x.theme || {};
+  return {
+    focus: FOCUS_NAMES[x.focus] ? x.focus : '', angle: ANGLE_NAMES[x.angle] ? x.angle : '', secs: secs,
+    cmp: { angle: ANGLE_NAMES[c.angle] ? c.angle : '', focus: FOCUS_NAMES[c.focus] ? c.focus : '', diffs: intList(c.diffs), sentence: cut(c.sentence, LIMITS.text) },
+    theme: { keys: intList(t.keys), text: cut(t.text, LIMITS.text) }
+  };
+}
+function cleanRecord(r) {
+  r = r || {};
+  const p1 = cleanP1(r.p1);
   const p2 = (Array.isArray(r.p2) ? r.p2 : []).slice(0, 8).map(x => {
     x = x || {};
     return {
@@ -133,7 +152,9 @@ function cleanRecord(r) {
 function accOf(a, arrow) { return a.best.indexOf(arrow) >= 0 ? 3 : (a.near.indexOf(arrow) >= 0 ? 2 : 1); }
 
 function analyze(rec) {
-  const p1Words = rec.p1.reduce((t, x) => t + len(x.thought) + len(x.did) + len(x.said) + len(x.mood), 0);
+  const P = rec.p1;
+  const pulled = P.secs.reduce((t, s) => t + s.items.length, 0);
+  const p1Words = len(P.cmp.sentence) + len(P.theme.text) + P.secs.reduce((t, s) => t + s.items.filter(i => i.custom).reduce((a, i) => a + len(i.text), 0), 0);
   const p2Words = rec.p2.reduce((t, x) => t + len(x.reason), 0);
   const p3Words = len(rec.p3.text);
   const rounds = rec.p2.map(x => {
@@ -141,10 +162,10 @@ function analyze(rec) {
     const accs = a ? x.shots.map(s => accOf(a, s.arrow)) : [];
     return { id: x.id, shots: x.shots.length, accs: accs, final: accs.length ? accs[accs.length - 1] : 0 };
   });
-  const p1Done = rec.p1.length >= 4 && rec.p1.every(x => x.lens && x.clues.length && len(x.thought) >= 10);
+  const p1Done = !!(P.focus && P.angle && P.secs.every(s => s.items.length) && len(P.cmp.sentence) >= 10 && len(P.theme.text) >= 10);
   return {
     p1Words: p1Words, p2Words: p2Words, p3Words: p3Words, words: p1Words + p2Words + p3Words,
-    clues: rec.p1.reduce((t, x) => t + x.clues.length, 0),
+    clues: pulled,
     rounds: rounds, bulls: rounds.filter(r => r.final === 3).length,
     parts: [p1Done, rec.p2.length >= 3, p3Words >= 20],
     partsDone: (p1Done ? 1 : 0) + (rec.p2.length >= 3 ? 1 : 0) + (p3Words >= 20 ? 1 : 0)
@@ -207,7 +228,7 @@ function judge(req) {
 function save(student, record, force) {
   const st = cleanStudent(student);
   const rec = cleanRecord(record);
-  if (!rec.p1.length && !rec.p2.length && !rec.p3.text) throw new Error('empty');
+  if (!rec.p1.angle && !rec.p2.length && !rec.p3.text) throw new Error('empty');
   const d = readData();
   let r = findRow(d.rows, st.cls, st.seat);
   if (r && r.attempts.length && !r.redo && !force) return { ok: false, error: 'already' };
@@ -219,7 +240,10 @@ function save(student, record, force) {
   r.attempts.push(att);
   if (r.attempts.length > MAX_ATTEMPTS) r.attempts = r.attempts.slice(-MAX_ATTEMPTS);
   writeRow(d.sh, r);
-  const p1t = rec.p1.map((x, i) => '【' + (i + 1) + '】' + x.thought).join('\n');
+  const P = rec.p1;
+  const p1t = P.angle ? ['焦點：' + (FOCUS_NAMES[P.focus] || '') + '｜切法：' + ANGLE_NAMES[P.angle]]
+    .concat(P.secs.map((s, k) => '【' + (k + 1) + '】' + s.items.map(i => '「' + i.text + '」').join('')))
+    .concat(['比較：' + P.cmp.sentence, '主旨：' + P.theme.text]).join('\n') : '';
   const p2t = rec.p2.map(x => '【' + CLAIM_TAGS[x.id] + '】' + x.reason).join('\n');
   sheet(LOG, LOG_HEAD).appendRow([new Date(ts), st.cls, st.seat, safe(st.name),
     Math.round(rec.durationSec / 6) / 10, ana.words, ana.p1Words, rec.p2.length, ana.bulls,
@@ -335,11 +359,14 @@ function stats(req) {
   rows.forEach(r => { classes[r.cls] = (classes[r.cls] || 0) + 1; });
   const cls = String(req.cls || '');
   const mine = rows.filter(r => r.cls === cls).map(r => r.attempts[r.attempts.length - 1]);
-  const lens = [0, 1, 2, 3, 4, 5, 6].map(() => ({ wide: 0, mid: 0, macro: 0 }));
+  const angles = { A: 0, B: 0, C: 0, D: 0 }, focus = { me: 0, hunter: 0, gap: 0 }, sc = {};
   const claims = CLAIM_TAGS.map(t => ({ tag: t, n: 0, bulls: 0 }));
   const stamps = { guard: 0, learn: 0 };
   mine.forEach(a => {
-    a.rec.p1.forEach((x, i) => { if (lens[i] && x.lens) lens[i][x.lens]++; });
+    const P = a.rec.p1 || {};
+    if (angles[P.angle] != null) angles[P.angle]++;
+    if (focus[P.focus] != null) focus[P.focus]++;
+    (P.secs || []).forEach(s => s.items.forEach(it => { sc[it.text] = (sc[it.text] || 0) + 1; }));
     a.ana.rounds.forEach(r => { claims[r.id].n++; if (r.final === 3) claims[r.id].bulls++; });
     if (stamps[a.rec.p3.stamp] != null) stamps[a.rec.p3.stamp]++;
   });
@@ -349,7 +376,7 @@ function stats(req) {
   const preQ = getPretest().map((q, i) => ({ level: q.level, n: pres.length, right: pres.filter(p => p.correct[i]).length }));
   const keypts = [0, 0, 0, 0];
   pres.forEach(p => { if (p.open) keypts[p.open.choice]++; });
-  return { ok: true, preCount: pres.length, preQ: preQ, keypts: keypts, classes: classes, cls: cls, count: mine.length, finished: mine.filter(a => a.ana.partsDone === 3).length, lens: lens, claims: claims, stamps: stamps, top: top };
+  return { ok: true, preCount: pres.length, preQ: preQ, keypts: keypts, classes: classes, cls: cls, count: mine.length, finished: mine.filter(a => a.ana.partsDone === 3).length, angles: angles, focus: focus, topSents: Object.keys(sc).map(k => ({ t: k, n: sc[k] })).sort((x, y) => y.n - x.n).slice(0, 5), claims: claims, stamps: stamps, top: top };
 }
 
 /* ---------- 教師區 ---------- */
