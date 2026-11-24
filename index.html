@@ -301,6 +301,19 @@ body.screen-mode{background:#f7f1e4}
 .padsteps li{margin-bottom:12px}
 .padsteps .btn{margin:6px 6px 0 0}
 .share{display:flex;flex-wrap:wrap;gap:12px;justify-content:space-between;align-items:center;background:#fff6ea;border:1px solid #f0d2ad;border-radius:14px;padding:16px 20px;margin-top:20px}
+.leg{background:none;border:none;padding:4px 2px;cursor:pointer;font:inherit;text-align:left}
+.maplink{border:1px solid var(--line);background:#fff;border-radius:999px;padding:4px 12px;font-size:14px;white-space:nowrap;min-height:34px}
+.maplink.on{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+.hub{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;margin-top:16px}
+@media (max-width:820px){.hub{grid-template-columns:1fr}}
+.hubcard{background:#fffdf8;border:1px solid var(--line);border-radius:14px;padding:18px;display:flex;flex-direction:column;gap:8px}
+.hubcard h3{margin:0;font-size:20px}
+.hubcard p{margin:0;font-size:15px;line-height:1.75;color:#4a514b;flex:1}
+.hubcard .hs{font-size:13px;color:var(--mute)}
+.hubcard.started{border-color:#efd3b0}
+.hubcard.started .hs{color:var(--ember)}
+.hubcard.done{border-color:var(--moss);background:#f2f6f0}
+.hubcard.done .hs{color:var(--moss);font-weight:600}
 .cloud{font-size:12px;color:var(--mute);white-space:nowrap;margin-left:6px}
 @media (max-width:700px){.cloud{display:none}}
 .foot{text-align:center;margin-top:40px;font-size:13px;color:var(--mute)}
@@ -394,6 +407,15 @@ const THEME_KEYS=["尊重生命","承擔責任","自我成長","懂得節制","�
 const P1STEPS=["選三段結構","選焦點拉文句","差異比對","主旨體悟"];
 const SENTS=(()=>{const out=[];Object.keys(TEXT).forEach(n=>{(TEXT[n].match(/[^。！？]*[。！？]+」?|[^。！？]+$/g)||[]).forEach(t=>{if(t.trim())out.push({p:+n,t})})});return out})();
 const findSent=t=>SENTS.findIndex(x=>x.t.includes(t));
+function p1IsDone(p){return !!(p&&p.focus&&p.angle&&p.secs.every(s=>s.items.length)&&clen(p.cmp.sentence)>=10&&clen(p.theme.text)>=10)}
+function partStatus(){
+  const p=state.p1, r=state.p2.rounds.length, L=clen(state.p3.text);
+  return [
+    {done:p1IsDone(p),started:!!p.angle,note:p1IsDone(p)?"已完成":p.angle?"進行中":"還沒開始"},
+    {done:r>=3,started:r>0||!!state.p2.cur,note:r>=3?`已完成（${r} 回）`:r||state.p2.cur?`進行中（${r}/3 回）`:"還沒開始"},
+    {done:L>=20,started:L>0,note:L>=20?"明信片已寫好":L?"寫了一部分":"還沒開始"}
+  ];
+}
 function freshP1(){return {focus:"",angle:"",secs:[0,1,2].map(()=>({items:[],rel:""})),cmp:{i:-1,angle:"",focus:"",diffs:[],sentence:"",tpl:""},theme:{keys:[],text:""}}}
 function sysOption(p,i){const oa=Object.keys(ANGLES).filter(k=>k!==p.angle),of=Object.keys(FOCUS).filter(k=>k!==p.focus);return {angle:oa[i%oa.length],focus:of[Math.floor(i/oa.length)%of.length]}}
 
@@ -557,20 +579,23 @@ function topbar(mode){
   const tb=$("#topbar");
   if(mode!=="quiz"){tb.innerHTML=`<a class="ttl" href="#">〈獵人〉山林旅程</a><a class="home" href="#">🏠 回主畫面</a>`;$(".top").style.display=mode==="screen"?"none":"";return}
   $(".top").style.display="";
-  const s=state.step;let p=0,f0=state.pre.submitted?1:.3,f1=0,f2=0,f3=0;
-  if(s==="pre"){p=0}
-  if(s.startsWith("s")&&s!=="pre"){p=1;f1=(+s.slice(1)+1)/P1STEPS.length}
-  if(s==="p2"){p=2;f1=1;f2=Math.min(state.p2.rounds.length/3,1)}
-  if(s==="p3"){p=3;f1=1;f2=1;f3=.5}
-  const leg=(n,label,f)=>`<div class="leg ${p===n?"on":""}"><span>${label}</span><div class="bar"><i style="width:${f*100}%"></i></div></div>`;
+  const s=state.step, ps=partStatus();
+  const p=s==="pre"?0:/^s\d$/.test(s)?1:s==="p2"?2:s==="p3"?3:-1;
+  const f0=state.pre.submitted?1:.3;
+  const f1=ps[0].done?1:state.p1.angle?((+(state.p1Last||"s0").slice(1)+1)/P1STEPS.length)*.9:0;
+  const f2=Math.min(state.p2.rounds.length/3,1), f3=ps[2].done?1:clen(state.p3.text)?.5:0;
+  const leg=(n,label,f)=>`<button class="leg ${p===n?"on":""}" data-leg="${n}"><span>${label}</span><div class="bar"><i style="width:${f*100}%"></i></div></button>`;
   if(PREVIEW){
-    const jumps=[["pre","前測"],...P1STEPS.map((st,i)=>["s"+i,"一-"+(i+1)]),["p2","二"],["p3","三"],["rep","報告書"]];
+    const jumps=[["hub","地圖"],["pre","前測"],...P1STEPS.map((st,i)=>["s"+i,"一-"+(i+1)]),["p2","二"],["p3","三"],["rep","報告書"]];
     tb.innerHTML=`<span class="ttl" style="color:var(--ember)">👩‍🏫 老師預覽</span><div style="display:flex;gap:6px;flex-wrap:wrap;flex:1">${jumps.map(([k,l])=>`<button class="btn sm ${state.step===k||(k==="rep"&&state.step==="rep")?"":"ghost"}" data-jump="${k}">${l}</button>`).join("")}</div><button class="btn sm ghost" id="pvReset">清空預覽</button><a class="home" href="#scores">離開預覽</a>`;
     tb.querySelectorAll("[data-jump]").forEach(b=>b.onclick=()=>{const k=b.dataset.jump;if(k==="pre"){state.pre.submitted=false}go(k)});
     $("#pvReset").onclick=()=>{previewState=fresh({cls:"000",seat:0,name:"老師預覽"});state=previewState;renderStep()};
     return;
   }
-  tb.innerHTML=`<a class="ttl j" href="#">〈獵人〉山林旅程</a>${leg(0,"前測",f0)}${leg(1,"一｜頭燈與視角",f1)}${leg(2,"二｜獵人的遊戲",f2)}${leg(3,"三｜森林明信片",f3)}<span id="cloud" class="cloud"></span>`;cloudLabel();
+  tb.innerHTML=`<a class="ttl j" href="#">〈獵人〉山林旅程</a>${state.pre.submitted?`<button class="maplink ${s==="hub"?"on":""}" data-leg="hub">🗺 地圖</button>`:""}${leg(0,"前測",f0)}${leg(1,"一｜頭燈與視角",f1)}${leg(2,"二｜獵人的遊戲",f2)}${leg(3,"三｜森林明信片",f3)}<span id="cloud" class="cloud"></span>`;cloudLabel();
+  tb.querySelectorAll("[data-leg]").forEach(b=>b.onclick=()=>{const n=b.dataset.leg;
+    if(n!=="0"&&n!=="hub"&&!state.pre.submitted){toast("先完成前測，就可以自由進入各部分");return}
+    go(n==="hub"?"hub":n==="0"?"pre":n==="1"?(state.p1Last||"s0"):n==="2"?"p2":"p3")});
 }
 function openModal(html,wide){$("#modalRoot").innerHTML=`<div class="modal"><div class="box ${wide?"wide":""}">${html}</div></div>`;document.body.classList.add("has-modal")}
 function closeModal(){$("#modalRoot").innerHTML="";document.body.classList.remove("has-modal")}
@@ -598,7 +623,7 @@ function homePage(){
   </div>
   <h3>旅程怎麼走</h3>
   <ol class="steps" style="grid-template-columns:repeat(auto-fit,minmax(200px,1fr))">
-    <li><b>前測</b>先回答 5 題選擇題，再選出你心中的全文重點、寫下原因，看看你現在讀懂了多少。</li>
+    <li><b>前測</b>先回答 5 題選擇題，再選出你心中的全文重點、寫下原因。做完前測，後面三個部分可以照自己的順序走。</li>
     <li><b>一｜頭燈與視角</b>先選一種三段結構，再選觀察焦點、用頭燈把課文句子拉進三段；系統會再點亮另一盞燈，讓你比較差在哪裡。</li>
     <li><b>二｜獵人的遊戲</b>轉盤抽出假獵人的說法。你的判斷就是你的箭：選一支獵人哲學之箭反駁，再寫下理由。</li>
     <li><b>三｜森林明信片</b>寫一張明信片給山林裡失落、猶豫的「我」，交出後會看到你的個人報告書。</li>
@@ -640,7 +665,7 @@ function registerModal(){
     if(prev&&(prev.cls!==cls||+prev.seat!==seat||prev.name!==name)) state=fresh();
     state.student={cls,seat,name};
     await resumeFromCloud(res.progressAt);
-    if(res.pretestDone&&!state.pre.submitted){state.pre.submitted=true;if(state.step==="pre")state.step="s0"}
+    if(res.pretestDone&&!state.pre.submitted){state.pre.submitted=true;if(state.step==="pre")state.step="hub"}
     save();closeModal();quiz();
   };
 }
@@ -671,10 +696,11 @@ function statusPage(){
     const res=await api("check",{student:state.student});
     if(!res.ok){$("#redoErr").textContent=errMsg(res.error);return}
     if(res.already){$("#redoErr").textContent="老師還沒有開放重做喔。";return}
-    if(confirm("重新開始會清除這台裝置上的旅程內容（已交出的紀錄老師那邊還在）。確定嗎？")){const s=state.student;state=fresh(s);if(res.pretestDone){state.pre.submitted=true;state.step="s0"}save();quiz()}
+    if(confirm("重新開始會清除這台裝置上的旅程內容（已交出的紀錄老師那邊還在）。確定嗎？")){const s=state.student;state=fresh(s);if(res.pretestDone){state.pre.submitted=true;state.step="hub"}save();quiz()}
   };
 }
 function go(step){
+  if(/^s\d$/.test(step)) state.p1Last=step;
   if(step==="s0"&&!state.t.start) state.t.start=Date.now();
   if(step==="p2"&&!state.t.p1) state.t.p1=Date.now();
   if(step==="p3"&&!state.t.p2) state.t.p2=Date.now();
@@ -684,10 +710,37 @@ function renderStep(){
   topbar("quiz");
   const s=state.step;
   if(s==="rep"&&PREVIEW) renderPreviewReport();
+  else if(s==="hub") renderHub();
+  else if(s==="pre"&&state.pre.submitted&&!PREVIEW) {state.step="hub";renderHub()}
   else if(s==="pre") renderPretest();
   else if(s.startsWith("s")){if(!state.t.start){state.t.start=Date.now();save()}renderStation(+s.slice(1))}
   else if(s==="p2") renderP2();
   else renderP3();
+}
+
+/* ---------- 旅程地圖：自由選擇從哪一部分開始 ---------- */
+function renderHub(){
+  const ps=partStatus();
+  const parts=[
+    {k:"1",t:"一｜頭燈與視角",d:"選一種三段結構和觀察焦點，用頭燈把課文句子拉進三段，再和另一盞燈比較、寫下主旨體悟。",go:()=>go(state.p1Last||"s0")},
+    {k:"2",t:"二｜獵人的遊戲",d:"轉盤抽出假獵人的說法，選一支獵人哲學之箭反駁它，寫下理由。完成 3 回就算完成。",go:()=>go("p2")},
+    {k:"3",t:"三｜森林明信片",d:"寫一張明信片給山林裡失落、猶豫的「我」，系統會貼上郵票、蓋上郵戳。",go:()=>go("p3")}
+  ];
+  const missing=ps.map((x,i)=>x.done?null:["第一部分","第二部分","第三部分"][i]).filter(Boolean);
+  app.innerHTML=`<div class="wrap"><div class="kicker">旅程地圖</div><h2>想從哪裡開始都可以</h2>
+   <p class="lead" style="font-size:16px">三個部分沒有先後順序，可以先玩獵人的遊戲，也可以先寫明信片。做到一半離開也沒關係，進度會自動保存。</p>
+   <div class="hub">${parts.map((x,i)=>`<div class="hubcard ${ps[i].done?"done":ps[i].started?"started":""}">
+     <div class="hs">${ps[i].done?"✓ ":""}${ps[i].note}</div><h3>${x.t}</h3><p>${x.d}</p>
+     <button class="btn ${ps[i].done?"ghost":""}" data-part="${i}">${ps[i].done?"回去看看":ps[i].started?"繼續":"進入"}</button></div>`).join("")}</div>
+   <div class="card" style="margin-top:22px">
+     <h3 style="margin:0 0 6px">交出學習歷程</h3>
+     <p class="note" style="margin:0 0 10px">${missing.length?`還沒完成：${missing.join("、")}。三個部分都完成後再交出最完整；交出後就不能修改。`:"三個部分都完成了！確認沒問題就可以交出。"}</p>
+     <button class="btn ember" id="submitBtn" ${clen(state.p3.text)<20?"disabled":""}>交出學習歷程</button>
+     ${clen(state.p3.text)<20?'<span class="note" style="margin-left:8px">要先寫好森林明信片（20 字以上）才能交出。</span>':""}
+     <div class="err" id="subErr"></div>
+   </div></div>`;
+  app.querySelectorAll("[data-part]").forEach(b=>b.onclick=()=>parts[+b.dataset.part].go());
+  $("#submitBtn").onclick=submitAll;
 }
 
 /* ---------- 老師預覽：範例報告書 ---------- */
@@ -709,9 +762,9 @@ function renderPretest(){
   if(!P.start){P.start=Date.now();save()}
   if(P.submitted){
     app.innerHTML=`<div class="wrap"><div class="kicker">前測｜已交出 ✓</div><h2>前測完成</h2>
-     <p class="lead" style="font-size:17px">${P.local?"（本機模式不計分。）":""}謝謝你誠實作答。帶著你心中的「全文重點」，戴上頭燈出發吧——走完旅程後，看看想法有沒有改變。</p>
-     <nav class="st-nav"><a class="btn ghost" href="#">🏠 回主畫面</a><span></span><button class="btn" id="startJ">戴上頭燈，開始旅程</button></nav></div>`;
-    $("#startJ").onclick=()=>go("s0");
+     <p class="lead" style="font-size:17px">${P.local?"（本機模式不計分。）":""}謝謝你誠實作答。接下來三個部分可以照自己的順序走——走完後，看看你心中的「全文重點」有沒有改變。</p>
+     <nav class="st-nav"><a class="btn ghost" href="#">🏠 回主畫面</a><span></span><button class="btn" id="startJ">打開旅程地圖</button></nav></div>`;
+    $("#startJ").onclick=()=>go("hub");
     return;
   }
   const o=P.open;
@@ -752,8 +805,8 @@ function p1Head(i){
 }
 function renderStation(i){
   const p=state.p1;
-  const nav=(gateTxt,nextLabel)=>`<nav class="st-nav"><button class="btn ghost" id="prevBtn">${i===0?"回到前測":"上一步"}</button><span class="gate" id="gate">${gateTxt||""}</span><button class="btn" id="nextBtn">${nextLabel}</button></nav>`;
-  const bindNav=(ok)=>{$("#nextBtn").disabled=!PREVIEW&&!ok;$("#prevBtn").onclick=()=>go(i===0?"pre":"s"+(i-1));$("#nextBtn").onclick=()=>go(i===P1STEPS.length-1?"p2":"s"+(i+1))};
+  const nav=(gateTxt,nextLabel)=>`<nav class="st-nav"><button class="btn ghost" id="prevBtn">${i===0?"🗺 回旅程地圖":"上一步"}</button><span class="gate" id="gate">${gateTxt||""}</span><button class="btn" id="nextBtn">${nextLabel}</button></nav>`;
+  const bindNav=(ok)=>{$("#nextBtn").disabled=!PREVIEW&&!ok;$("#prevBtn").onclick=()=>go(i===0?"hub":"s"+(i-1));$("#nextBtn").onclick=()=>{if(i===P1STEPS.length-1){toast("第一部分完成！");go("hub")}else go("s"+(i+1))}};
   if(i===0) return p1Choose(nav,bindNav);
   if(i===1) return p1Pull(nav,bindNav);
   if(i===2) return p1Compare(nav,bindNav);
@@ -927,7 +980,7 @@ function p1Theme(nav,bindNav){
    <div class="chips">${THEME_KEYS.map((k,i)=>`<button class="chip ${t.keys.includes(i)?"on":""}" data-k="${i}">${k}</button>`).join("")}</div>
    <div class="step-label"><b>2</b>寫下你的體悟（也可以寫你還有點困惑的地方）</div>
    <textarea id="thm" maxlength="3000">${esc(t.text)}</textarea>
-   ${nav("","前往第二部分")}</div>`;
+   ${nav("","完成第一部分，回旅程地圖")}</div>`;
   const gate=()=>{const g=[];if(ownLen(t.text,[THEME_STARTER])<12)g.push("接著寫完你的體悟（12 字以上）");$("#gate").textContent=g.length?"還差："+g.join("、"):"";bindNav(!g.length)};
   app.querySelectorAll("[data-k]").forEach(b=>b.onclick=()=>{const k=+b.dataset.k;t.keys=t.keys.includes(k)?t.keys.filter(x=>x!==k):[...t.keys,k];b.classList.toggle("on");save()});
   $("#thm").addEventListener("input",e=>{t.text=e.target.value;save();gate()});
@@ -942,7 +995,7 @@ function renderP2(){
   app.innerHTML=`<div class="wrap">
   <div class="kicker">第二部分｜獵人的遊戲</div>
   <h2>真假獵人轉盤 × 哲學反駁之箭</h2>
-  <p class="lead" style="font-size:16px">轉盤會抽出一句「假獵人」的說法。這裡不比手速，<b>你的判斷就是你的箭</b>：選一支最能切中要害的獵人哲學之箭反駁它。沒射中靶心也沒關係，可以調整角度再射，最後寫下一句反駁理由。<br><span class="mute">至少完成 3 回，就能前往森林明信片。</span></p>
+  <p class="lead" style="font-size:16px">轉盤會抽出一句「假獵人」的說法。這裡不比手速，<b>你的判斷就是你的箭</b>：選一支最能切中要害的獵人哲學之箭反駁它。沒射中靶心也沒關係，可以調整角度再射，最後寫下一句反駁理由。<br><span class="mute">完成 3 回，第二部分就算完成；想多玩幾回也可以。</span></p>
   <div class="p2-grid">
     <div class="wheel-box">
       <div class="wheel-wrap"><div class="pointer"></div>
@@ -957,13 +1010,13 @@ function renderP2(){
   </div>
   <div class="rounds" id="rounds"></div>
   <nav class="st-nav">
-    <button class="btn ghost" id="backP1">回到第一部分</button>
+    <button class="btn ghost" id="backP1">🗺 回旅程地圖</button>
     <span class="gate" id="gate2"></span>
     <button class="btn" id="toP3">前往森林明信片</button>
   </nav></div>`;
   drawPlay();drawRounds();
   $("#spinBtn").onclick=spin;
-  $("#backP1").onclick=()=>go("s"+(P1STEPS.length-1));
+  $("#backP1").onclick=()=>go("hub");
   $("#toP3").onclick=()=>go("p3");
 }
 function spin(){
@@ -1053,8 +1106,7 @@ function drawRounds(){
   $("#rounds").innerHTML=P.rounds.length?`<h3 style="font-size:18px;margin:0 0 4px">已完成 ${P.rounds.length} 回</h3>`+P.rounds.map((r,k)=>{
     return `<div class="r"><b>第 ${k+1} 回｜${CLAIMS[r.id].tag}</b>　${r.shots.map(s=>ARROW_NAME[s.arrow].replace("之箭","")+(s.acc?"（"+ACC_NAME[s.acc]+"）":"")).join(" → ")}<br>${esc(r.reason)}</div>`}).join(""):"";
   const left=Math.max(0,3-P.rounds.length);
-  $("#gate2").textContent=left?`再完成 ${left} 回就能前往明信片`:"";
-  $("#toP3").disabled=!PREVIEW&&!!left;
+  $("#gate2").textContent=left?`再完成 ${left} 回，第二部分就完成了`:"第二部分完成！";
 }
 
 /* ---------- 第三部分 ---------- */
@@ -1095,7 +1147,7 @@ function renderP3(){
       <div class="note" style="margin-top:8px">按「交出學習歷程」後，所有內容會一起交給老師，交出後就不能再修改。${SUBMISSION_URL?"交出後可以把明信片分享到班級 Padlet。":""}</div>
     </div>
   </div>
-  <nav class="st-nav"><button class="btn ghost" id="backP2">回到第二部分</button><span></span></nav>
+  <nav class="st-nav"><button class="btn ghost" id="backP2">🗺 回旅程地圖</button><span></span></nav>
   </div>`;
   app.querySelectorAll(".bgs button").forEach(b=>{
     const k=+b.dataset.bg, x=b.querySelector("canvas").getContext("2d");
@@ -1118,7 +1170,7 @@ function renderP3(){
   $("#copyBtn").onclick=()=>copyText(buildText(state.student,buildRecord()),"已複製完整學習歷程");
   $("#dlBtn").onclick=()=>download(state.student,state.p3);
   $("#submitBtn").onclick=submitAll;
-  $("#backP2").onclick=()=>go("p2");
+  $("#backP2").onclick=()=>go("hub");
   refresh();
 }
 let refT;
@@ -1143,7 +1195,8 @@ function buildRecord(){
 }
 async function submitAll(){
   if(PREVIEW){toast("預覽模式不會交出，可以按上方「報告書」看範例");return}
-  if(!confirm("確定要交出嗎？交出後就不能再修改囉。")) return;
+  const miss=partStatus().map((x,i)=>x.done?null:["第一部分","第二部分","第三部分"][i]).filter(Boolean);
+  if(!confirm(miss.length?`還沒完成：${miss.join("、")}。\n交出後就不能再修改，確定現在交出嗎？`:"三個部分都完成了。確定要交出嗎？交出後就不能再修改囉。")) return;
   const btn=$("#submitBtn"), e=$("#subErr");
   btn.disabled=true;e.textContent="傳送中……";
   const record=buildRecord();
