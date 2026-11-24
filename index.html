@@ -413,11 +413,11 @@ const SENTS=(()=>{const out=[];Object.keys(TEXT).forEach(n=>{(TEXT[n].match(/[^�
 const findSent=t=>SENTS.findIndex(x=>x.t.includes(t));
 function p1IsDone(p){return !!(p&&p.focus&&p.angle&&p.secs.every(s=>s.items.length)&&clen(p.cmp.sentence)>=10&&clen(p.theme.text)>=10)}
 function partStatus(){
-  const p=state.p1, r=state.p2.rounds.length, L=clen(state.p3.text);
+  const p=state.p1, r=state.p2.rounds.length, L=clen(state.p3.text), own=ownChars(state.p3.text);
   return [
     {done:p1IsDone(p),started:!!p.angle,note:p1IsDone(p)?"已完成":p.angle?"進行中":"還沒開始"},
     {done:r>=3,started:r>0||!!state.p2.cur,note:r>=3?`已完成（${r} 回）`:r||state.p2.cur?`進行中（${r}/3 回）`:"還沒開始"},
-    {done:L>=20,started:L>0,note:L>=20?"明信片已寫好":L?"寫了一部分":"還沒開始"}
+    {done:own>=OWN_MIN,started:L>0,note:own>=OWN_MIN?"明信片已寫好":L?"寫了一部分":"還沒開始"}
   ];
 }
 function freshP1(){return {focus:"",angle:"",secs:[0,1,2].map(()=>({items:[],rel:""})),cmp:{i:-1,angle:"",focus:"",diffs:[],sentence:"",tpl:""},theme:{keys:[],text:""}}}
@@ -739,8 +739,8 @@ function renderHub(){
    <div class="card" style="margin-top:22px">
      <h3 style="margin:0 0 6px">交出學習歷程</h3>
      <p class="note" style="margin:0 0 10px">${missing.length?`還沒完成：${missing.join("、")}。三個部分都完成後再交出最完整；交出後就不能修改。`:"三個部分都完成了！確認沒問題就可以交出。"}</p>
-     <button class="btn ember" id="submitBtn" ${clen(state.p3.text)<20?"disabled":""}>交出學習歷程</button>
-     ${clen(state.p3.text)<20?'<span class="note" style="margin-left:8px">要先寫好森林明信片（20 字以上）才能交出。</span>':""}
+     <button class="btn ember" id="submitBtn" ${ownChars(state.p3.text)<OWN_MIN?"disabled":""}>交出學習歷程</button>
+     ${ownChars(state.p3.text)<OWN_MIN?`<span class="note" style="margin-left:8px">要先寫好森林明信片（用自己的話寫 ${OWN_MIN} 字以上）才能交出。</span>`:""}
      <div class="err" id="subErr"></div>
    </div></div>`;
   app.querySelectorAll("[data-part]").forEach(b=>b.onclick=()=>parts[+b.dataset.part].go());
@@ -1129,6 +1129,8 @@ function originality(text){
   return {len:n.length,ratio:1-cov.filter(Boolean).length/n.length};
 }
 function stampType(o){if(o.len<20) return null; return o.ratio>=0.7?"guard":"learn"}
+const OWN_MIN=30;
+function ownChars(text){const o=originality(text);return Math.round(o.len*o.ratio)}
 
 function renderP3(){
   const P=state.p3;
@@ -1153,7 +1155,7 @@ function renderP3(){
         <button class="btn ghost" id="dlBtn">下載明信片圖卡</button>
       </div>
       <div class="err" id="subErr"></div>
-      <div class="note" style="margin-top:8px">按「交出學習歷程」後，所有內容會一起交給老師，交出後就不能再修改。${SUBMISSION_URL?"交出後可以把明信片分享到班級 Padlet。":""}</div>
+      <div class="note" style="margin-top:8px">按「交出學習歷程」後，所有內容會一起交給老師，交出後就不能再修改。${SUBMISSION_URL?"交出後會馬上出現「上傳到班級 Padlet」的步驟。":""}</div>
     </div>
   </div>
   <nav class="st-nav"><button class="btn ghost" id="backP2">🗺 回旅程地圖</button><span></span></nav>
@@ -1184,11 +1186,11 @@ function renderP3(){
 }
 let refT;
 function refresh(){
-  const o=originality(state.p3.text), st=stampType(o), el=$("#orig");
-  if(el) el.innerHTML = o.len<20
+  const o=originality(state.p3.text), st=stampType(o), el=$("#orig"), own=ownChars(state.p3.text);
+  if(el) el.innerHTML = (own<OWN_MIN?`<div style="color:var(--ember);font-weight:600">用自己的話再寫 ${OWN_MIN-own} 字，就可以交出（開頭語和課文金句不算）。</div>`:"")+(o.len<20
     ? `再寫 ${20-o.len} 字左右，系統就會為明信片貼上郵票、蓋上郵戳。`
-    : `和課文不同的文字比例：約 ${Math.round(o.ratio*100)}%　→　郵票：<b>${STAMP_NAME[st]}</b><div class="meter"><i style="width:${Math.round(o.ratio*100)}%"></i></div><span style="font-size:13px">（用自己的話寫得越多，越接近「森林守護者」；以課文金句為主，會是「山林見習獵人」。兩種都是好的開始。）</span>`;
-  const btn=$("#submitBtn"); if(btn) btn.disabled=!PREVIEW&&o.len<20;
+    : `和課文不同的文字比例：約 ${Math.round(o.ratio*100)}%　→　郵票：<b>${STAMP_NAME[st]}</b><div class="meter"><i style="width:${Math.round(o.ratio*100)}%"></i></div><span style="font-size:13px">（用自己的話寫得越多，越接近「森林守護者」；以課文金句為主，會是「山林見習獵人」。兩種都是好的開始。）</span>`);
+  const btn=$("#submitBtn"); if(btn) btn.disabled=!PREVIEW&&own<OWN_MIN;
   clearTimeout(refT); refT=setTimeout(()=>{drawPostcard(state.student,state.p3);const img=$("#pcImg");if(img) img.src=$("#pc").toDataURL("image/png")},120);
 }
 function buildRecord(){
@@ -1211,7 +1213,7 @@ async function submitAll(){
   const record=buildRecord();
   const res=await api("save",{student:state.student,record});
   btn.disabled=false;e.textContent="";
-  if(res.ok){state.submitted={ts:res.ts};state.report=res.report;save();location.hash="#report";return}
+  if(res.ok){state.submitted={ts:res.ts};state.report=res.report;save();try{sessionStorage.setItem("hunter-share","1")}catch(e){}location.hash="#report";return}
   if(res.error==="network"||!res.error){showCode(record);return}
   e.textContent=errMsg(res.error);
 }
@@ -1313,7 +1315,7 @@ function drawPostcard(stu,p3){
   x.strokeStyle="#d7ccb6";x.lineWidth=1;x.beginPath();x.moveTo(632,262);x.lineTo(1136,262);x.stroke();
   const body=(p3.text||"").trim()||"（在右邊寫下你想說的話）";
   let fs=27,lines,lh;
-  for(;fs>=15;fs--){x.font=`${fs}px "Noto Serif TC",serif`;lines=wrapLines(x,body,500);lh=fs*1.75;if(lines.length*lh<=410)break}
+  for(;fs>=15;fs--){x.font=`${fs}px "Noto Serif TC",serif`;lines=wrapLines(x,body,500-fs);lh=fs*1.75;if(lines.length*lh<=410)break}
   if(lines.length*lh>410){const max=Math.floor(410/lh);lines=lines.slice(0,max);lines[max-1]=lines[max-1].slice(0,-1)+"…"}
   x.fillStyle=(p3.text||"").trim()?"#262d28":"#a49a88";
   lines.forEach((l,k)=>x.fillText(l,632,300+k*lh));
@@ -1333,7 +1335,7 @@ function sharePadlet(stu,p3){
   drawPostcard(stu,p3);
   const cv=$("#pc"), url=cv.toDataURL("image/png");
   const name=`${stu.cls}班${stu.seat}號 ${stu.name}`;
-  openModal(`<h2 style="margin-top:0">上傳山林明信片到 Padlet</h2>
+  openModal(`<div class="kicker" style="margin:0">✓ 學習歷程已交出．最後一步</div><h2 style="margin-top:4px">上傳山林明信片到 Padlet</h2>
    <img src="${url}" alt="我的山林明信片" style="display:block;max-width:100%;max-height:38vh;margin:0 auto;border-radius:8px;box-shadow:0 4px 14px rgba(0,0,0,.15)">
    <p class="note" style="margin:6px 0 0">平板也可以：長按上面的明信片 →「加入照片」或「拷貝」。</p>
    <ol class="padsteps">
@@ -1474,6 +1476,8 @@ async function reportPage(){
   if(!rep){$("#rep").innerHTML=`<p class="mute">還沒有報告書。交出學習歷程後就會出現。</p>`;return}
   $("#rep").innerHTML=(SUBMISSION_URL?`<div class="share noprint"><div><b>📮 把山林明信片上傳到班級 Padlet</b><div class="note">交出後，把你的明信片分享給全班看。</div></div><button class="btn ember" id="padBtn">上傳明信片到 Padlet</button></div>`:"")+reportHTML(rep);
   if($("#padBtn")) $("#padBtn").onclick=()=>sharePadlet(rep.student,rep.rec.p3);
+  let autoShare=false;try{autoShare=sessionStorage.getItem("hunter-share")==="1";sessionStorage.removeItem("hunter-share")}catch(e){}
+  if(autoShare&&SUBMISSION_URL){toast("交出成功！最後一步：把明信片上傳到班級 Padlet");sharePadlet(rep.student,rep.rec.p3)}
   $("#dl2").onclick=()=>download(rep.student,rep.rec.p3);
   $("#cp2").onclick=()=>copyText(buildText(rep.student,rep.rec,rep.ts),"已複製完整學習歷程");
 }
