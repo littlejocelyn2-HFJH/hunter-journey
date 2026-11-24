@@ -384,8 +384,10 @@ const KEY = "hunter-journey-v4";
 function fresh(student){return {student:student||null,step:"pre",pre:{start:null,answers:[-1,-1,-1,-1,-1],open:{choice:-1,reason:""},submitted:false,local:false},
   p1:STATIONS.map(()=>({lens:"",clues:[],did:"",said:"",mood:"",thought:""})),
   p2:{rounds:[],cur:null,rot:0},p3:{bg:0,text:""},t:{start:null,p1:null,p2:null},submitted:null,report:null}}
-let state = (()=>{try{return JSON.parse(localStorage.getItem(KEY))}catch(e){return null}})() || fresh();
-function save(){try{localStorage.setItem(KEY,JSON.stringify(state))}catch(e){}}
+function loadState(){try{return JSON.parse(localStorage.getItem(KEY))}catch(e){return null}}
+let state = loadState() || fresh();
+let PREVIEW=false, previewState=null;
+function save(){if(PREVIEW)return;try{localStorage.setItem(KEY,JSON.stringify(state))}catch(e){}}
 
 const $ = s=>document.querySelector(s);
 const app = $("#app");
@@ -453,7 +455,9 @@ function route(){
   document.body.classList.remove("screen-mode");
   clearInterval(screenTimer);
   const h=location.hash.replace("#","");
-  if(h==="quiz") quiz();
+  if(h!=="preview"&&PREVIEW){PREVIEW=false;state=loadState()||fresh()}
+  if(h==="preview"){PREVIEW=true;if(!previewState)previewState=fresh({cls:"000",seat:0,name:"老師預覽"});state=previewState;renderStep()}
+  else if(h==="quiz") quiz();
   else if(h==="scores") scoresPage();
   else if(h==="screen") screenPage();
   else if(h==="report") reportPage();
@@ -471,6 +475,13 @@ function topbar(mode){
   if(s==="p2"){p=2;f1=1;f2=Math.min(state.p2.rounds.length/3,1)}
   if(s==="p3"){p=3;f1=1;f2=1;f3=.5}
   const leg=(n,label,f)=>`<div class="leg ${p===n?"on":""}"><span>${label}</span><div class="bar"><i style="width:${f*100}%"></i></div></div>`;
+  if(PREVIEW){
+    const jumps=[["pre","前測"],...STATIONS.map((st,i)=>["s"+i,"一-"+(i+1)]),["p2","二"],["p3","三"],["rep","報告書"]];
+    tb.innerHTML=`<span class="ttl" style="color:var(--ember)">👩‍🏫 老師預覽</span><div style="display:flex;gap:6px;flex-wrap:wrap;flex:1">${jumps.map(([k,l])=>`<button class="btn sm ${state.step===k||(k==="rep"&&state.step==="rep")?"":"ghost"}" data-jump="${k}">${l}</button>`).join("")}</div><button class="btn sm ghost" id="pvReset">清空預覽</button><a class="home" href="#scores">離開預覽</a>`;
+    tb.querySelectorAll("[data-jump]").forEach(b=>b.onclick=()=>{const k=b.dataset.jump;if(k==="pre"){state.pre.submitted=false}go(k)});
+    $("#pvReset").onclick=()=>{previewState=fresh({cls:"000",seat:0,name:"老師預覽"});state=previewState;renderStep()};
+    return;
+  }
   tb.innerHTML=`<a class="ttl j" href="#">〈獵人〉山林旅程</a>${leg(0,"前測",f0)}${leg(1,"一｜頭燈與鏡頭",f1)}${leg(2,"二｜獵人的遊戲",f2)}${leg(3,"三｜森林明信片",f3)}`;
 }
 function openModal(html,wide){$("#modalRoot").innerHTML=`<div class="modal"><div class="box ${wide?"wide":""}">${html}</div></div>`;document.body.classList.add("has-modal")}
@@ -573,10 +584,18 @@ function go(step){
 function renderStep(){
   topbar("quiz");
   const s=state.step;
-  if(s==="pre") renderPretest();
+  if(s==="rep"&&PREVIEW) renderPreviewReport();
+  else if(s==="pre") renderPretest();
   else if(s.startsWith("s")){if(!state.t.start){state.t.start=Date.now();save()}renderStation(+s.slice(1))}
   else if(s==="p2") renderP2();
   else renderP3();
+}
+
+/* ---------- 老師預覽：範例報告書 ---------- */
+function renderPreviewReport(){
+  const rec=buildRecord();
+  const rep={student:state.student,ts:new Date().toISOString(),rec,ana:analyzeLocal(rec),published:false,answers:null,pretest:null};
+  app.innerHTML=`<div class="wrap"><p class="note" style="margin-top:20px">以下是用你在預覽中填寫的內容產生的範例報告書（學生交出後看到的版面）。閱讀層級區塊需要後端計分，預覽中不顯示。</p>${reportHTML(rep)}</div>`;
 }
 
 /* ---------- 前測 ---------- */
@@ -610,13 +629,14 @@ function renderPretest(){
    <nav class="st-nav"><a class="btn ghost" href="#">🏠 回主畫面</a><span class="gate" id="gateP"></span><button class="btn ember" id="preGo">交出前測</button></nav></div>`;
   const paint=card=>card.querySelectorAll("label").forEach(l=>{const on=l.querySelector("input").checked;l.style.borderColor=on?"var(--ember)":"var(--line)";l.style.background=on?"#fffaf2":"#fff"});
   const gate=()=>{const g=[];const n=P.answers.filter(a=>a<0).length;if(n)g.push(`第 1～5 題還有 ${n} 題沒作答`);if(o.choice<0)g.push("第 6 題還沒選");if(clen(o.reason)<10)g.push("第 6 題原因寫 10 字以上");
-    $("#gateP").textContent=g.join("、");$("#preGo").disabled=!!g.length};
+    $("#gateP").textContent=g.join("、");$("#preGo").disabled=!PREVIEW&&!!g.length};
   app.querySelectorAll("input[type=radio]").forEach(r=>r.onchange=()=>{
     if(r.name==="kp") o.choice=+r.value; else P.answers[+r.name.slice(1)]=+r.value;
     save();paint(r.closest(".card"));gate()});
   $("#kpReason").addEventListener("input",e=>{o.reason=e.target.value;save();gate()});
   gate();
   $("#preGo").onclick=async()=>{
+    if(PREVIEW){P.submitted=true;P.local=false;renderPretest();window.scrollTo(0,0);toast("預覽模式：不會交出");return}
     if(!confirm("確定交出前測嗎？交出後就不能修改囉。")) return;
     $("#preGo").disabled=true;$("#gateP").textContent="傳送中……";
     const res=await api("pretest",{student:state.student,answers:P.answers,open:o,durationSec:Math.round((Date.now()-P.start)/1000)});
@@ -694,7 +714,7 @@ function renderStation(i){
     const g=[]; if(!d.lens)g.push("選鏡頭"); if(!d.clues.length)g.push("在上方頭燈畫面點選一條線索（虛線底的句子）");
     if(ownLen(d.thought,st.starters)<10)g.push("接著句型寫下想法（10 字以上）");
     $("#gate").textContent=g.length?"還差："+g.join("、"):"";
-    $("#nextBtn").disabled=!!g.length;
+    $("#nextBtn").disabled=!PREVIEW&&!!g.length;
   }
   markClues();drawBag();gate();
   app.querySelectorAll(".lens-btn").forEach(b=>b.onclick=()=>{
@@ -825,7 +845,7 @@ function drawReason(){
    <textarea id="reason" maxlength="3000" style="min-height:90px">${esc(P.cur.reason)}</textarea>
    <div style="display:flex;justify-content:flex-end;margin-top:10px"><button class="btn" id="commit">收箭，記錄這一回</button></div>`;
   const ta=$("#reason"),btn=$("#commit");
-  const chk=()=>{btn.disabled=clen(ta.value.replace(/^我用「.+?」反駁：課文中/,""))<8};
+  const chk=()=>{btn.disabled=!PREVIEW&&clen(ta.value.replace(/^我用「.+?」反駁：課文中/,""))<8};
   ta.addEventListener("input",()=>{P.cur.reason=ta.value;save();chk()});chk();
   btn.onclick=()=>{P.rounds.push(P.cur);P.cur=null;save();renderP2();topbar("quiz");toast("這一回已記錄")};
 }
@@ -835,7 +855,7 @@ function drawRounds(){
     return `<div class="r"><b>第 ${k+1} 回｜${CLAIMS[r.id].tag}</b>　${r.shots.map(s=>ARROW_NAME[s.arrow].replace("之箭","")+(s.acc?"（"+ACC_NAME[s.acc]+"）":"")).join(" → ")}<br>${esc(r.reason)}</div>`}).join(""):"";
   const left=Math.max(0,3-P.rounds.length);
   $("#gate2").textContent=left?`再完成 ${left} 回就能前往明信片`:"";
-  $("#toP3").disabled=!!left;
+  $("#toP3").disabled=!PREVIEW&&!!left;
 }
 
 /* ---------- 第三部分 ---------- */
@@ -909,7 +929,7 @@ function refresh(){
   if(el) el.innerHTML = o.len<20
     ? `再寫 ${20-o.len} 字左右，系統就會為明信片貼上郵票、蓋上郵戳。`
     : `和課文不同的文字比例：約 ${Math.round(o.ratio*100)}%　→　郵票：<b>${STAMP_NAME[st]}</b><div class="meter"><i style="width:${Math.round(o.ratio*100)}%"></i></div><span style="font-size:13px">（用自己的話寫得越多，越接近「森林守護者」；以課文金句為主，會是「山林見習獵人」。兩種都是好的開始。）</span>`;
-  const btn=$("#submitBtn"); if(btn) btn.disabled=o.len<20;
+  const btn=$("#submitBtn"); if(btn) btn.disabled=!PREVIEW&&o.len<20;
   clearTimeout(refT); refT=setTimeout(()=>{drawPostcard(state.student,state.p3);const img=$("#pcImg");if(img) img.src=$("#pc").toDataURL("image/png")},120);
 }
 function buildRecord(){
@@ -923,6 +943,7 @@ function buildRecord(){
   };
 }
 async function submitAll(){
+  if(PREVIEW){toast("預覽模式不會交出，可以按上方「報告書」看範例");return}
   if(!confirm("確定要交出嗎？交出後就不能再修改囉。")) return;
   const btn=$("#submitBtn"), e=$("#subErr");
   btn.disabled=true;e.textContent="傳送中……";
@@ -1172,7 +1193,7 @@ async function scoresPage(){
 }
 function drawLogin(){
   const b=$("#loginBox");
-  if(T.pw){b.innerHTML=`<span>👩‍🏫 老師已登入</span><button class="btn sm" id="scrBtn">開啟大屏</button><button class="btn sm ghost" id="outBtn">登出</button><span class="note">用公用電腦看完請按「登出」。</span>`;
+  if(T.pw){b.innerHTML=`<span>👩‍🏫 老師已登入</span><button class="btn sm" id="scrBtn">開啟大屏</button><a class="btn sm ghost" href="#preview">預覽學生頁面</a><button class="btn sm ghost" id="outBtn">登出</button><span class="note">用公用電腦看完請按「登出」。</span>`;
     $("#outBtn").onclick=()=>{T.pw="";sessionStorage.removeItem("hunter-pw");drawLogin();loadList()};
     $("#scrBtn").onclick=()=>window.open(location.pathname+"#screen","_blank");
   }else{b.innerHTML=`<span>老師登入</span><input type="password" id="pw" placeholder="教師密碼" autocomplete="current-password"><button class="btn sm" id="inBtn">登入</button><span class="err" id="pwErr"></span>`;
