@@ -19,7 +19,7 @@ const CLASSES = [];
 const ACTIVITY = 'hunter';
 const DATA = '程式資料（請勿編輯）';
 const LOG = '作答紀錄';
-const DATA_HEAD = ['key', '班級', '座號', '姓名', '可重做', 'attempts', '更新時間', 'pretest'];
+const DATA_HEAD = ['key', '班級', '座號', '姓名', '可重做', 'attempts', '更新時間', 'pretest', 'progress'];
 const PRE_LOG = '前測紀錄';
 const PRE_HEAD = ['交出時間', '班級', '座號', '姓名', '用時(秒)', '得分', '第1題', '第2題', '第3題', '第4題', '第5題', '檢索', '推論整合', '省思評鑑', '全文重點（第6題）', '第6題理由', '紀錄ID'];
 const LOG_HEAD = ['交出時間', '班級', '座號', '姓名', '用時(分)', '書寫總字數', '第一部分字數', '第二部分回合', '靶心回合', '郵票', '原創比例', '提醒', '第一部分：我的想法', '第二部分：反駁理由', '第三部分：明信片', '紀錄ID'];
@@ -47,6 +47,8 @@ function doPost(e) {
       case 'judge': return out(judge(req));
       case 'pretest': return out(withLock(() => pretest(req)));
       case 'deletePretest': return out(withLock(() => deletePretest(req)));
+      case 'progress': return out(withLock(() => saveProgress(req)));
+      case 'loadProgress': return out(loadProgress(req));
       case 'save': return out(withLock(() => save(req.student, req.record, false)));
       case 'report': return out(report(req));
       case 'list': return out(list(req));
@@ -195,17 +197,18 @@ function readData() {
     if (!r[0]) continue;
     let att = [];
     try { att = JSON.parse(r[5] || '[]'); } catch (e) { att = []; }
-    let pre = null;
+    let pre = null, prog = null;
     try { pre = r[7] ? JSON.parse(r[7]) : null; } catch (e) { pre = null; }
-    rows.push({ row: i + 1, key: String(r[0]), cls: String(r[1]), seat: Number(r[2]), name: unsafe(r[3]), redo: r[4] === true || String(r[4]).toUpperCase() === 'TRUE', attempts: att, pretest: pre });
+    try { prog = r[8] ? JSON.parse(r[8]) : null; } catch (e) { prog = null; }
+    rows.push({ row: i + 1, key: String(r[0]), cls: String(r[1]), seat: Number(r[2]), name: unsafe(r[3]), redo: r[4] === true || String(r[4]).toUpperCase() === 'TRUE', attempts: att, pretest: pre, progress: prog });
   }
   return { sh: sh, rows: rows };
 }
 function writeRow(sh, obj) {
   let json = JSON.stringify(obj.attempts);
   while (json.length > 45000 && obj.attempts.length > 1) { obj.attempts.shift(); json = JSON.stringify(obj.attempts); }
-  const vals = [[obj.key, obj.cls, obj.seat, safe(obj.name), obj.redo ? true : false, json, new Date(), obj.pretest ? JSON.stringify(obj.pretest) : '']];
-  if (obj.row) sh.getRange(obj.row, 1, 1, 8).setValues(vals);
+  const vals = [[obj.key, obj.cls, obj.seat, safe(obj.name), obj.redo ? true : false, json, new Date(), obj.pretest ? JSON.stringify(obj.pretest) : '', obj.progress ? JSON.stringify(obj.progress) : '']];
+  if (obj.row) sh.getRange(obj.row, 1, 1, 9).setValues(vals);
   else sh.appendRow(vals[0]);
 }
 function findRow(rows, cls, seat) { return rows.filter(r => r.cls === String(cls) && r.seat === Number(seat))[0] || null; }
@@ -214,7 +217,9 @@ function findRow(rows, cls, seat) { return rows.filter(r => r.cls === String(cls
 function check(req) {
   const st = cleanStudent(req.student);
   const r = findRow(readData().rows, st.cls, st.seat);
-  return { ok: true, already: !!(r && r.attempts.length && !r.redo), pretestDone: !!(r && r.pretest && !r.redo) };
+  const mine = !!(r && r.name === st.name);
+  return { ok: true, already: !!(r && r.attempts.length && !r.redo), pretestDone: !!(r && r.pretest && !r.redo),
+    progressAt: (mine && r.progress) ? (r.progress.savedAt || r.progress.at) : 0, nameTaken: !!(r && !mine && (r.progress || r.pretest || r.attempts.length)) };
 }
 
 function judge(req) {
@@ -235,8 +240,8 @@ function save(student, record, force) {
   const ana = analyze(rec);
   const ts = new Date().toISOString();
   const att = { ts: ts, name: st.name, rec: rec, ana: ana };
-  if (!r) r = { row: null, key: st.cls + '-' + st.seat, cls: st.cls, seat: st.seat, name: st.name, redo: false, attempts: [], pretest: null };
-  r.name = st.name; r.redo = false;
+  if (!r) r = { row: null, key: st.cls + '-' + st.seat, cls: st.cls, seat: st.seat, name: st.name, redo: false, attempts: [], pretest: null, progress: null };
+  r.name = st.name; r.redo = false; r.progress = null;
   r.attempts.push(att);
   if (r.attempts.length > MAX_ATTEMPTS) r.attempts = r.attempts.slice(-MAX_ATTEMPTS);
   writeRow(d.sh, r);
@@ -250,6 +255,31 @@ function save(student, record, force) {
     STAMPS[rec.p3.stamp] || '', rec.p3.originality, flagsOf(att).join('、'),
     safe(p1t), safe(p2t), safe(rec.p3.text), st.cls + '-' + st.seat + '@' + ts]);
   return { ok: true, ts: ts, report: buildReport(st, att, false, r.pretest) };
+}
+
+/* ---------- 做到一半的進度（換裝置接著做） ---------- */
+function saveProgress(req) {
+  const st = cleanStudent(req.student);
+  const data = String(req.data || '');
+  if (!data || data.length > 45000) throw new Error('bad-progress');
+  let parsed;
+  try { parsed = JSON.parse(data); } catch (e) { throw new Error('bad-progress'); }
+  const d = readData();
+  let r = findRow(d.rows, st.cls, st.seat);
+  if (r && r.attempts.length && !r.redo) return { ok: false, error: 'already' };
+  if (r && r.name !== st.name && (r.progress || r.pretest || r.attempts.length)) return { ok: false, error: 'name-taken' };
+  if (!r) r = { row: null, key: st.cls + '-' + st.seat, cls: st.cls, seat: st.seat, name: st.name, redo: false, attempts: [], pretest: null, progress: null };
+  r.name = st.name;
+  const at = Date.now();
+  r.progress = { at: at, savedAt: Number(parsed && parsed.savedAt) || 0, data: data };
+  writeRow(d.sh, r);
+  return { ok: true, at: at };
+}
+function loadProgress(req) {
+  const st = cleanStudent(req.student);
+  const r = findRow(readData().rows, st.cls, st.seat);
+  if (!r || r.name !== st.name || !r.progress) return { ok: false, error: 'not-found' };
+  return { ok: true, at: r.progress.at, data: r.progress.data };
 }
 
 /* ---------- 前測 ---------- */
@@ -278,7 +308,7 @@ function pretest(req) {
   const d = readData();
   let r = findRow(d.rows, st.cls, st.seat);
   if (r && r.pretest && !r.redo) return { ok: false, error: 'already-pretest' };
-  if (!r) r = { row: null, key: st.cls + '-' + st.seat, cls: st.cls, seat: st.seat, name: st.name, redo: false, attempts: [], pretest: null };
+  if (!r) r = { row: null, key: st.cls + '-' + st.seat, cls: st.cls, seat: st.seat, name: st.name, redo: false, attempts: [], pretest: null, progress: null };
   r.name = st.name;
   const correct = P.map((q, i) => answers[i] === q.ans);
   const ts = new Date().toISOString();

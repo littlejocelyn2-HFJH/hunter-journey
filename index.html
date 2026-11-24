@@ -301,6 +301,8 @@ body.screen-mode{background:#f7f1e4}
 .padsteps li{margin-bottom:12px}
 .padsteps .btn{margin:6px 6px 0 0}
 .share{display:flex;flex-wrap:wrap;gap:12px;justify-content:space-between;align-items:center;background:#fff6ea;border:1px solid #f0d2ad;border-radius:14px;padding:16px 20px;margin-top:20px}
+.cloud{font-size:12px;color:var(--mute);white-space:nowrap;margin-left:6px}
+@media (max-width:700px){.cloud{display:none}}
 .foot{text-align:center;margin-top:40px;font-size:13px;color:var(--mute)}
 .foot button{background:none;border:none;color:var(--mute);text-decoration:underline;font-size:13px}
 
@@ -437,7 +439,42 @@ function fresh(student){return {student:student||null,step:"pre",pre:{start:null
 function loadState(){try{return JSON.parse(localStorage.getItem(KEY))}catch(e){return null}}
 let state = loadState() || fresh();
 let PREVIEW=false, previewState=null;
-function save(){if(PREVIEW)return;try{localStorage.setItem(KEY,JSON.stringify(state))}catch(e){}}
+let dirty=false, cloudAt=0, cloudBusy=false, cloudErr="";
+let syncT=null;
+function save(){if(PREVIEW)return;state.savedAt=Date.now();dirty=true;try{localStorage.setItem(KEY,JSON.stringify(state))}catch(e){}
+  if(!LOCAL&&state.student&&!state.submitted){clearTimeout(syncT);syncT=setTimeout(()=>syncProgress(),4000)}}
+/* ---- 進度存到雲端：換裝置登記同一個班級座號姓名就能接著做 ---- */
+function progressData(){const {step,pre,p1,p2,p3,t,savedAt}=state;return JSON.stringify({step,pre,p1,p2,p3,t,savedAt})}
+function cloudLabel(){const el=$("#cloud");if(!el)return;
+  if(LOCAL){el.textContent="";return}
+  if(cloudBusy){el.textContent="☁️ 儲存中…";return}
+  if(cloudErr){el.textContent="⚠️ 雲端暫存失敗，這台裝置有保存";el.title=cloudErr;return}
+  if(cloudAt){const d=new Date(cloudAt);el.textContent=`☁️ 已存到雲端 ${String(d.getHours()).padStart(2,"0")}:${String(d.getMinutes()).padStart(2,"0")}`}}
+async function syncProgress(leaving){
+  if(LOCAL||PREVIEW||!state.student||state.submitted||!dirty||cloudBusy) return;
+  dirty=false;cloudBusy=true;cloudLabel();
+  let res;
+  try{const r=await fetch(API,{method:"POST",keepalive:!!leaving,headers:{"Content-Type":"text/plain;charset=utf-8"},body:JSON.stringify({action:"progress",student:state.student,data:progressData()})});res=await r.json()}catch(e){res={ok:false,error:"network"}}
+  cloudBusy=false;
+  if(res.ok){cloudAt=res.at;cloudErr=""}else{if(res.error!=="already")dirty=true;cloudErr=res.error}
+  cloudLabel();
+  if(dirty&&res.ok){clearTimeout(syncT);syncT=setTimeout(()=>syncProgress(),3000)}
+}
+setInterval(()=>syncProgress(),30000);
+document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="hidden")syncProgress(true)});
+window.addEventListener("pagehide",()=>syncProgress(true));
+async function resumeFromCloud(progressAt){
+  if(LOCAL||!progressAt||progressAt<=(state.savedAt||0)) return false;
+  const res=await api("loadProgress",{student:state.student});
+  if(!res.ok) return false;
+  let d;try{d=JSON.parse(res.data)}catch(e){return false}
+  const st=state.student, f=fresh(st);
+  state=Object.assign(f,d,{student:st,submitted:null,report:null});
+  try{localStorage.setItem(KEY,JSON.stringify(state))}catch(e){}
+  cloudAt=res.at;dirty=false;
+  toast("已接續你上次的進度");
+  return true;
+}
 
 const $ = s=>document.querySelector(s);
 const app = $("#app");
@@ -533,7 +570,7 @@ function topbar(mode){
     $("#pvReset").onclick=()=>{previewState=fresh({cls:"000",seat:0,name:"老師預覽"});state=previewState;renderStep()};
     return;
   }
-  tb.innerHTML=`<a class="ttl j" href="#">〈獵人〉山林旅程</a>${leg(0,"前測",f0)}${leg(1,"一｜頭燈與視角",f1)}${leg(2,"二｜獵人的遊戲",f2)}${leg(3,"三｜森林明信片",f3)}`;
+  tb.innerHTML=`<a class="ttl j" href="#">〈獵人〉山林旅程</a>${leg(0,"前測",f0)}${leg(1,"一｜頭燈與視角",f1)}${leg(2,"二｜獵人的遊戲",f2)}${leg(3,"三｜森林明信片",f3)}<span id="cloud" class="cloud"></span>`;cloudLabel();
 }
 function openModal(html,wide){$("#modalRoot").innerHTML=`<div class="modal"><div class="box ${wide?"wide":""}">${html}</div></div>`;document.body.classList.add("has-modal")}
 function closeModal(){$("#modalRoot").innerHTML="";document.body.classList.remove("has-modal")}
@@ -566,16 +603,16 @@ function homePage(){
     <li><b>二｜獵人的遊戲</b>轉盤抽出假獵人的說法。你的判斷就是你的箭：選一支獵人哲學之箭反駁，再寫下理由。</li>
     <li><b>三｜森林明信片</b>寫一張明信片給山林裡失落、猶豫的「我」，交出後會看到你的個人報告書。</li>
   </ol>
-  <div class="foot">進度會自動存在這台裝置上。<button id="resetBtn">這台裝置換人使用：清除紀錄</button></div>
+  <div class="foot">${LOCAL?"進度會自動存在這台裝置上。":"進度會自動存到雲端。今天做不完沒關係，下次在任何一台平板或電腦，登記<b>同樣的班級、座號、姓名</b>，就能從上次的地方接著做。"}<br><button id="resetBtn">這台裝置換人使用：清除紀錄</button></div>
   </div>`;
-  $("#resetBtn").onclick=()=>{if(confirm("確定要清除這台裝置上的旅程紀錄嗎？（已交出的資料不受影響）")){state=fresh();save();route()}};
+  $("#resetBtn").onclick=()=>{if(confirm("確定要清除這台裝置上的旅程紀錄嗎？（雲端的進度和已交出的資料不受影響）")){state=fresh();cloudChecked=false;try{localStorage.setItem(KEY,JSON.stringify(state))}catch(e){}route()}};
 }
 
 /* ============ 登記 ============ */
 function registerModal(){
   const s=state.student||{};
   openModal(`<h2 style="margin-top:0">登記你的班級座號</h2>
-   <p class="note">登記後開始旅程。資料會交給老師，請確實填寫。</p>
+   <p class="note">登記後開始旅程。資料會交給老師，請確實填寫。<br>下次要接著做，請填<b>一模一樣</b>的班級、座號、姓名。</p>
    <div class="row3">
      <label class="field">班級<input id="rCls" inputmode="numeric" value="${esc(s.cls)}" placeholder="例：901"></label>
      <label class="field">座號<input id="rSeat" inputmode="numeric" value="${esc(s.seat)}" placeholder="1～60"></label>
@@ -598,19 +635,30 @@ function registerModal(){
     $("#rGo").disabled=false;
     if(!res.ok){e.textContent=errMsg(res.error);return}
     if(res.already){e.textContent=ERR.already;return}
+    if(res.nameTaken){e.textContent="這個班級座號已經有人用別的名字作答了。請確認班級、座號和姓名都正確（要和第一次填的一模一樣）；有問題請找老師。";return}
     const prev=state.student;
-    if(prev&&(prev.cls!==cls||+prev.seat!==seat)) state=fresh();
+    if(prev&&(prev.cls!==cls||+prev.seat!==seat||prev.name!==name)) state=fresh();
     state.student={cls,seat,name};
+    await resumeFromCloud(res.progressAt);
     if(res.pretestDone&&!state.pre.submitted){state.pre.submitted=true;if(state.step==="pre")state.step="s0"}
     save();closeModal();quiz();
   };
 }
 
 /* ============ 學生旅程 ============ */
+let cloudChecked=false;
 function quiz(){
   if(!state.student){topbar("home");homePage();registerModal();return}
   if(state.submitted){statusPage();return}
   renderStep();
+  if(!LOCAL&&!PREVIEW&&!cloudChecked){cloudChecked=true;
+    api("check",{student:state.student}).then(async res=>{
+      if(!res.ok) return;
+      if(res.already){state.submitted=state.submitted||{ts:""};save();statusPage();return}
+      if(res.pretestDone&&!state.pre.submitted){state.pre.submitted=true;save()}
+      if(await resumeFromCloud(res.progressAt)) renderStep(); else {dirty=true;syncProgress()}
+    });
+  }
 }
 function statusPage(){
   topbar("home");
@@ -630,7 +678,7 @@ function go(step){
   if(step==="s0"&&!state.t.start) state.t.start=Date.now();
   if(step==="p2"&&!state.t.p1) state.t.p1=Date.now();
   if(step==="p3"&&!state.t.p2) state.t.p2=Date.now();
-  state.step=step;save();renderStep();window.scrollTo(0,0);
+  state.step=step;save();renderStep();window.scrollTo(0,0);syncProgress();
 }
 function renderStep(){
   topbar("quiz");
