@@ -1308,7 +1308,7 @@ function renderP3(){
       <div class="step-label"><b>2</b>把三句話填完整（每句自己寫的字至少 ${LINE_MIN} 字）</div>
       <div class="frame">
         <div class="frame-to">${esc(R.to)}</div>
-        ${R.lines.map((line,li)=>`<div class="fline" id="fl${li}"><span class="fnum">${li+1}</span><div class="ftext">${line.map(x=>typeof x==="string"?`<span>${esc(x)}</span>`:`<input class="blank ${x.q?"q":""}" data-k="${x.k}" placeholder="${esc(x.ph)}" value="${esc(P.blanks[x.k]||"")}" maxlength="120">`).join("")}</div><span class="fok" id="ok${li}"></span></div>
+        ${R.lines.map((line,li)=>`<div class="fline" id="fl${li}"><span class="fnum">${li+1}</span><div class="ftext">${line.map(x=>typeof x==="string"?`<span>${esc(x)}</span>`:`<input class="blank ${x.q?"q":""}" data-k="${x.k}" aria-label="${esc(x.ph)}" value="${esc(P.blanks[x.k]||"")}" maxlength="120">`).join("")}</div><span class="fok" id="ok${li}"></span></div>
           ${line.some(x=>x.q)?`<div class="chips" style="margin:-4px 0 8px 34px">${GOLDEN.map((g,k)=>`<button class="chip" data-gq="${line.find(x=>x.q).k}|${k}" style="font-size:13px;font-family:var(--serif)">${esc(g)}</button>`).join("")}</div>`:""}`).join("")}
       </div>
       ${P.to!=="hunter"?`<div class="step-label"><b>3</b>（選做）選一句課文，支持你的話</div>
