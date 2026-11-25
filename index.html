@@ -248,8 +248,8 @@ input:focus,textarea:focus{outline:2px solid var(--ember-l);border-color:var(--e
 .p3-grid{display:grid;grid-template-columns:1.25fr 1fr;gap:22px;align-items:start;margin-top:16px}
 @media (max-width:900px){.p3-grid{grid-template-columns:1fr}}
 .preview img{width:100%;display:block;border-radius:8px;box-shadow:0 10px 30px rgba(40,35,25,.18)}
-.bgs{display:flex;gap:10px}
-.bgs button{flex:1;border:2px solid transparent;border-radius:10px;padding:0;overflow:hidden;background:none}
+.bgs{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.bgs button{border:2px solid transparent;border-radius:10px;padding:0;overflow:hidden;background:none}
 .bgs button.on{border-color:var(--ember)}
 .bgs canvas{width:100%;display:block}
 .bgs small{display:block;font-size:13px;padding:4px 0;background:#fff;color:var(--ink)}
@@ -484,7 +484,8 @@ const CLAIMS = [
 const ACC_NAME={3:"靶心",2:"內環",1:"外環",0:"未判定"};
 
 /* ============ 第三部分 ============ */
-const BGS = ["山林","黑熊","篝火"];
+const BGS = ["山林","黑熊","篝火","手繪山","樹林版畫","山豬"];
+const BG_DARK = [false,true,true,false,false,false];
 const OPENINGS = [
  "山林裡的我：我知道你還懊惱著，那天在溪邊，你放下了長矛。我心裡還有點……",
  "那個像小舟一樣猶豫的我：那一夜的火，其實一直有人替你守著。我心裡還有點……",
@@ -1406,6 +1407,76 @@ function ridge(x,base,amp,col,seed){
   x.lineTo(1200,800);x.closePath();x.fill();
 }
 function pine(x,px,py,h,col){x.fillStyle=col;for(let k=0;k<3;k++){const w=h*(0.42-k*0.09),y=py-k*h*0.28;x.beginPath();x.moveTo(px,y-h*0.42);x.lineTo(px-w,y);x.lineTo(px+w,y);x.closePath();x.fill()}}
+function seeded(n){let a=n>>>0;return()=>{a=(a+0x6D2B79F5)>>>0;let t=a;t=Math.imul(t^t>>>15,t|1);t^=t+Math.imul(t^t>>>7,t|61);return((t^t>>>14)>>>0)/4294967296}}
+function paper(x,col,seed){
+  x.fillStyle=col;x.fillRect(0,0,1200,800);const r=seeded(seed);
+  for(let i=0;i<1400;i++){x.fillStyle=`rgba(90,70,40,${r()*.06})`;x.fillRect(r()*1200,r()*800,1+r()*2,1+r()*2)}
+}
+/* 手繪山：綠色三角山＋鉛筆亂線、石頭、雨雲、水波 */
+function drawScribbleHills(x){
+  paper(x,"#f2eee2",3);const r=seeded(11);
+  const tri=(cx,by,w,h,col)=>{
+    const pts=[[cx-w/2,by],[cx-w*.12,by-h*.78],[cx+w*.02,by-h],[cx+w*.2,by-h*.8],[cx+w/2,by]];
+    x.save();x.beginPath();pts.forEach((p,i)=>i?x.lineTo(...p):x.moveTo(...p));x.closePath();
+    x.fillStyle=col;x.fill();x.clip();
+    x.strokeStyle="rgba(28,70,32,.55)";x.lineWidth=1.6;
+    for(let i=-h;i<w+h;i+=7){x.beginPath();let px=cx-w/2+i,py=by;x.moveTo(px,py);
+      for(let t=0;t<h*1.3;t+=14){px+=8+r()*4-2;py-=14;x.lineTo(px+r()*3,py)}x.stroke()}
+    x.restore();
+    x.strokeStyle="#2c5a2f";x.lineWidth=2.2;x.beginPath();pts.forEach((p,i)=>i?x.lineTo(p[0]+r()*3,p[1]+r()*3):x.moveTo(...p));x.stroke();
+  };
+  tri(300,330,470,250,"#5aa24d");tri(250,560,430,190,"#4f9844");tri(330,790,520,200,"#62a955");
+  x.strokeStyle="#333";x.lineWidth=2;x.lineJoin="round";
+  [[110,90,26],[175,58,16],[70,150,12],[520,70,10]].forEach(([a,b,s])=>{x.beginPath();for(let i=0;i<6;i++){const ang=i*1.05+r()*.3;x.lineTo(a+Math.cos(ang)*s,b+Math.sin(ang)*s)}x.closePath();x.stroke()});
+  [[150,140],[60,60],[230,110]].forEach(([a,b])=>{x.beginPath();x.arc(a,b,6,0,7);x.stroke()});
+  x.beginPath();x.moveTo(420,420);x.bezierCurveTo(410,380,470,365,485,395);x.bezierCurveTo(505,360,560,380,548,420);x.closePath();x.stroke();
+  for(let i=0;i<7;i++){x.beginPath();x.moveTo(440+i*16,432);x.lineTo(424+i*16,480+r()*20);x.stroke()}
+  x.lineWidth=1.8;for(let k=0;k<4;k++){x.beginPath();for(let i=0;i<=200;i+=4){const yy=650+k*16+Math.sin(i/9+k)*5;i?x.lineTo(20+i,yy):x.moveTo(20,yy)}x.stroke()}
+}
+/* 樹林版畫：綠色分枝樹＋橘紅點點 */
+function drawStampForest(x){
+  paper(x,"#f1ece0",5);const r=seeded(23);
+  const branch=(sx,sy,len,ang,w,d,col)=>{
+    const ex=sx+Math.cos(ang)*len, ey=sy+Math.sin(ang)*len;
+    x.strokeStyle=col;x.lineWidth=w;x.lineCap="round";x.beginPath();x.moveTo(sx,sy);x.quadraticCurveTo(sx+Math.cos(ang)*len*.5+(r()-.5)*12,sy+Math.sin(ang)*len*.5,ex,ey);x.stroke();
+    if(d<=0){x.fillStyle="rgba(226,87,43,.85)";for(let i=0;i<5;i++){x.beginPath();x.arc(ex+(r()-.5)*40,ey+(r()-.5)*30,2+r()*3,0,7);x.fill()}return}
+    const n=2+(r()<.4?1:0);
+    for(let i=0;i<n;i++)branch(ex,ey,len*(.62+r()*.15),ang+(i-(n-1)/2)*.6+(r()-.5)*.25,w*.62,d-1,col);
+  };
+  branch(140,820,230,-Math.PI/2-.05,26,4,"#2f7a57");
+  branch(430,820,280,-Math.PI/2+.06,30,4,"#3d9168");
+  branch(560,820,150,-Math.PI/2-.12,18,3,"#24634a");
+  branch(-10,330,160,-.25,20,3,"#3d9168");
+  x.fillStyle="#2f7a57";for(let i=0;i<40;i++){const a=r()*600,b=760+r()*40;x.fillRect(a,b,2,-8-r()*10)}
+}
+/* 山豬：藍色筆刷山＋金黃山豬 */
+function drawBoar(x){
+  paper(x,"#f3efe4",7);const r=seeded(31);
+  const brush=(cx,cy,w,h,c1,c2)=>{
+    for(let i=0;i<h;i+=3){const half=w/2*(i/h);x.strokeStyle=r()<.5?c1:c2;x.globalAlpha=.55+r()*.4;x.lineWidth=2+r()*2;
+      x.beginPath();x.moveTo(cx-half+r()*10,cy-h+i);x.lineTo(cx+half-r()*10,cy-h+i);x.stroke()}
+    x.globalAlpha=1;
+  };
+  brush(150,190,240,110,"#2f8aa0","#1b5f86");brush(420,150,280,100,"#3aa1a6","#1c6f8a");brush(330,260,200,70,"#2a6fa0","#1a4d78");
+  x.fillStyle="#d8432a";x.beginPath();x.arc(520,90,24,0,7);x.fill();
+  x.save();x.translate(300,520);
+  x.fillStyle="#e7b53c";x.beginPath();x.moveTo(-210,20);x.bezierCurveTo(-200,-110,30,-150,150,-90);x.bezierCurveTo(215,-60,250,-10,240,40);
+  x.bezierCurveTo(200,95,60,110,-60,100);x.bezierCurveTo(-170,90,-215,70,-210,20);x.fill();
+  x.strokeStyle="#c98d1e";x.lineWidth=4;x.lineCap="round";
+  for(let i=0;i<34;i++){const a=-180+r()*380,b=-100+r()*170;x.beginPath();x.moveTo(a,b);x.lineTo(a+30+r()*40,b+(r()-.5)*10);x.stroke()}
+  x.strokeStyle="#fff4cf";x.lineWidth=3;for(let i=0;i<12;i++){const a=-150+r()*300,b=-80+r()*120;x.beginPath();x.moveTo(a,b);x.lineTo(a+25+r()*20,b+(r()-.5)*6);x.stroke()}
+  x.fillStyle="#a96f12";x.beginPath();x.moveTo(-120,-95);x.lineTo(-90,-150);x.lineTo(-60,-115);x.lineTo(-20,-160);x.lineTo(10,-120);x.lineTo(50,-150);x.lineTo(70,-110);x.closePath();x.fill();
+  x.fillStyle="#d6a02e";[[-150,80],[-80,90],[110,85],[175,70]].forEach(([a,b])=>{x.beginPath();x.moveTo(a-16,b);x.lineTo(a+16,b);x.lineTo(a+10,b+90);x.lineTo(a-8,b+90);x.closePath();x.fill()});
+  x.fillStyle="#5b3a12";[[-150,80],[-80,90],[110,85],[175,70]].forEach(([a,b])=>x.fillRect(a-9,b+80,19,12));
+  x.fillStyle="#a66b10";x.beginPath();x.ellipse(232,22,22,30,-.3,0,7);x.fill();
+  x.fillStyle="#3b2508";x.beginPath();x.arc(224,16,4,0,7);x.arc(240,26,4,0,7);x.fill();
+  x.beginPath();x.arc(170,-40,6,0,7);x.fill();
+  x.fillStyle="#c98d1e";x.beginPath();x.moveTo(140,-90);x.lineTo(150,-140);x.lineTo(175,-85);x.closePath();x.fill();
+  x.strokeStyle="#fbf3dc";x.lineWidth=9;x.beginPath();x.moveTo(205,48);x.quadraticCurveTo(205,95,170,92);x.stroke();
+  x.strokeStyle="#7a5a32";x.lineWidth=2;x.stroke();
+  x.restore();
+  x.strokeStyle="#6e8f3a";x.lineWidth=3;for(let i=0;i<30;i++){const a=r()*600;x.beginPath();x.moveTo(a,790);x.lineTo(a+(r()-.5)*14,760-r()*20);x.stroke()}
+}
 function drawBg(x,k){
   x.save();
   if(k===0){
@@ -1428,6 +1499,12 @@ function drawBg(x,k){
     x.fillStyle="#0e1311";x.beginPath();x.ellipse(0,-74,12,8,0,0,7);x.fill();
     x.strokeStyle="#ece4cf";x.lineWidth=16;x.lineCap="round";x.lineJoin="round";
     x.beginPath();x.moveTo(-62,-6);x.lineTo(0,52);x.lineTo(62,-6);x.stroke();
+  }else if(k===3){
+    drawScribbleHills(x);
+  }else if(k===4){
+    drawStampForest(x);
+  }else if(k===5){
+    drawBoar(x);
   }else{
     const g=x.createLinearGradient(0,0,0,800);g.addColorStop(0,"#120d0b");g.addColorStop(1,"#2a1b13");
     x.fillStyle=g;x.fillRect(0,0,1200,800);
@@ -1481,7 +1558,9 @@ function drawPostmark(x,type){
 function drawPostcard(stu,p3){
   const x=$("#pc").getContext("2d"), i=stu||{};
   x.clearRect(0,0,1200,800);drawBg(x,p3.bg);
-  x.fillStyle="#f7f2e8";rr(x,600,36,566,728,8);x.fill();
+  x.save();x.shadowColor="rgba(40,30,10,.22)";x.shadowBlur=18;x.shadowOffsetY=4;
+  x.fillStyle="#fbf8f1";rr(x,600,36,566,728,8);x.fill();x.restore();
+  x.strokeStyle="#ddd3bf";x.lineWidth=1.5;rr(x,600,36,566,728,8);x.stroke();
   x.fillStyle="#7c8a7e";x.font='14px sans-serif';x.textAlign="left";x.fillText("FOREST POSTCARD　森林明信片",632,78);
   const st=p3Stamp(p3);
   drawStamp(x,st);drawPostmark(x,st);
@@ -1495,7 +1574,7 @@ function drawPostcard(stu,p3){
   lines.forEach((l,k)=>x.fillText(l,632,300+k*lh));
   x.fillStyle="#4b524d";x.font='18px "Noto Serif TC",serif';x.textAlign="right";
   x.fillText(`── ${i.cls?i.cls+"班 ":""}${i.seat?i.seat+"號 ":""}${i.name||""}`,1136,738);
-  x.textAlign="left";x.fillStyle=p3.bg===0?"rgba(30,40,32,.7)":"rgba(240,232,214,.7)";x.font='15px "Noto Serif TC",serif';
+  x.textAlign="left";x.fillStyle=BG_DARK[p3.bg]?"rgba(240,232,214,.7)":"rgba(30,40,32,.7)";x.font='15px "Noto Serif TC",serif';
   x.fillText("讀瓦歷斯‧諾幹〈獵人〉",32,770);
 }
 function download(stu,p3){
