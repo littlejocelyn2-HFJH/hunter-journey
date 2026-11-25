@@ -19,9 +19,11 @@ const CLASSES = [];
 const ACTIVITY = 'hunter';
 const DATA = '程式資料（請勿編輯）';
 const LOG = '作答紀錄';
-const DATA_HEAD = ['key', '班級', '座號', '姓名', '可重做', 'attempts', '更新時間', 'pretest', 'progress'];
+const DATA_HEAD = ['key', '班級', '座號', '姓名', '可重做', 'attempts', '更新時間', 'pretest', 'progress', 'posttest'];
 const PRE_LOG = '前測紀錄';
 const PRE_HEAD = ['交出時間', '班級', '座號', '姓名', '用時(秒)', '得分', '第1題', '第2題', '第3題', '第4題', '第5題', '檢索', '推論整合', '省思評鑑', '全文重點（第6題）', '第6題理由', '紀錄ID'];
+const POST_LOG = '後測紀錄';
+const POST_HEAD = ['交出時間', '班級', '座號', '姓名', '用時(秒)', '得分', '第1題', '第2題', '第3題', '第4題', '第5題', '推論整合', '省思評鑑', '紀錄ID'];
 const LOG_HEAD = ['交出時間', '班級', '座號', '姓名', '用時(分)', '書寫總字數', '第一部分字數', '第二部分回合', '靶心回合', '郵票', '原創比例', '提醒', '第一部分：我的想法', '第二部分：反駁理由', '第三部分：明信片', '紀錄ID'];
 const ARROW_NAMES = { zy: '生存與莊嚴之箭', jj: '火光與禁忌之箭', kz: '獨行與克制之箭', wh: '文化與尊重之箭' };
 const CLAIM_TAGS = ['貪多掠奪', '規矩迷信', '白V黑熊', '狩獵偏見', '獵人無用', '保育兩難', '不擇手段', '母子山豬'];
@@ -33,9 +35,10 @@ const OPT = ['A', 'B', 'C', 'D'];
 const KEYPOINTS = ['勇敢、智慧與愛', '節制與留給下一代', '找回泰雅的身分', '山林故事的傳承'];
 function getAnswers() { return (typeof ANSWERS !== 'undefined' && ANSWERS) ? ANSWERS : {}; }
 function getPretest() { return (typeof PRETEST !== 'undefined' && PRETEST) ? PRETEST : []; }
+function getPosttest() { return (typeof POSTTEST !== 'undefined' && POSTTEST) ? POSTTEST : []; }
 
 function doGet() {
-  return out({ ok: true, app: ACTIVITY, passwordSet: PASSWORD !== 'change-me', answersReady: Object.keys(getAnswers()).length === 8 && getPretest().length === 5 });
+  return out({ ok: true, app: ACTIVITY, passwordSet: PASSWORD !== 'change-me', answersReady: Object.keys(getAnswers()).length === 8 && getPretest().length === 5 && getPosttest().length === 5 });
 }
 
 function doPost(e) {
@@ -47,6 +50,8 @@ function doPost(e) {
       case 'judge': return out(judge(req));
       case 'pretest': return out(withLock(() => pretest(req)));
       case 'deletePretest': return out(withLock(() => deletePretest(req)));
+      case 'posttest': return out(withLock(() => posttest(req)));
+      case 'deletePosttest': return out(withLock(() => deletePosttest(req)));
       case 'progress': return out(withLock(() => saveProgress(req)));
       case 'loadProgress': return out(loadProgress(req));
       case 'save': return out(withLock(() => save(req.student, req.record, false)));
@@ -201,15 +206,17 @@ function readData() {
     let pre = null, prog = null;
     try { pre = r[7] ? JSON.parse(r[7]) : null; } catch (e) { pre = null; }
     try { prog = r[8] ? JSON.parse(r[8]) : null; } catch (e) { prog = null; }
-    rows.push({ row: i + 1, key: String(r[0]), cls: String(r[1]), seat: Number(r[2]), name: unsafe(r[3]), redo: r[4] === true || String(r[4]).toUpperCase() === 'TRUE', attempts: att, pretest: pre, progress: prog });
+    let post = null;
+    try { post = r[9] ? JSON.parse(r[9]) : null; } catch (e) { post = null; }
+    rows.push({ row: i + 1, key: String(r[0]), cls: String(r[1]), seat: Number(r[2]), name: unsafe(r[3]), redo: r[4] === true || String(r[4]).toUpperCase() === 'TRUE', attempts: att, pretest: pre, progress: prog, posttest: post });
   }
   return { sh: sh, rows: rows };
 }
 function writeRow(sh, obj) {
   let json = JSON.stringify(obj.attempts);
   while (json.length > 45000 && obj.attempts.length > 1) { obj.attempts.shift(); json = JSON.stringify(obj.attempts); }
-  const vals = [[obj.key, obj.cls, obj.seat, safe(obj.name), obj.redo ? true : false, json, new Date(), obj.pretest ? JSON.stringify(obj.pretest) : '', obj.progress ? JSON.stringify(obj.progress) : '']];
-  if (obj.row) sh.getRange(obj.row, 1, 1, 9).setValues(vals);
+  const vals = [[obj.key, obj.cls, obj.seat, safe(obj.name), obj.redo ? true : false, json, new Date(), obj.pretest ? JSON.stringify(obj.pretest) : '', obj.progress ? JSON.stringify(obj.progress) : '', obj.posttest ? JSON.stringify(obj.posttest) : '']];
+  if (obj.row) sh.getRange(obj.row, 1, 1, 10).setValues(vals);
   else sh.appendRow(vals[0]);
 }
 function findRow(rows, cls, seat) { return rows.filter(r => r.cls === String(cls) && r.seat === Number(seat))[0] || null; }
@@ -219,7 +226,7 @@ function check(req) {
   const st = cleanStudent(req.student);
   const r = findRow(readData().rows, st.cls, st.seat);
   const mine = !!(r && r.name === st.name);
-  return { ok: true, already: !!(r && r.attempts.length && !r.redo), pretestDone: !!(r && r.pretest && !r.redo),
+  return { ok: true, already: !!(r && r.attempts.length && !r.redo), pretestDone: !!(r && r.pretest && !r.redo), posttestDone: !!(r && r.posttest && !r.redo),
     progressAt: (mine && r.progress) ? (r.progress.savedAt || r.progress.at) : 0, nameTaken: !!(r && !mine && (r.progress || r.pretest || r.attempts.length)) };
 }
 
@@ -241,7 +248,7 @@ function save(student, record, force) {
   const ana = analyze(rec);
   const ts = new Date().toISOString();
   const att = { ts: ts, name: st.name, rec: rec, ana: ana };
-  if (!r) r = { row: null, key: st.cls + '-' + st.seat, cls: st.cls, seat: st.seat, name: st.name, redo: false, attempts: [], pretest: null, progress: null };
+  if (!r) r = { row: null, key: st.cls + '-' + st.seat, cls: st.cls, seat: st.seat, name: st.name, redo: false, attempts: [], pretest: null, progress: null, posttest: null };
   r.name = st.name; r.redo = false; r.progress = null;
   r.attempts.push(att);
   if (r.attempts.length > MAX_ATTEMPTS) r.attempts = r.attempts.slice(-MAX_ATTEMPTS);
@@ -255,7 +262,52 @@ function save(student, record, force) {
     Math.round(rec.durationSec / 6) / 10, ana.words, ana.p1Words, rec.p2.length, ana.bulls,
     STAMPS[rec.p3.stamp] || '', rec.p3.originality, flagsOf(att).join('、'),
     safe(p1t), safe(p2t), safe(rec.p3.text), st.cls + '-' + st.seat + '@' + ts]);
-  return { ok: true, ts: ts, report: buildReport(st, att, false, r.pretest) };
+  return { ok: true, ts: ts, report: buildReport(st, att, false, r.pretest, r.posttest) };
+}
+
+/* ---------- 後測 ---------- */
+function postSummary(p, pub) {
+  if (!p) return null;
+  const P = getPosttest();
+  const lv = {};
+  P.forEach((q, i) => { if (!lv[q.level]) lv[q.level] = [0, 0]; lv[q.level][1]++; if (p.correct[i]) lv[q.level][0]++; });
+  const o = { ts: p.ts, score: p.score, total: P.length, levels: lv, durationSec: p.durationSec };
+  if (pub) o.items = P.map((q, i) => ({ level: q.level, chosen: p.answers[i], correct: p.correct[i], ans: q.ans, explain: q.explain }));
+  return o;
+}
+function posttest(req) {
+  const st = cleanStudent(req.student);
+  const P = getPosttest();
+  if (P.length !== 5) return { ok: false, error: 'answers-not-set' };
+  const answers = cleanChoices(req.answers);
+  if (answers.indexOf(-1) >= 0) throw new Error('incomplete');
+  const d = readData();
+  let r = findRow(d.rows, st.cls, st.seat);
+  if (r && r.name !== st.name && (r.progress || r.pretest || r.attempts.length)) return { ok: false, error: 'name-taken' };
+  if (r && r.posttest && !r.redo) return { ok: false, error: 'already-posttest' };
+  if (!r) r = { row: null, key: st.cls + '-' + st.seat, cls: st.cls, seat: st.seat, name: st.name, redo: false, attempts: [], pretest: null, progress: null, posttest: null };
+  const correct = P.map((q, i) => answers[i] === q.ans);
+  const ts = new Date().toISOString();
+  r.posttest = { ts: ts, answers: answers, correct: correct, score: correct.filter(Boolean).length, durationSec: intIn(req.durationSec, 0, 86400) || 0 };
+  writeRow(d.sh, r);
+  const sum = postSummary(r.posttest, false);
+  sheet(POST_LOG, POST_HEAD).appendRow([new Date(ts), st.cls, st.seat, safe(st.name), r.posttest.durationSec, r.posttest.score]
+    .concat(answers.map((a, i) => OPT[a] + (correct[i] ? '' : '✗')))
+    .concat(['推論整合', '省思評鑑'].map(l => sum.levels[l] ? sum.levels[l][0] + '/' + sum.levels[l][1] : '')).concat([st.cls + '-' + st.seat + '@' + ts]));
+  return { ok: true, ts: ts };
+}
+function deletePosttest(req) {
+  checkPw(req.password);
+  const d = readData();
+  const r = findRow(d.rows, req.cls, req.seat);
+  if (!r || !r.posttest) throw new Error('not-found');
+  const id = r.cls + '-' + r.seat + '@' + r.posttest.ts;
+  r.posttest = null;
+  writeRow(d.sh, r);
+  const sh = sheet(POST_LOG, POST_HEAD);
+  const v = sh.getDataRange().getValues();
+  for (let i = v.length - 1; i >= 1; i--) if (String(v[i][13]) === id) sh.deleteRow(i + 1);
+  return { ok: true };
 }
 
 /* ---------- 做到一半的進度（換裝置接著做） ---------- */
@@ -269,7 +321,7 @@ function saveProgress(req) {
   let r = findRow(d.rows, st.cls, st.seat);
   if (r && r.attempts.length && !r.redo) return { ok: false, error: 'already' };
   if (r && r.name !== st.name && (r.progress || r.pretest || r.attempts.length)) return { ok: false, error: 'name-taken' };
-  if (!r) r = { row: null, key: st.cls + '-' + st.seat, cls: st.cls, seat: st.seat, name: st.name, redo: false, attempts: [], pretest: null, progress: null };
+  if (!r) r = { row: null, key: st.cls + '-' + st.seat, cls: st.cls, seat: st.seat, name: st.name, redo: false, attempts: [], pretest: null, progress: null, posttest: null };
   r.name = st.name;
   const at = Date.now();
   r.progress = { at: at, savedAt: Number(parsed && parsed.savedAt) || 0, data: data };
@@ -309,7 +361,7 @@ function pretest(req) {
   const d = readData();
   let r = findRow(d.rows, st.cls, st.seat);
   if (r && r.pretest && !r.redo) return { ok: false, error: 'already-pretest' };
-  if (!r) r = { row: null, key: st.cls + '-' + st.seat, cls: st.cls, seat: st.seat, name: st.name, redo: false, attempts: [], pretest: null, progress: null };
+  if (!r) r = { row: null, key: st.cls + '-' + st.seat, cls: st.cls, seat: st.seat, name: st.name, redo: false, attempts: [], pretest: null, progress: null, posttest: null };
   r.name = st.name;
   const correct = P.map((q, i) => answers[i] === q.ans);
   const ts = new Date().toISOString();
@@ -328,7 +380,7 @@ function deletePretest(req) {
   if (!r || !r.pretest) throw new Error('not-found');
   const id = r.cls + '-' + r.seat + '@' + r.pretest.ts;
   r.pretest = null;
-  if (r.attempts.length) writeRow(d.sh, r); else d.sh.deleteRow(r.row);
+  if (r.attempts.length || r.posttest) writeRow(d.sh, r); else d.sh.deleteRow(r.row);
   const sh = sheet(PRE_LOG, PRE_HEAD);
   const v = sh.getDataRange().getValues();
   for (let i = v.length - 1; i >= 1; i--) if (String(v[i][16]) === id) sh.deleteRow(i + 1);
@@ -343,34 +395,37 @@ function answersForView() {
     o[k] = { best: a.best.map(x => ARROW_NAMES[x]), near: a.near.map(x => ARROW_NAMES[x]), note: a.note };
   });
   o.pretest = getPretest().map(q => ({ level: q.level, ans: q.ans, explain: q.explain }));
+  o.posttest = getPosttest().map(q => ({ level: q.level, ans: q.ans, explain: q.explain }));
   return o;
 }
 
-function buildReport(st, att, teacher, pre) {
+function buildReport(st, att, teacher, pre, post) {
   const pub = published() || !!teacher;
   const ana = JSON.parse(JSON.stringify(att.ana));
   if (!pub) ana.rounds = ana.rounds.map(r => ({ id: r.id, shots: r.shots }));
-  return { student: { cls: st.cls, seat: st.seat, name: att.name || st.name }, ts: att.ts, rec: att.rec, ana: ana, published: pub, answers: pub ? answersForView() : null, pretest: preSummary(pre, pub) };
+  return { student: { cls: st.cls, seat: st.seat, name: att.name || st.name }, ts: att.ts, rec: att.rec, ana: ana, published: pub, answers: pub ? answersForView() : null, pretest: preSummary(pre, pub), posttest: postSummary(post, pub) };
 }
 
 function report(req) {
   const st = cleanStudent(req.student);
   const r = findRow(readData().rows, st.cls, st.seat);
   if (!r || !r.attempts.length || r.name !== st.name) return { ok: false, error: 'not-found' };
-  return { ok: true, report: buildReport(st, r.attempts[r.attempts.length - 1], false, r.pretest) };
+  return { ok: true, report: buildReport(st, r.attempts[r.attempts.length - 1], false, r.pretest, r.posttest) };
 }
 
 /* ---------- 成績與大屏 ---------- */
 function list(req) {
   const teacher = !!req.password && (checkPw(req.password), true);
-  const rows = readData().rows.filter(r => r.attempts.length || r.pretest);
+  const rows = readData().rows.filter(r => r.attempts.length || r.pretest || r.posttest);
   const board = rows.map(r => {
     const last = r.attempts[r.attempts.length - 1];
     const b = last ? { cls: r.cls, seat: r.seat, name: r.name, partsDone: last.ana.partsDone, words: last.ana.words, bulls: last.ana.bulls, stamp: last.rec.p3.stamp }
       : { cls: r.cls, seat: r.seat, name: r.name, partsDone: 0, words: 0, bulls: 0, stamp: '' };
     b.preDone = !!r.pretest;
+    b.postDone = !!r.posttest;
     if (teacher) {
       b.pretest = r.pretest;
+      b.posttest = r.posttest;
       b.lastTs = last ? last.ts : (r.pretest ? r.pretest.ts : '');
       b.redo = r.redo;
       b.attempts = r.attempts.map(a => ({ ts: a.ts, name: a.name, rec: a.rec, ana: a.ana, flags: flagsOf(a) }));
@@ -407,7 +462,9 @@ function stats(req) {
   const preQ = getPretest().map((q, i) => ({ level: q.level, n: pres.length, right: pres.filter(p => p.correct[i]).length }));
   const keypts = [0, 0, 0, 0];
   pres.forEach(p => { if (p.open) keypts[p.open.choice]++; });
-  return { ok: true, preCount: pres.length, preQ: preQ, keypts: keypts, classes: classes, cls: cls, count: mine.length, finished: mine.filter(a => a.ana.partsDone === 3).length, angles: angles, focus: focus, topSents: Object.keys(sc).map(k => ({ t: k, n: sc[k] })).sort((x, y) => y.n - x.n).slice(0, 5), claims: claims, stamps: stamps, top: top };
+  const posts = all.filter(r => r.cls === cls && r.posttest).map(r => r.posttest);
+  const postQ = getPosttest().map((q, i) => ({ level: q.level, n: posts.length, right: posts.filter(p => p.correct[i]).length }));
+  return { ok: true, postCount: posts.length, postQ: postQ, preCount: pres.length, preQ: preQ, keypts: keypts, classes: classes, cls: cls, count: mine.length, finished: mine.filter(a => a.ana.partsDone === 3).length, angles: angles, focus: focus, topSents: Object.keys(sc).map(k => ({ t: k, n: sc[k] })).sort((x, y) => y.n - x.n).slice(0, 5), claims: claims, stamps: stamps, top: top };
 }
 
 /* ---------- 教師區 ---------- */
@@ -438,7 +495,7 @@ function deleteAttempt(req) {
   const r = findRow(d.rows, req.cls, req.seat);
   if (!r) throw new Error('not-found');
   r.attempts = r.attempts.filter(a => a.ts !== req.ts);
-  if (r.attempts.length || r.pretest) writeRow(d.sh, r); else d.sh.deleteRow(r.row);
+  if (r.attempts.length || r.pretest || r.posttest) writeRow(d.sh, r); else d.sh.deleteRow(r.row);
   const id = r.cls + '-' + r.seat + '@' + req.ts;
   deleteLogRows(row => String(row[15]) === id);
   return { ok: true };
@@ -450,9 +507,10 @@ function clearClass(req) {
   const d = readData();
   d.rows.filter(r => r.cls === cls).sort((a, b) => b.row - a.row).forEach(r => d.sh.deleteRow(r.row));
   deleteLogRows(row => String(row[1]) === cls);
-  const ps = sheet(PRE_LOG, PRE_HEAD);
-  const v = ps.getDataRange().getValues();
-  for (let i = v.length - 1; i >= 1; i--) if (String(v[i][1]) === cls) ps.deleteRow(i + 1);
+  [sheet(PRE_LOG, PRE_HEAD), sheet(POST_LOG, POST_HEAD)].forEach(ps => {
+    const v = ps.getDataRange().getValues();
+    for (let i = v.length - 1; i >= 1; i--) if (String(v[i][1]) === cls) ps.deleteRow(i + 1);
+  });
   return { ok: true };
 }
 function importCode(req) {
