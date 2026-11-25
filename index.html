@@ -18,20 +18,22 @@ const SUBMISSION_URL = "https://padlet.com/littlejocelyn2/breakout-room/6RDZ2ybx
 <script src="config.js?v=2"></script>
 <style>
 :root{
-  --paper:#f5f0e6; --paper2:#ebe3d3; --ink:#232b26; --mute:#6b706a; --line:#d8cdb8;
-  --moss:#4a6650; --moss-d:#34493a; --ember:#bf6b33; --ember-l:#f0c38f; --night:#0c110e; --warn:#a4462c;
+  /* 風格：手撕綠色樹冠＋黑白木紋樹幹＋米白紙張＋少量橘色小字 */
+  --paper:#f3f1ea; --paper2:#e6ead9; --ink:#1c261d; --mute:#5f675f; --line:#d4d6c4;
+  --moss:#2f8a3a; --moss-d:#1d6629; --ember:#e07b24; --ember-l:#f6c58f; --night:#0b120c; --warn:#b4471f;
   --serif:"Noto Serif TC","Songti TC","PMingLiU",serif;
   --sans:-apple-system,"PingFang TC","Noto Sans TC","Microsoft JhengHei",sans-serif;
 }
 *{box-sizing:border-box}
 html,body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--sans);-webkit-text-size-adjust:100%}
+body{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='520' height='520' viewBox='0 0 520 520'%3E%3Cg fill='none' stroke='%23d9b48a' stroke-width='0.7' opacity='0.35'%3E%3Cpath d='M-20 90 C80 40 160 140 260 90 S440 60 540 120'/%3E%3Cpath d='M-20 130 C90 80 170 180 270 130 S450 100 540 160'/%3E%3Cpath d='M-20 330 C60 290 150 380 250 330 S430 300 540 360'/%3E%3Cpath d='M-20 370 C70 330 160 420 260 370 S440 340 540 400'/%3E%3Cellipse cx='400' cy='240' rx='60' ry='34'/%3E%3Cellipse cx='400' cy='240' rx='36' ry='20'/%3E%3C/g%3E%3C/svg%3E")}
 button{font-family:inherit;font-size:16px;cursor:pointer;-webkit-tap-highlight-color:transparent}
 input,textarea,select{font-family:inherit;font-size:17px;color:var(--ink)}
 a{color:var(--moss)}
 .wrap{max-width:980px;margin:0 auto;padding:0 20px 60px}
 
 /* 頁首 */
-.top{position:sticky;top:0;z-index:20;background:rgba(245,240,230,.95);backdrop-filter:blur(6px);border-bottom:1px solid var(--line)}
+.top{position:sticky;top:0;z-index:20;background:rgba(243,241,234,.96);backdrop-filter:blur(6px);border-bottom:3px solid var(--moss)}
 .top .in{max-width:980px;margin:0 auto;padding:10px 20px;display:flex;align-items:center;gap:12px;min-height:52px}
 .top .ttl{font-family:var(--serif);font-weight:700;white-space:nowrap;margin-right:6px;color:var(--ink);text-decoration:none}
 .top .home{margin-left:auto;font-size:14px;text-decoration:none;white-space:nowrap}
@@ -43,10 +45,11 @@ a{color:var(--moss)}
 @media (max-width:700px){.top .ttl.j{display:none}.leg span{font-size:12px}}
 
 h1,h2,h3{font-family:var(--serif);font-weight:700;letter-spacing:.02em}
-h1{font-size:40px;margin:44px 0 6px}
+h1{font-size:40px;margin:44px 0 6px;color:var(--moss-d)}
+h2{color:var(--moss-d)}
 h2{font-size:26px;margin:6px 0 4px}
 h3{font-size:19px}
-.kicker{font-size:14px;color:var(--moss);letter-spacing:.08em;margin-top:28px}
+.kicker{font-size:14px;color:var(--ember);letter-spacing:.08em;margin-top:28px;font-weight:600}
 .lead{font-family:var(--serif);font-size:18px;line-height:1.9;color:#3a413c}
 .mute{color:var(--mute)}
 .btn{border:1px solid var(--moss);background:var(--moss);color:#fff;border-radius:999px;padding:12px 26px;min-height:46px;font-weight:600;text-decoration:none;display:inline-flex;align-items:center;justify-content:center}
@@ -74,6 +77,13 @@ input:focus,textarea:focus{outline:2px solid var(--ember-l);border-color:var(--e
 .err{color:var(--warn);font-size:15px;line-height:1.7}
 
 /* 主畫面 */
+.hero-art{margin:18px -20px 0;line-height:0}
+.hero-art svg{width:100%;height:auto;display:block}
+.hero-title{display:flex;flex-wrap:wrap;align-items:flex-end;gap:6px 18px;margin-top:-6px}
+.hero-title h1{font-size:64px;font-weight:900;margin:0;letter-spacing:.06em}
+.hero-title .sub{font-family:var(--serif);font-size:20px;color:var(--moss-d);padding-bottom:12px}
+.hero-title .en{font-size:12px;letter-spacing:.25em;color:var(--ember);font-weight:700;width:100%}
+@media (max-width:640px){.hero-title h1{font-size:48px}.hero-art{margin:12px -20px 0}}
 .home-hero{padding:10px 0 6px}
 .home-btns{display:flex;flex-wrap:wrap;gap:14px;margin:26px 0}
 .welcome{background:#fffdf8;border:1px solid var(--line);border-left:4px solid var(--moss);border-radius:10px;padding:14px 18px;margin-top:18px;font-size:16px;line-height:1.8}
@@ -198,7 +208,7 @@ input:focus,textarea:focus{outline:2px solid var(--ember-l);border-color:var(--e
 .wheel-wrap{position:relative;width:290px;height:290px}
 .pointer{position:absolute;left:50%;top:-6px;transform:translateX(-50%);width:0;height:0;border-left:13px solid transparent;border-right:13px solid transparent;border-top:24px solid var(--ember);z-index:3}
 .wheel{width:290px;height:290px;border-radius:50%;position:relative;border:6px solid #2d3a31;transition:transform 3.2s cubic-bezier(.16,.84,.26,1);
-  background:conic-gradient(#dfe5d6 0 45deg,#cfd8c6 45deg 90deg,#dfe5d6 90deg 135deg,#cfd8c6 135deg 180deg,#dfe5d6 180deg 225deg,#cfd8c6 225deg 270deg,#dfe5d6 270deg 315deg,#cfd8c6 315deg 360deg)}
+  background:conic-gradient(#e3efda 0 45deg,#c9e0bd 45deg 90deg,#e3efda 90deg 135deg,#c9e0bd 135deg 180deg,#e3efda 180deg 225deg,#c9e0bd 225deg 270deg,#e3efda 270deg 315deg,#c9e0bd 315deg 360deg)}
 .wheel .lab{position:absolute;left:50%;top:50%;width:0;height:0}
 .wheel .lab span{position:absolute;left:-40px;top:-128px;width:80px;text-align:center;font-family:var(--serif);font-size:14px;font-weight:700;color:#2d3a31;line-height:1.25}
 .wheel .lab.used span{color:#9aa496;text-decoration:line-through}
@@ -668,6 +678,36 @@ function topbar(mode){
 function openModal(html,wide){$("#modalRoot").innerHTML=`<div class="modal"><div class="box ${wide?"wide":""}">${html}</div></div>`;document.body.classList.add("has-modal")}
 function closeModal(){$("#modalRoot").innerHTML="";document.body.classList.remove("has-modal")}
 
+/* ============ 主畫面插畫：手撕綠色樹冠＋黑白木紋樹幹（原創向量） ============ */
+function heroArt(){
+  const W=1000,H=330;let seed=11;const R=()=>{seed=(seed*16807)%2147483647;return seed/2147483647};
+  let defs=`<filter id="rough" x="-10%" y="-10%" width="120%" height="130%"><feTurbulence type="fractalNoise" baseFrequency="0.03" numOctaves="3" seed="4"/><feDisplacementMap in="SourceGraphic" scale="34"/></filter>
+    <filter id="grain"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="1" seed="2"/><feColorMatrix values="0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 -2.2 1.25"/><feComposite in2="SourceGraphic" operator="in"/></filter>`;
+  let trunks="";
+  const xs=[60,150,205,300,372,440,520,600,668,745,826,900,958];
+  xs.forEach((x,i)=>{
+    const w=16+R()*28, top=70+R()*70, h=H-top-R()*40;
+    let lines="";
+    for(let k=0;k<w/2.3;k++){const lx=x+k*2.3+R()*.8;let d=`M${lx.toFixed(1)},${top}`;for(let y=top;y<top+h;y+=22){d+=` Q${(lx+(R()-.5)*5).toFixed(1)},${y+11} ${(lx+(R()-.5)*2).toFixed(1)},${y+22}`}lines+=`<path d="${d}"/>`}
+    defs+=`<clipPath id="tc${i}"><rect x="${x}" y="${top}" width="${w.toFixed(1)}" height="${h.toFixed(1)}"/></clipPath>`;
+    trunks+=`<g clip-path="url(#tc${i})"><rect x="${x}" y="${top}" width="${w.toFixed(1)}" height="${h.toFixed(1)}" fill="#fbfaf4"/><g stroke="#161616" stroke-width="${(.55+R()*.55).toFixed(2)}" fill="none">${lines}</g></g>`;
+  });
+  const ring=(cx,cy,r)=>{let g="";for(let k=r;k>3;k-=3.2+R()*2){g+=`<ellipse cx="${cx}" cy="${cy}" rx="${k.toFixed(1)}" ry="${(k*.92).toFixed(1)}" transform="rotate(${(R()*20-10).toFixed(0)} ${cx} ${cy})"/>`}return `<g fill="none" stroke="#161616" stroke-width=".8">${g}</g>`};
+  const rings=`<circle cx="880" cy="268" r="40" fill="#fbfaf4"/>${ring(880,268,40)}`;
+  let canopy="",light="";
+  for(let i=0;i<16;i++){const cx=i*68+R()*40-10,cy=40+R()*80,rx=70+R()*70,ry=55+R()*45;canopy+=`<ellipse cx="${cx.toFixed(0)}" cy="${cy.toFixed(0)}" rx="${rx.toFixed(0)}" ry="${ry.toFixed(0)}"/>`}
+  for(let i=0;i<7;i++){const cx=60+i*150+R()*60,cy=30+R()*50;light+=`<ellipse cx="${cx.toFixed(0)}" cy="${cy.toFixed(0)}" rx="${(40+R()*40).toFixed(0)}" ry="${(26+R()*24).toFixed(0)}"/>`}
+  const holes=[[230,120,38,22],[520,150,30,18],[700,110,44,20],[120,170,26,16]].map(([a,b,c,d])=>`<ellipse cx="${a}" cy="${b}" rx="${c}" ry="${d}" fill="#f3f1ea"/>`).join("");
+  const scrap=(x,y,rot)=>`<g transform="translate(${x} ${y}) rotate(${rot})"><rect width="92" height="26" fill="#e8d8b8" filter="url(#rough)"/><g stroke="#a07a4a" stroke-width=".6">${[6,11,16,21].map(v=>`<line x1="8" y1="${v}" x2="${70+R()*14}" y2="${v}"/>`).join("")}</g></g>`;
+  const contour=`<g fill="none" stroke="#e07b24" stroke-width=".9" opacity=".55"><path d="M300 300 C380 250 470 310 560 280 S720 240 800 300"/><path d="M330 315 C400 275 480 330 560 300 S700 265 780 318"/></g>`;
+  return `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="綠色樹冠與木紋樹幹的山林插畫"><defs>${defs}</defs>
+    ${contour}${trunks}${rings}
+    <g filter="url(#rough)"><g fill="#2f8a3a">${canopy}</g><g fill="#54a845">${light}</g>${holes}</g>
+    <g filter="url(#rough)" opacity=".35"><rect x="0" y="0" width="${W}" height="190" fill="#fff" filter="url(#grain)"/></g>
+    ${scrap(612,150,-8)}${scrap(40,205,6)}
+  </svg>`;
+}
+
 /* ============ 主畫面 ============ */
 function homePage(){
   topbar("home");
@@ -679,8 +719,8 @@ function homePage(){
   const mainBtn = state.submitted?"查看作答狀態":(st&&(state.t.start||state.pre.start)?"繼續旅程":"我是學生，開始旅程");
   app.innerHTML=`<div class="wrap">
   <div class="home-hero">
-    <h1>獵人</h1>
-    <div style="font-family:var(--serif);font-size:20px;color:#4a514b">瓦歷斯‧諾幹｜山林旅程：頭燈、箭與明信片</div>
+    <div class="hero-art">${heroArt()}</div>
+    <div class="hero-title"><span class="en">THE HUNTER ── A JOURNEY INTO THE MOUNTAIN FOREST</span><h1>獵人</h1><div class="sub">瓦歷斯‧諾幹｜山林旅程：頭燈、箭與明信片</div></div>
     <div style="margin-top:16px"><span class="tag">前測 6 題</span><span class="tag">後測 5 題</span><span class="tag">三段旅程</span><span class="tag">課文第一～十五段</span><span class="tag">重思考歷程，不扣分</span><span class="tag">iPad／電腦皆可</span>${LOCAL?'<span class="tag" style="color:var(--warn)">本機模式：不計分、不收資料</span>':""}</div>
     ${welcome}
   </div>
@@ -694,8 +734,8 @@ function homePage(){
     <li><b>前測</b>先回答 5 題選擇題，再選出你心中的全文重點、寫下原因。做完前測，後面三個部分可以照自己的順序走。</li>
     <li><b>一｜頭燈與視角</b>先選一種三段結構，再選觀察焦點、用頭燈把課文句子拉進三段；系統會再點亮另一盞燈，讓你比較差在哪裡。</li>
     <li><b>二｜獵人的遊戲</b>轉盤抽出假獵人的說法。選一句課文當證據，寫下你的反駁，再射出去看看準不準。</li>
+    <li><b>三｜森林明信片</b>選一位收件人（作者、老獵人或文中的「我」），用三句話寫一張明信片。</li>
     <li><b>後測</b>三個部分都完成後解鎖 5 題後測，看看走完旅程後，你的閱讀有什麼不一樣。</li>
-    <li><b>三｜森林明信片</b>寫一張明信片給山林裡失落、猶豫的「我」，交出後會看到你的個人報告書。</li>
   </ol>
   <div class="foot">${LOCAL?"進度會自動存在這台裝置上。":"進度會自動存到雲端。今天做不完沒關係，下次在任何一台平板或電腦，登記<b>同樣的班級、座號、姓名</b>，就能從上次的地方接著做。"}<br><button id="resetBtn">這台裝置換人使用：清除紀錄</button></div>
   </div>`;
@@ -831,8 +871,8 @@ function renderHub(){
   const ps=partStatus();
   const parts=[
     {k:"1",t:"一｜頭燈與視角",d:"選一種三段結構和觀察焦點，用頭燈把課文句子拉進三段，再和另一盞燈比較、寫下主旨體悟。",go:()=>go(state.p1Last||"s0")},
-    {k:"2",t:"二｜獵人的遊戲",d:"轉盤抽出假獵人的說法，選一支獵人哲學之箭反駁它，寫下理由。完成 3 回就算完成。",go:()=>go("p2")},
-    {k:"3",t:"三｜森林明信片",d:"寫一張明信片給山林裡失落、猶豫的「我」，系統會貼上郵票、蓋上郵戳。",go:()=>go("p3")}
+    {k:"2",t:"二｜獵人的遊戲",d:"轉盤抽出假獵人的說法，選一句課文當證據，寫下你的反駁，再射出去看準不準。完成 3 回就算完成。",go:()=>go("p2")},
+    {k:"3",t:"三｜森林明信片",d:"選一位收件人（作者、老獵人或文中的「我」），用三句話寫一張明信片，寫得多還能拿到金色郵票。",go:()=>go("p3")}
   ];
   const missing=ps.map((x,i)=>x.done?null:["第一部分","第二部分","第三部分"][i]).filter(Boolean);
   app.innerHTML=`<div class="wrap"><div class="kicker">旅程地圖</div><h2>想從哪裡開始都可以</h2>
