@@ -25,10 +25,10 @@ const SUBMISSION_URL = "https://padlet.com/littlejocelyn2/breakout-room/6RDZ2ybx
   --sans:-apple-system,"PingFang TC","Noto Sans TC","Microsoft JhengHei",sans-serif;
 }
 *{box-sizing:border-box}
-html,body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--sans);-webkit-text-size-adjust:100%}
+html,body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--sans);font-size:19px;line-height:1.7;-webkit-text-size-adjust:100%}
 body{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='520' height='520' viewBox='0 0 520 520'%3E%3Cg fill='none' stroke='%23d9b48a' stroke-width='0.7' opacity='0.35'%3E%3Cpath d='M-20 90 C80 40 160 140 260 90 S440 60 540 120'/%3E%3Cpath d='M-20 130 C90 80 170 180 270 130 S450 100 540 160'/%3E%3Cpath d='M-20 330 C60 290 150 380 250 330 S430 300 540 360'/%3E%3Cpath d='M-20 370 C70 330 160 420 260 370 S440 340 540 400'/%3E%3Cellipse cx='400' cy='240' rx='60' ry='34'/%3E%3Cellipse cx='400' cy='240' rx='36' ry='20'/%3E%3C/g%3E%3C/svg%3E")}
-button{font-family:inherit;font-size:16px;cursor:pointer;-webkit-tap-highlight-color:transparent}
-input,textarea,select{font-family:inherit;font-size:17px;color:var(--ink)}
+button{font-family:inherit;font-size:18px;cursor:pointer;-webkit-tap-highlight-color:transparent}
+input,textarea,select{font-family:inherit;font-size:19px;color:var(--ink)}
 a{color:var(--moss)}
 .wrap{max-width:980px;margin:0 auto;padding:0 20px 60px}
 
@@ -36,45 +36,45 @@ a{color:var(--moss)}
 .top{position:sticky;top:0;z-index:20;background:rgba(243,241,234,.96);backdrop-filter:blur(6px);border-bottom:3px solid var(--moss)}
 .top .in{max-width:980px;margin:0 auto;padding:10px 20px;display:flex;align-items:center;gap:12px;min-height:52px}
 .top .ttl{font-family:var(--serif);font-weight:700;white-space:nowrap;margin-right:6px;color:var(--ink);text-decoration:none}
-.top .home{margin-left:auto;font-size:14px;text-decoration:none;white-space:nowrap}
-.leg{flex:1;display:flex;align-items:center;gap:8px;font-size:14px;color:var(--mute);min-width:0}
+.top .home{margin-left:auto;font-size:16px;text-decoration:none;white-space:nowrap}
+.leg{flex:1;display:flex;align-items:center;gap:8px;font-size:16px;color:var(--mute);min-width:0}
 .leg .bar{flex:1;height:4px;border-radius:2px;background:var(--line);position:relative;overflow:hidden}
 .leg .bar i{position:absolute;left:0;top:0;bottom:0;background:var(--moss);transition:width .4s}
 .leg.on{color:var(--ink);font-weight:600}
 .leg span{white-space:nowrap}
-@media (max-width:700px){.top .ttl.j{display:none}.leg span{font-size:12px}}
+@media (max-width:700px){.top .ttl.j{display:none}.leg span{font-size:14px}}
 
 h1,h2,h3{font-family:var(--serif);font-weight:700;letter-spacing:.02em}
 h1{font-size:40px;margin:44px 0 6px;color:var(--moss-d)}
 h2{color:var(--moss-d)}
-h2{font-size:26px;margin:6px 0 4px}
-h3{font-size:19px}
-.kicker{font-size:14px;color:var(--ember);letter-spacing:.08em;margin-top:28px;font-weight:600}
-.lead{font-family:var(--serif);font-size:18px;line-height:1.9;color:#3a413c}
+h2{font-size:32px;margin:6px 0 4px}
+h3{font-size:22px}
+.kicker{font-size:16px;color:var(--ember);letter-spacing:.08em;margin-top:28px;font-weight:600}
+.lead{font-family:var(--serif);font-size:20px;line-height:1.9;color:#3a413c}
 .mute{color:var(--mute)}
 .btn{border:1px solid var(--moss);background:var(--moss);color:#fff;border-radius:999px;padding:12px 26px;min-height:46px;font-weight:600;text-decoration:none;display:inline-flex;align-items:center;justify-content:center}
 .btn:disabled{opacity:.35;cursor:not-allowed}
 .btn.ghost{background:transparent;color:var(--moss)}
 .btn.ember{background:var(--ember);border-color:var(--ember)}
 .btn.big{font-size:19px;padding:16px 34px;min-height:60px}
-.btn.sm{padding:6px 14px;min-height:34px;font-size:14px;font-weight:500}
+.btn.sm{padding:6px 14px;min-height:34px;font-size:16px;font-weight:500}
 .btn.danger{background:transparent;color:var(--warn);border-color:var(--warn)}
 .card{background:#fffdf8;border:1px solid var(--line);border-radius:14px;padding:20px}
-.field{display:flex;flex-direction:column;gap:6px;font-size:14px;color:var(--mute);min-width:0}
+.field{display:flex;flex-direction:column;gap:6px;font-size:16px;color:var(--mute);min-width:0}
 .field input,.field textarea,.field select{width:100%;min-width:0;border:1px solid var(--line);border-radius:10px;padding:10px 12px;background:#fff}
 textarea{width:100%;border:1px solid var(--line);border-radius:10px;padding:12px 14px;background:#fff;line-height:1.8;resize:vertical;min-height:110px}
 input:focus,textarea:focus{outline:2px solid var(--ember-l);border-color:var(--ember)}
 .step-label{display:flex;align-items:center;gap:10px;margin:26px 0 10px;font-weight:600}
-.step-label b{display:inline-grid;place-items:center;width:28px;height:28px;border-radius:50%;background:var(--ink);color:var(--paper);font-size:14px}
+.step-label b{display:inline-grid;place-items:center;width:28px;height:28px;border-radius:50%;background:var(--ink);color:var(--paper);font-size:16px}
 .chips{display:flex;flex-wrap:wrap;gap:8px;margin:8px 0}
-.chip{border:1px solid var(--line);background:#fff;border-radius:999px;padding:8px 14px;font-size:15px;color:var(--ink);min-height:40px;text-align:left}
+.chip{border:1px solid var(--line);background:#fff;border-radius:999px;padding:8px 14px;font-size:17px;color:var(--ink);min-height:40px;text-align:left}
 .chip:hover{border-color:var(--ember)}
 .chip.on{background:var(--ink);color:var(--paper);border-color:var(--ink)}
-.tag{display:inline-block;border:1px solid var(--line);background:#fff;border-radius:999px;padding:4px 12px;font-size:14px;color:#4a514b;margin:0 6px 6px 0}
-.toast{position:fixed;left:50%;bottom:28px;transform:translateX(-50%);background:var(--ink);color:var(--paper);padding:10px 18px;border-radius:999px;font-size:15px;opacity:0;transition:opacity .25s;pointer-events:none;z-index:90;max-width:90vw;text-align:center}
+.tag{display:inline-block;border:1px solid var(--line);background:#fff;border-radius:999px;padding:4px 12px;font-size:16px;color:#4a514b;margin:0 6px 6px 0}
+.toast{position:fixed;left:50%;bottom:28px;transform:translateX(-50%);background:var(--ink);color:var(--paper);padding:10px 18px;border-radius:999px;font-size:17px;opacity:0;transition:opacity .25s;pointer-events:none;z-index:90;max-width:90vw;text-align:center}
 .toast.show{opacity:1}
-.note{font-size:14px;color:var(--mute);line-height:1.7}
-.err{color:var(--warn);font-size:15px;line-height:1.7}
+.note{font-size:16px;color:var(--mute);line-height:1.7}
+.err{color:var(--warn);font-size:17px;line-height:1.7}
 
 /* 主畫面 */
 .hero-art{margin:18px -20px 0;line-height:0}
@@ -86,10 +86,10 @@ input:focus,textarea:focus{outline:2px solid var(--ember-l);border-color:var(--e
 @media (max-width:640px){.hero-title h1{font-size:48px}.hero-art{margin:12px -20px 0}}
 .home-hero{padding:10px 0 6px}
 .home-btns{display:flex;flex-wrap:wrap;gap:14px;margin:26px 0}
-.welcome{background:#fffdf8;border:1px solid var(--line);border-left:4px solid var(--moss);border-radius:10px;padding:14px 18px;margin-top:18px;font-size:16px;line-height:1.8}
+.welcome{background:#fffdf8;border:1px solid var(--line);border-left:4px solid var(--moss);border-radius:10px;padding:14px 18px;margin-top:18px;font-size:18px;line-height:1.8}
 .steps{counter-reset:s;list-style:none;padding:0;margin:10px 0;display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
-.steps li{background:#fffdf8;border:1px solid var(--line);border-radius:12px;padding:16px;font-size:15px;line-height:1.75;color:#4a514b}
-.steps li b{display:block;font-family:var(--serif);font-size:18px;color:var(--ink);margin-bottom:4px}
+.steps li{background:#fffdf8;border:1px solid var(--line);border-radius:12px;padding:16px;font-size:17px;line-height:1.75;color:#4a514b}
+.steps li b{display:block;font-family:var(--serif);font-size:20px;color:var(--ink);margin-bottom:4px}
 @media (max-width:700px){.steps{grid-template-columns:1fr}}
 
 /* 視窗 */
@@ -103,13 +103,13 @@ input:focus,textarea:focus{outline:2px solid var(--ember-l);border-color:var(--e
 .lenses{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
 .lens-btn{border:1px solid var(--line);background:#fff;border-radius:12px;padding:12px;text-align:left;display:flex;flex-direction:column;gap:4px;min-height:74px}
 .lens-btn .ln{font-family:var(--serif);font-weight:700;font-size:19px}
-.lens-btn .ld{font-size:13px;color:var(--mute);line-height:1.5}
+.lens-btn .ld{font-size:15px;color:var(--mute);line-height:1.5}
 .lens-btn.on{border-color:var(--ember);box-shadow:0 0 0 2px var(--ember-l) inset;background:#fffaf2}
-.lens-fb{font-size:15px;line-height:1.8;color:#4a514b;background:var(--paper2);border-radius:10px;padding:10px 14px;margin:10px 0 0}
+.lens-fb{font-size:17px;line-height:1.8;color:#4a514b;background:var(--paper2);border-radius:10px;padding:10px 14px;margin:10px 0 0}
 .lens-fb:empty{display:none}
 .scene{position:relative;background:var(--night);border-radius:16px;overflow:hidden;touch-action:none;user-select:none;-webkit-user-select:none;--x:50%;--y:30%;--r:120px}
 .scene .text{position:relative;padding:30px 34px 36px;font-family:var(--serif);color:#ece5d2;line-height:2.05;font-size:20px;transition:font-size .3s}
-.scene.lens-wide .text{font-size:17px}
+.scene.lens-wide .text{font-size:19px}
 .scene.lens-mid .text{font-size:20px}
 .scene.lens-macro .text{font-size:24px}
 .scene .pno{display:inline-block;font-size:12px;color:#8e9a8f;border:1px solid #3c4a40;border-radius:4px;padding:0 5px;margin-right:8px;line-height:1.6;vertical-align:middle;font-family:var(--sans)}
@@ -121,21 +121,21 @@ input:focus,textarea:focus{outline:2px solid var(--ember-l);border-color:var(--e
 .scene.lens-off .shade{background:rgba(7,10,8,.88)}
 .scene.lit .shade{background:radial-gradient(circle at 50% 40%,rgba(255,200,120,.10),rgba(255,200,120,0) 70%)}
 .campfire{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin:0 0 10px}
-.campfire button{border:1px solid #efd3b0;background:#fffaf2;border-radius:999px;padding:8px 16px;font-size:15px;min-height:42px}
+.campfire button{border:1px solid #efd3b0;background:#fffaf2;border-radius:999px;padding:8px 16px;font-size:17px;min-height:42px}
 .campfire button.on{background:var(--ember);color:#fff;border-color:var(--ember)}
-.scene .off-msg{position:absolute;inset:0;display:grid;place-items:center;color:#a8b0a6;font-size:17px;pointer-events:none;letter-spacing:.05em}
+.scene .off-msg{position:absolute;inset:0;display:grid;place-items:center;color:#a8b0a6;font-size:19px;pointer-events:none;letter-spacing:.05em}
 .bag{display:flex;flex-direction:column;gap:8px;margin-top:12px}
 .bag .item{background:#fff;border:1px solid var(--line);border-left:4px solid var(--ember);border-radius:8px;padding:10px 14px}
 .bag .q{font-family:var(--serif);font-weight:600}
-.bag .n{font-size:14px;color:var(--mute);margin-top:4px;line-height:1.7}
-.bag .empty{font-size:14px;color:var(--mute)}
+.bag .n{font-size:16px;color:var(--mute);margin-top:4px;line-height:1.7}
+.bag .empty{font-size:16px;color:var(--mute)}
 .rec-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:12px}
 @media (max-width:700px){.rec-grid,.lenses{grid-template-columns:1fr}}
 .st-nav{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-top:22px}
-.gate{font-size:14px;color:var(--ember);text-align:center;flex:1}
+.gate{font-size:16px;color:var(--ember);text-align:center;flex:1}
 
 .wrap.wide{max-width:1240px}
-.p1steps{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin:8px 0 4px;font-size:14px;color:var(--mute)}
+.p1steps{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin:8px 0 4px;font-size:16px;color:var(--mute)}
 .p1steps span{padding:4px 12px;border-radius:999px;border:1px solid var(--line);background:#fff}
 .p1steps span.on{background:var(--ink);color:var(--paper);border-color:var(--ink)}
 .p1steps span.done{border-color:var(--moss);color:var(--moss)}
@@ -143,11 +143,11 @@ input:focus,textarea:focus{outline:2px solid var(--ember-l);border-color:var(--e
 .pick-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
 .pick-grid.three{grid-template-columns:repeat(3,minmax(0,1fr))}
 @media (max-width:760px){.pick-grid,.pick-grid.three{grid-template-columns:1fr}}
-.pick{border:1px solid var(--line);background:#fff;border-radius:12px;padding:14px;text-align:left;display:flex;flex-direction:column;gap:8px;min-height:80px;font-size:17px;line-height:1.6}
+.pick{border:1px solid var(--line);background:#fff;border-radius:12px;padding:14px;text-align:left;display:flex;flex-direction:column;gap:8px;min-height:80px;font-size:19px;line-height:1.6}
 .pick b{font-family:var(--serif)}
-.pick small{color:var(--mute);font-size:14px}
+.pick small{color:var(--mute);font-size:16px}
 .pick.on{border-color:var(--ember);box-shadow:0 0 0 2px var(--ember-l) inset;background:#fffaf2}
-.chain{display:flex;flex-wrap:wrap;gap:4px;align-items:center;font-size:14px}
+.chain{display:flex;flex-wrap:wrap;gap:4px;align-items:center;font-size:16px}
 .chain em{font-style:normal;background:var(--paper2);border-radius:6px;padding:2px 8px}
 .chain i{font-style:normal;color:var(--mute)}
 .pull-grid{display:grid;grid-template-columns:minmax(0,1fr) 360px;gap:18px;align-items:start;margin-top:14px}
@@ -155,23 +155,23 @@ input:focus,textarea:focus{outline:2px solid var(--ember-l);border-color:var(--e
 .cards{position:sticky;top:70px;display:flex;flex-direction:column;gap:10px;max-height:calc(100vh - 90px);overflow:auto}
 @media (max-width:900px){.cards{position:static;max-height:none}}
 .seccard{background:#fffdf8;border:1px solid var(--line);border-radius:12px;padding:12px 14px}
-.sec-h{display:flex;justify-content:space-between;align-items:center;font-family:var(--serif);font-size:17px;margin-bottom:6px}
+.sec-h{display:flex;justify-content:space-between;align-items:center;font-family:var(--serif);font-size:19px;margin-bottom:6px}
 .pulled-item{border-top:1px dashed var(--line);padding:8px 0}
 .pi-t{font-family:var(--serif);line-height:1.7;position:relative;padding-right:24px}
 .pi-t .note{margin-left:6px}
 .pi-t .x{position:absolute;right:0;top:0;border:none;background:none;font-size:20px;color:var(--mute);min-height:auto}
-.mini{font-size:13px;color:var(--mute);display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-top:6px}
-.tg{border:1px solid var(--line);background:#fff;border-radius:999px;padding:4px 10px;font-size:14px;min-height:32px}
+.mini{font-size:15px;color:var(--mute);display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-top:6px}
+.tg{border:1px solid var(--line);background:#fff;border-radius:999px;padding:4px 10px;font-size:16px;min-height:32px}
 .tg.on{background:var(--moss);color:#fff;border-color:var(--moss)}
 .custom{display:flex;gap:6px;margin-top:8px}
-.custom input{flex:1;min-width:0;border:1px solid var(--line);border-radius:8px;padding:6px 10px;font-size:15px}
+.custom input{flex:1;min-width:0;border:1px solid var(--line);border-radius:8px;padding:6px 10px;font-size:17px}
 .scene{touch-action:pan-y}
-.scene.lens-on .text{font-size:18px}
+.scene.lens-on .text{font-size:20px}
 .scene .sn{cursor:pointer;border-radius:3px}
 .scene .sn.pulled{background:rgba(240,195,143,.25);color:#fff3dc;border-bottom:2px solid var(--ember-l)}
 .scene .sn.pulled::after{content:attr(data-sec);font-size:13px;color:var(--ember-l);margin-left:2px;vertical-align:super}
 .pullmenu{position:fixed;z-index:80;background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:10px;box-shadow:0 10px 30px rgba(0,0,0,.25);display:flex;flex-direction:column;gap:6px;max-width:300px}
-.scene.dual .text{color:#5d665f;font-size:18px;line-height:2.3}
+.scene.dual .text{color:#5d665f;font-size:20px;line-height:2.3}
 .scene.dual .sn{cursor:default;transition:all .25s}
 .scene.dual .sn.mine{color:#ffd9a0;background:rgba(255,166,60,.16);border-bottom:3px solid #f0a040}
 .scene.dual .sn.sys{color:#c4e6ff;background:rgba(70,150,255,.18);border-bottom:3px dashed #4aa3ff}
@@ -183,23 +183,23 @@ input:focus,textarea:focus{outline:2px solid var(--ember-l);border-color:var(--e
 .scene.dual.only-mine .sn.sys:not(.mine),.scene.dual.only-sys .sn.mine:not(.sys){color:#5d665f;background:none;border-bottom-color:transparent}
 .scene.dual.only-mine .sn.sys:not(.mine)::before,.scene.dual.only-sys .sn.mine:not(.sys)::before{display:none}
 .lamp-tg{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0}
-.lamp-tg button{border:1px solid var(--line);background:#fff;border-radius:999px;padding:8px 14px;font-size:15px;min-height:40px}
+.lamp-tg button{border:1px solid var(--line);background:#fff;border-radius:999px;padding:8px 14px;font-size:17px;min-height:40px}
 .lamp-tg button.on{background:var(--ink);color:var(--paper);border-color:var(--ink)}
-.who-banner{display:flex;gap:16px;align-items:center;background:#fff6ea;border:1px solid #f0d2ad;border-radius:14px;padding:14px 18px;margin:14px 0 4px;font-size:17px;line-height:1.8}
+.who-banner{display:flex;gap:16px;align-items:center;background:#fff6ea;border:1px solid #f0d2ad;border-radius:14px;padding:14px 18px;margin:14px 0 4px;font-size:19px;line-height:1.8}
 .who{display:inline-block;font-family:var(--serif);font-weight:800;font-size:28px;border-radius:14px;padding:6px 18px;white-space:nowrap}
 .who-me{background:#f0a040;color:#2a1a08}
 .who-hunter{background:#2f6b4f;color:#fff}
 .who-head{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:16px;text-align:center}
 .who-head .who{display:block;font-size:30px;padding:10px}
 @media (max-width:760px){.who{font-size:22px}.who-head .who{font-size:22px}}
-.howto{background:#fff;border:1px solid var(--line);border-radius:12px;padding:12px 16px;line-height:1.9;font-size:16px;margin-top:12px}
-.howto .w{display:inline-block;background:#f0a040;color:#2a1a08;border-radius:999px;padding:0 9px;font-weight:700;font-size:14px}
-.howto .c{display:inline-block;background:#4aa3ff;color:#06203a;border-radius:999px;padding:0 9px;font-weight:700;font-size:14px}
+.howto{background:#fff;border:1px solid var(--line);border-radius:12px;padding:12px 16px;line-height:1.9;font-size:18px;margin-top:12px}
+.howto .w{display:inline-block;background:#f0a040;color:#2a1a08;border-radius:999px;padding:0 9px;font-weight:700;font-size:16px}
+.howto .c{display:inline-block;background:#4aa3ff;color:#06203a;border-radius:999px;padding:0 9px;font-weight:700;font-size:16px}
 .cmp-cell.mine{border-left:5px solid #f0a040}
 .cmp-cell.sys{border-left:5px dashed #4aa3ff}
-.combo{background:#fffaf2;border:1px solid #efd3b0;border-left:4px solid var(--ember);border-radius:10px;padding:12px 16px;margin:16px 0 4px;line-height:1.8;font-size:16px}
+.combo{background:#fffaf2;border:1px solid #efd3b0;border-left:4px solid var(--ember);border-radius:10px;padding:12px 16px;margin:16px 0 4px;line-height:1.8;font-size:18px}
 .combo:empty{display:none}
-.sysbar{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:10px;background:#eef3f7;border:1px solid #c9d8e6;border-radius:12px;padding:12px 16px;font-size:16px}
+.sysbar{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:10px;background:#eef3f7;border:1px solid #c9d8e6;border-radius:12px;padding:12px 16px;font-size:18px}
 .cmp-table{display:flex;flex-direction:column;gap:8px;margin-top:14px}
 .cmp-row{display:grid;grid-template-columns:1fr 1fr;gap:8px}
 @media (max-width:640px){.cmp-row{grid-template-columns:1fr}}
@@ -227,16 +227,16 @@ input:focus,textarea:focus{outline:2px solid var(--ember-l);border-color:var(--e
 .arrows{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}
 @media (max-width:560px){.arrows{grid-template-columns:1fr}}
 .arrow-btn{border:1px solid var(--line);background:#fff;border-radius:12px;padding:12px 14px;text-align:left;min-height:84px}
-.arrow-btn .an{font-family:var(--serif);font-weight:700;font-size:17px;display:flex;align-items:center;gap:8px}
+.arrow-btn .an{font-family:var(--serif);font-weight:700;font-size:19px;display:flex;align-items:center;gap:8px}
 .arrow-btn .an::before{content:"";width:22px;height:2px;background:var(--ink);display:inline-block}
-.arrow-btn .aq{font-size:13px;color:var(--mute);line-height:1.6;margin-top:4px}
+.arrow-btn .aq{font-size:15px;color:var(--mute);line-height:1.6;margin-top:4px}
 .arrow-btn.last{border-color:var(--ember);background:#fffaf2}
 .arrow-btn:disabled{opacity:.45}
-.arrow-btn.ev .aq2{font-family:var(--serif);font-size:16px;line-height:1.7;color:var(--ink)}
-.arrow-btn.ev .an2{font-size:12px;color:var(--mute);margin-top:4px}
-.frame.rb{font-family:var(--serif);font-size:17px;line-height:1.9}
+.arrow-btn.ev .aq2{font-family:var(--serif);font-size:18px;line-height:1.7;color:var(--ink)}
+.arrow-btn.ev .an2{font-size:14px;color:var(--mute);margin-top:4px}
+.frame.rb{font-family:var(--serif);font-size:19px;line-height:1.9}
 .frame.rb textarea{margin-top:6px;min-height:80px;font-family:var(--serif)}
-.ringkey{font-size:14px;color:#4a514b;margin:4px 0 2px;line-height:2}
+.ringkey{font-size:16px;color:#4a514b;margin:4px 0 2px;line-height:2}
 .ringkey span{display:inline-block;border-radius:999px;padding:0 10px;font-weight:700;margin-right:4px}
 .ringkey .k3{background:#c98b5a;color:#fff}.ringkey .k2{background:#e2d6bd;color:#4a3d22}.ringkey .k1{background:#efe7d6;color:#6b5f48;border:1px solid #c9bb9f}
 .target-row{display:flex;gap:16px;align-items:center;margin-top:14px;flex-wrap:wrap}
@@ -245,10 +245,10 @@ input:focus,textarea:focus{outline:2px solid var(--ember-l);border-color:var(--e
 .dart{position:absolute;width:14px;height:14px;margin:-7px 0 0 -7px;border-radius:50%;background:var(--ember);border:2px solid #fff;box-shadow:0 0 0 1px var(--ember);transition:left .55s cubic-bezier(.3,.7,.3,1),top .55s cubic-bezier(.3,.7,.3,1)}
 .dart.old{background:#8b8f88;box-shadow:none;opacity:.6;transition:none}
 .dart.na{background:#9aa09a;box-shadow:none}
-.fb{flex:1;min-width:220px;font-size:15px;line-height:1.85}
-.fb .lv{font-family:var(--serif);font-weight:700;font-size:18px;margin-bottom:4px}
+.fb{flex:1;min-width:220px;font-size:17px;line-height:1.85}
+.fb .lv{font-family:var(--serif);font-weight:700;font-size:20px;margin-bottom:4px}
 .rounds{margin-top:22px}
-.rounds .r{border-top:1px solid var(--line);padding:10px 0;font-size:14px;line-height:1.7}
+.rounds .r{border-top:1px solid var(--line);padding:10px 0;font-size:16px;line-height:1.7}
 .rounds .r b{font-family:var(--serif)}
 
 /* 第三部分 */
@@ -259,8 +259,8 @@ input:focus,textarea:focus{outline:2px solid var(--ember-l);border-color:var(--e
 .bgs button{border:2px solid transparent;border-radius:10px;padding:0;overflow:hidden;background:none}
 .bgs button.on{border-color:var(--ember)}
 .bgs canvas{width:100%;display:block}
-.bgs small{display:block;font-size:13px;padding:4px 0;background:#fff;color:var(--ink)}
-.orig{font-size:14px;color:var(--mute);margin-top:6px;line-height:1.7}
+.bgs small{display:block;font-size:15px;padding:4px 0;background:#fff;color:var(--ink)}
+.orig{font-size:16px;color:var(--mute);margin-top:6px;line-height:1.7}
 .meter{height:6px;background:var(--line);border-radius:3px;overflow:hidden;margin-top:4px}
 .meter i{display:block;height:100%;background:var(--moss);transition:width .3s}
 .actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:16px}
@@ -269,7 +269,7 @@ input:focus,textarea:focus{outline:2px solid var(--ember-l);border-color:var(--e
 /* 報告書 */
 .report{background:#fffdf8;border:1px solid var(--line);border-radius:14px;padding:30px 34px;margin-top:20px}
 .report h2{margin:0}
-.report .meta{color:var(--mute);font-size:15px;margin-top:6px}
+.report .meta{color:var(--mute);font-size:17px;margin-top:6px}
 .report section{margin-top:22px}
 .report h3{margin:0 0 8px;padding-bottom:6px;border-bottom:1px solid var(--line)}
 .report ul{margin:6px 0;padding-left:1.3em;line-height:1.9}
@@ -279,12 +279,12 @@ input:focus,textarea:focus{outline:2px solid var(--ember-l);border-color:var(--e
 .level .ic{font-size:26px;line-height:1}
 .level.ok{border-color:var(--moss);background:#f0f4ee}
 .level b{display:block;font-family:var(--serif);margin-top:6px}
-.ans-row{border-top:1px dashed var(--line);padding:8px 0;font-size:15px;line-height:1.8}
+.ans-row{border-top:1px dashed var(--line);padding:8px 0;font-size:17px;line-height:1.8}
 
 /* 成績頁 */
-.tbl{width:100%;border-collapse:collapse;font-size:15px;background:#fff;border-radius:10px;overflow:hidden}
+.tbl{width:100%;border-collapse:collapse;font-size:17px;background:#fff;border-radius:10px;overflow:hidden}
 .tbl th,.tbl td{padding:9px 10px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
-.tbl th{background:var(--paper2);font-weight:600;font-size:14px}
+.tbl th{background:var(--paper2);font-weight:600;font-size:16px}
 .tbl tr.flag td{background:#fbf0ea}
 .tbl-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:10px}
 .cls-tabs{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0}
@@ -293,14 +293,14 @@ input:focus,textarea:focus{outline:2px solid var(--ember-l);border-color:var(--e
 .login{display:flex;flex-wrap:wrap;gap:10px;align-items:center;background:#fffdf8;border:1px solid var(--line);border-radius:12px;padding:12px 16px;margin-top:16px}
 .login input{border:1px solid var(--line);border-radius:8px;padding:8px 12px;min-width:180px}
 .tools{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
-.tools label{font-size:14px;display:flex;gap:6px;align-items:center}
+.tools label{font-size:16px;display:flex;gap:6px;align-items:center}
 .tools input[type=number]{width:90px;border:1px solid var(--line);border-radius:8px;padding:6px 8px}
-.bars .b{display:grid;grid-template-columns:170px 1fr 60px;gap:10px;align-items:center;margin:6px 0;font-size:14px}
+.bars .b{display:grid;grid-template-columns:170px 1fr 60px;gap:10px;align-items:center;margin:6px 0;font-size:16px}
 .bars .t{height:14px;background:var(--paper2);border-radius:7px;overflow:hidden}
 .bars .t i{display:block;height:100%;background:var(--moss)}
 .stack{display:flex;height:16px;border-radius:8px;overflow:hidden;background:var(--paper2)}
 .stack i{display:block;height:100%}
-.legend{font-size:13px;color:var(--mute)}
+.legend{font-size:15px;color:var(--mute)}
 .legend i{display:inline-block;width:10px;height:10px;border-radius:2px;margin:0 4px 0 10px;vertical-align:middle}
 
 /* 大屏（淺色底） */
@@ -322,44 +322,44 @@ body.screen-mode{background:#f7f1e4}
 .scr-row .t i{display:block;height:100%;background:#2f6b4a}
 .scr-row .t em{position:absolute;right:10px;top:0;line-height:28px;font-style:normal;font-weight:700;color:#1d2a22}
 .scr-top li{font-size:26px;line-height:1.9;font-family:var(--serif)}
-.scr-foot{margin-top:16px;color:#4b524d;font-size:18px;display:flex;justify-content:space-between}
+.scr-foot{margin-top:16px;color:#4b524d;font-size:20px;display:flex;justify-content:space-between}
 @media (max-width:1100px){.scr-grid{grid-template-columns:1fr}.scr-nums{grid-template-columns:repeat(2,1fr)}}
 
 .frame{background:#fffdf8;border:1px solid var(--line);border-radius:14px;padding:16px 18px}
 .frame-to{font-family:var(--serif);color:var(--moss);font-weight:600;border-bottom:1px solid var(--line);padding-bottom:8px;margin-bottom:10px}
 .fline{display:flex;gap:10px;align-items:flex-start;padding:10px 0;border-bottom:1px dashed var(--line)}
 .fline:last-child{border-bottom:none}
-.fnum{flex:none;width:24px;height:24px;border-radius:50%;background:var(--paper2);display:grid;place-items:center;font-size:13px;margin-top:6px}
+.fnum{flex:none;width:24px;height:24px;border-radius:50%;background:var(--paper2);display:grid;place-items:center;font-size:15px;margin-top:6px}
 .fline.done .fnum{background:var(--moss);color:#fff}
-.ftext{flex:1;font-family:var(--serif);font-size:18px;line-height:2.4}
-.ftext input.blank{font-family:var(--serif);font-size:17px;border:none;border-bottom:2px solid var(--ember);background:#fff8ee;padding:2px 6px;margin:0 3px;min-width:9em;width:calc(100% - 1em);max-width:22em;border-radius:4px 4px 0 0}
+.ftext{flex:1;font-family:var(--serif);font-size:20px;line-height:2.4}
+.ftext input.blank{font-family:var(--serif);font-size:19px;border:none;border-bottom:2px solid var(--ember);background:#fff8ee;padding:2px 6px;margin:0 3px;min-width:9em;width:calc(100% - 1em);max-width:22em;border-radius:4px 4px 0 0}
 .ftext input.blank.q{border-bottom-style:dashed;border-bottom-color:var(--moss);background:#f2f6f0}
 .ftext input.blank:focus{outline:2px solid var(--ember-l)}
-.fpat{font-family:var(--sans);font-size:14px;line-height:1.6;color:var(--moss-d);background:#eef4e8;border-radius:6px;padding:4px 10px;margin-bottom:2px;display:block;width:fit-content;max-width:100%}
-.fok{flex:none;font-size:13px;color:var(--ember);margin-top:8px;white-space:nowrap}
+.fpat{font-family:var(--sans);font-size:16px;line-height:1.6;color:var(--moss-d);background:#eef4e8;border-radius:6px;padding:4px 10px;margin-bottom:2px;display:block;width:fit-content;max-width:100%}
+.fok{flex:none;font-size:15px;color:var(--ember);margin-top:8px;white-space:nowrap}
 .fline.done .fok{color:var(--moss);font-weight:700}
 .padsteps{line-height:1.9;padding-left:1.3em;margin:14px 0}
 .padsteps li{margin-bottom:12px}
 .padsteps .btn{margin:6px 6px 0 0}
 .share{display:flex;flex-wrap:wrap;gap:12px;justify-content:space-between;align-items:center;background:#fff6ea;border:1px solid #f0d2ad;border-radius:14px;padding:16px 20px;margin-top:20px}
 .leg{background:none;border:none;padding:4px 2px;cursor:pointer;font:inherit;text-align:left}
-.maplink{border:1px solid var(--line);background:#fff;border-radius:999px;padding:4px 12px;font-size:14px;white-space:nowrap;min-height:34px}
+.maplink{border:1px solid var(--line);background:#fff;border-radius:999px;padding:4px 12px;font-size:16px;white-space:nowrap;min-height:34px}
 .maplink.on{background:var(--ink);color:var(--paper);border-color:var(--ink)}
 .hub{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;margin-top:16px}
 @media (max-width:820px){.hub{grid-template-columns:1fr}}
 .hubcard{background:#fffdf8;border:1px solid var(--line);border-radius:14px;padding:18px;display:flex;flex-direction:column;gap:8px}
 .hubcard h3{margin:0;font-size:20px}
-.hubcard p{margin:0;font-size:15px;line-height:1.75;color:#4a514b;flex:1}
-.hubcard .hs{font-size:13px;color:var(--mute)}
+.hubcard p{margin:0;font-size:17px;line-height:1.75;color:#4a514b;flex:1}
+.hubcard .hs{font-size:15px;color:var(--mute)}
 .hubcard.started{border-color:#efd3b0}
 .hubcard.started .hs{color:var(--ember)}
 .hubcard.done{border-color:var(--moss);background:#f2f6f0}
 .hubcard.post{border-style:dashed}
 .hubcard.done .hs{color:var(--moss);font-weight:600}
-.cloud{font-size:12px;color:var(--mute);white-space:nowrap;margin-left:6px}
+.cloud{font-size:14px;color:var(--mute);white-space:nowrap;margin-left:6px}
 @media (max-width:700px){.cloud{display:none}}
-.foot{text-align:center;margin-top:40px;font-size:13px;color:var(--mute)}
-.foot button{background:none;border:none;color:var(--mute);text-decoration:underline;font-size:13px}
+.foot{text-align:center;margin-top:40px;font-size:15px;color:var(--mute)}
+.foot button{background:none;border:none;color:var(--mute);text-decoration:underline;font-size:15px}
 
 @media print{
   @page{size:A4;margin:14mm}
@@ -768,7 +768,7 @@ function registerModal(){
      <a href="#" class="note">取消</a>
      <button class="btn" id="rGo">開始旅程</button>
    </div>
-   <p style="margin:18px 0 0;font-size:14px"><a href="#scores">我是老師，先略過，直接看班級成績 →</a></p>`);
+   <p style="margin:18px 0 0;font-size:16px"><a href="#scores">我是老師，先略過，直接看班級成績 →</a></p>`);
   $("#rGo").onclick=async()=>{
     const cls=$("#rCls").value.trim(), seat=parseInt($("#rSeat").value,10), name=$("#rName").value.trim();
     const e=$("#rErr");
@@ -810,7 +810,7 @@ function quiz(){
 function statusPage(){
   topbar("home");
   app.innerHTML=`<div class="wrap"><div class="kicker">作答狀態</div><h2>你已交出學習歷程 ✓</h2>
-   <p class="lead" style="font-size:17px">${esc(state.student.cls)} 班 ${esc(state.student.seat)} 號 ${esc(state.student.name)}，交出時間：${fmtTime(state.submitted.ts)}</p>
+   <p class="lead" style="font-size:19px">${esc(state.student.cls)} 班 ${esc(state.student.seat)} 號 ${esc(state.student.name)}，交出時間：${fmtTime(state.submitted.ts)}</p>
    <div class="actions"><a class="btn" href="#report">查看我的報告書</a>${state.post.submitted?"":`<button class="btn ember" id="toPost">去做後測（5 題）</button>`}<a class="btn ghost" href="#">🏠 回主畫面</a></div>
    <p class="note" style="margin-top:26px">如果老師已經開放你重做，按這裡重新開始：<button class="btn sm ghost" id="redoBtn">重新開始旅程</button></p>
    <div class="err" id="redoErr"></div></div>`;
@@ -848,13 +848,13 @@ function renderPosttest(){
   const back=()=>{if(state.submitted){state.step="hub";save();statusPage()}else go("hub")};
   if(Q.submitted){
     app.innerHTML=`<div class="wrap"><div class="kicker">後測｜已交出 ✓</div><h2>後測完成</h2>
-     <p class="lead" style="font-size:17px">你走完了整趟山林旅程。前測和後測的閱讀層級，會一起出現在你的報告書裡。</p>
+     <p class="lead" style="font-size:19px">你走完了整趟山林旅程。前測和後測的閱讀層級，會一起出現在你的報告書裡。</p>
      <nav class="st-nav"><button class="btn ghost" id="pBack">${state.submitted?"回到作答狀態":"🗺 回旅程地圖"}</button><span></span>${state.submitted?'<a class="btn" href="#report">查看我的報告書</a>':""}</nav></div>`;
     $("#pBack").onclick=back;return;
   }
   if(!Q.start){Q.start=Date.now();save()}
   app.innerHTML=`<div class="wrap"><div class="kicker">後測｜走完旅程，再讀一次</div><h2>後測</h2>
-   <p class="lead" style="font-size:16px">5 題都是推論整合與省思評鑑，比前測更需要把全文連起來想。可以展開課文回頭看。交出後不能修改。</p>
+   <p class="lead" style="font-size:18px">5 題都是推論整合與省思評鑑，比前測更需要把全文連起來想。可以展開課文回頭看。交出後不能修改。</p>
    ${textPanel()}
    ${POSTQ.map((q,i)=>qHTMLq(q,i,Q.answers[i],"t"+i)).join("")}
    <nav class="st-nav"><button class="btn ghost" id="pBack">${state.submitted?"回到作答狀態":"🗺 回旅程地圖"}</button><span class="gate" id="gateT"></span><button class="btn ember" id="postGo">交出後測</button></nav></div>`;
@@ -873,7 +873,7 @@ function renderPosttest(){
   };
 }
 function qHTMLq(q,i,chosen,name){
-  return `<div class="card" style="margin-top:14px"><div class="note">第 ${i+1} 題｜${q.level}</div><div style="font-family:var(--serif);font-size:18px;line-height:1.8;margin:6px 0 10px">${esc(q.stem)}</div>
+  return `<div class="card" style="margin-top:14px"><div class="note">第 ${i+1} 題｜${q.level}</div><div style="font-family:var(--serif);font-size:20px;line-height:1.8;margin:6px 0 10px">${esc(q.stem)}</div>
    ${q.opts.map((o,k)=>`<label style="display:flex;gap:10px;align-items:flex-start;padding:10px 12px;border:1px solid ${chosen===k?"var(--ember)":"var(--line)"};background:${chosen===k?"#fffaf2":"#fff"};border-radius:10px;margin:6px 0;cursor:pointer;line-height:1.7"><input type="radio" name="${name}" value="${k}" ${chosen===k?"checked":""} style="margin-top:6px;width:18px;height:18px"><span><b>(${OPT[k]})</b> ${esc(o)}</span></label>`).join("")}</div>`;
 }
 
@@ -887,7 +887,7 @@ function renderHub(){
   ];
   const missing=ps.map((x,i)=>x.done?null:["第一部分","第二部分","第三部分"][i]).filter(Boolean);
   app.innerHTML=`<div class="wrap"><div class="kicker">旅程地圖</div><h2>想從哪裡開始都可以</h2>
-   <p class="lead" style="font-size:16px">三個部分沒有先後順序，可以先玩獵人的遊戲，也可以先寫明信片。做到一半離開也沒關係，進度會自動保存。</p>
+   <p class="lead" style="font-size:18px">三個部分沒有先後順序，可以先玩獵人的遊戲，也可以先寫明信片。做到一半離開也沒關係，進度會自動保存。</p>
    <div class="hub">${parts.map((x,i)=>`<div class="hubcard ${ps[i].done?"done":ps[i].started?"started":""}">
      <div class="hs">${ps[i].done?"✓ ":""}${ps[i].note}</div><h3>${x.t}</h3><p>${x.d}</p>
      <button class="btn ${ps[i].done?"ghost":""}" data-part="${i}">${ps[i].done?"回去看看":ps[i].started?"繼續":"進入"}</button></div>`).join("")}</div>
@@ -916,10 +916,10 @@ function renderPreviewReport(){
 }
 
 /* ---------- 前測 ---------- */
-function textPanel(){return `<details class="card" style="margin:14px 0"><summary style="cursor:pointer;font-weight:600">📖 展開課文（第一～十五段）</summary><div style="font-family:var(--serif);line-height:2;margin-top:10px">${Object.keys(TEXT).map(n=>`<p style="margin:0 0 10px"><b style="color:var(--moss);font-size:13px">${CN[n]}</b>　${esc(TEXT[n])}</p>`).join("")}</div></details>`}
+function textPanel(){return `<details class="card" style="margin:14px 0"><summary style="cursor:pointer;font-weight:600">📖 展開課文（第一～十五段）</summary><div style="font-family:var(--serif);line-height:2;margin-top:10px">${Object.keys(TEXT).map(n=>`<p style="margin:0 0 10px"><b style="color:var(--moss);font-size:15px">${CN[n]}</b>　${esc(TEXT[n])}</p>`).join("")}</div></details>`}
 function qHTML(i,chosen,name){
   const q=QUESTIONS[i];
-  return `<div class="card" style="margin-top:14px"><div class="note">第 ${i+1} 題｜${q.level}</div><div style="font-family:var(--serif);font-size:18px;line-height:1.8;margin:6px 0 10px">${esc(q.stem)}</div>
+  return `<div class="card" style="margin-top:14px"><div class="note">第 ${i+1} 題｜${q.level}</div><div style="font-family:var(--serif);font-size:20px;line-height:1.8;margin:6px 0 10px">${esc(q.stem)}</div>
    ${q.opts.map((o,k)=>`<label style="display:flex;gap:10px;align-items:flex-start;padding:10px 12px;border:1px solid ${chosen===k?"var(--ember)":"var(--line)"};background:${chosen===k?"#fffaf2":"#fff"};border-radius:10px;margin:6px 0;cursor:pointer;line-height:1.7"><input type="radio" name="${name}" value="${k}" ${chosen===k?"checked":""} style="margin-top:6px;width:18px;height:18px"><span><b>(${OPT[k]})</b> ${esc(o)}</span></label>`).join("")}</div>`;
 }
 function renderPretest(){
@@ -927,18 +927,18 @@ function renderPretest(){
   if(!P.start){P.start=Date.now();save()}
   if(P.submitted){
     app.innerHTML=`<div class="wrap"><div class="kicker">前測｜已交出 ✓</div><h2>前測完成</h2>
-     <p class="lead" style="font-size:17px">${P.local?"（本機模式不計分。）":""}謝謝你誠實作答。接下來三個部分可以照自己的順序走——走完後，看看你心中的「全文重點」有沒有改變。</p>
+     <p class="lead" style="font-size:19px">${P.local?"（本機模式不計分。）":""}謝謝你誠實作答。接下來三個部分可以照自己的順序走——走完後，看看你心中的「全文重點」有沒有改變。</p>
      <nav class="st-nav"><a class="btn ghost" href="#">🏠 回主畫面</a><span></span><button class="btn" id="startJ">打開旅程地圖</button></nav></div>`;
     $("#startJ").onclick=()=>go("hub");
     return;
   }
   const o=P.open;
   app.innerHTML=`<div class="wrap"><div class="kicker">前測｜出發前，先看看自己讀懂了多少</div><h2>前測</h2>
-   <p class="lead" style="font-size:16px">第 1～5 題是選擇題（兩題檢索、兩題推論整合、一題省思評鑑），第 6 題選出你心中的全文重點並寫下原因。可以展開課文回頭找。交出後就不能修改。</p>
+   <p class="lead" style="font-size:18px">第 1～5 題是選擇題（兩題檢索、兩題推論整合、一題省思評鑑），第 6 題選出你心中的全文重點並寫下原因。可以展開課文回頭找。交出後就不能修改。</p>
    ${textPanel()}
    ${QUESTIONS.map((q,i)=>qHTML(i,P.answers[i],"q"+i)).join("")}
    <div class="card" style="margin-top:14px"><div class="note">第 6 題｜開放題</div>
-     <div style="font-family:var(--serif);font-size:18px;line-height:1.8;margin:6px 0 10px">讀完全文，你覺得這篇文章最重要的是什麼？先選一個最接近你想法的，再寫下原因。</div>
+     <div style="font-family:var(--serif);font-size:20px;line-height:1.8;margin:6px 0 10px">讀完全文，你覺得這篇文章最重要的是什麼？先選一個最接近你想法的，再寫下原因。</div>
      ${KEYPOINTS.map((t,k)=>`<label class="opt" style="display:flex;gap:10px;align-items:flex-start;padding:10px 12px;border:1px solid ${o.choice===k?"var(--ember)":"var(--line)"};background:${o.choice===k?"#fffaf2":"#fff"};border-radius:10px;margin:6px 0;cursor:pointer;line-height:1.7"><input type="radio" name="kp" value="${k}" ${o.choice===k?"checked":""} style="margin-top:6px;width:18px;height:18px"><span><b>(${OPT[k]})</b> ${esc(t)}</span></label>`).join("")}
      <div class="field" style="margin-top:10px">我選這個的原因（可以引用課文中的句子）</div>
      <textarea id="kpReason" maxlength="3000" placeholder="我選（　），因為課文中……，所以我覺得……">${esc(o.reason)}</textarea>
@@ -981,7 +981,7 @@ function renderStation(i){
 function p1Choose(nav,bindNav){
   const p=state.p1;
   app.innerHTML=`<div class="wrap">${p1Head(0)}<h2>你要怎麼切這篇文章？</h2>
-   <p class="lead" style="font-size:16px">每個人的起點不同。先選一種<b>三段結構</b>：你要把整篇〈獵人〉切成哪三段來讀？</p>
+   <p class="lead" style="font-size:18px">每個人的起點不同。先選一種<b>三段結構</b>：你要把整篇〈獵人〉切成哪三段來讀？</p>
    <div class="step-label"><b>1</b>三段結構：你要把全文切成哪三段？</div>
    <div class="pick-grid">${Object.keys(ANGLES).map(k=>`<button class="pick ${p.angle===k?"on":""}" data-a="${k}"><b>角度 ${k}｜${ANGLES[k].name}</b><span class="chain">${ANGLES[k].secs.map(x=>`<em>${x}</em>`).join("<i>➔</i>")}</span></button>`).join("")}</div>
    <div class="combo" id="combo"></div>
@@ -1007,7 +1007,7 @@ function p1Pull(nav,bindNav){
   app.innerHTML=`<div class="wrap wide">${p1Head(1)}<h2>戴上作者的頭燈，拉文句</h2>
    <div class="who-banner"><span class="who who-me">作者（我）</span><span>這一步，你用<b>作者</b>的眼睛讀課文：在每一段裡找<b>作者做了什麼、猶豫什麼、心裡怎麼想</b>。<br><span class="note">下一步，系統會用<b>老獵人</b>的眼睛讀同樣的三段，讓你左右對照。</span></span></div>
    <div class="step-label"><b>A</b>照亮課文，把句子拉進你的三段（${A.name}）</div>
-   <p class="note" style="font-size:15px;margin-top:-4px">在暗處移動頭燈（平板可直接點），點一下被照亮的句子，選擇要放進哪一段。每段放 1～2 句。</p>
+   <p class="note" style="font-size:17px;margin-top:-4px">在暗處移動頭燈（平板可直接點），點一下被照亮的句子，選擇要放進哪一段。每段放 1～2 句。</p>
    <div class="campfire"><button id="fireBtn" class="${campfire?"on":""}">${campfire?"🔥 營火已點亮（再按一次回到頭燈）":"🔥 看不清楚？點亮營火，整頁都看得見"}</button></div>
    <div class="pull-grid">
      <div class="scene ${F?"lens-on":"lens-off"} ${F&&campfire?"lit":""}" id="scene"><div class="text">${sceneHTML()}</div><div class="shade"></div><div class="off-msg">${F?"":"先選上面的觀察焦點，頭燈就會亮起"}</div></div>
@@ -1099,7 +1099,7 @@ function p1Compare(nav,bindNav){
   const mineFirst=(p.secs.find(s=>s.items.length)||{items:[{text:""}]}).items[0].text;
   let body="";
   if(c.i<0){
-    body=`<div class="card" style="text-align:center;padding:34px"><p class="lead" style="font-size:17px">同樣的三段，換成老獵人的眼睛來看，會注意到什麼？</p><div class="who-head" style="max-width:520px;margin:10px auto 18px"><span class="who who-me">作者（我）</span><span class="who who-hunter">老獵人</span></div><button class="btn ember big" id="throwBtn">打開老獵人的燈</button></div>`;
+    body=`<div class="card" style="text-align:center;padding:34px"><p class="lead" style="font-size:19px">同樣的三段，換成老獵人的眼睛來看，會注意到什麼？</p><div class="who-head" style="max-width:520px;margin:10px auto 18px"><span class="who who-me">作者（我）</span><span class="who who-hunter">老獵人</span></div><button class="btn ember big" id="throwBtn">打開老獵人的燈</button></div>`;
   }else{
     const o=sysOption(p,c.i), OA=ANGLES[o.angle], OF=FOCUS[o.focus];
     const sysIdx=OA.picks.map(pk=>findSent(pk[o.focus]));
@@ -1111,11 +1111,11 @@ function p1Compare(nav,bindNav){
     if(!c.sentence.trim()||c.sentence.trim()===c.tpl.trim()){c.sentence=tpl}
     c.tpl=tpl;c.angle=o.angle;c.focus=o.focus;save();
     const same=[...mineIdx].filter(k=>sysIdx.includes(k)).length;
-    body=`<div class="howto" style="font-size:17px">左邊是你用<b>作者（我）</b>的眼睛拉進來的句子；右邊是同樣三段（${A.name}），換成<b>老獵人</b>的眼睛會注意到的句子。<br>
+    body=`<div class="howto" style="font-size:19px">左邊是你用<b>作者（我）</b>的眼睛拉進來的句子；右邊是同樣三段（${A.name}），換成<b>老獵人</b>的眼睛會注意到的句子。<br>
        <b>想一想：</b>面對同一段旅程，作者和老獵人在意的東西一樣嗎？</div>
      <div class="who-head"><span class="who who-me">🔥 作者（我）</span><span class="who who-hunter">🌲 老獵人</span></div>
-     <div class="cmp-table" style="margin-top:8px">${[0,1,2].map(k=>`<div class="cmp-row"><div class="cmp-cell mine"><div class="note" style="font-size:15px"><b>第 ${k+1} 段｜${A.secs[k]}</b></div>${p.secs[k].items.map(it=>`<div>「${esc(it.text)}」</div>`).join("")||'<div class="note">（沒有拉句子）</div>'}</div>
-       <div class="cmp-cell sys"><div class="note" style="font-size:15px"><b>第 ${k+1} 段｜${A.secs[k]}</b></div><div>「${esc(sysIdx[k]>=0?SENTS[sysIdx[k]].t:OA.picks[k][o.focus])}」</div></div></div>`).join("")}</div>
+     <div class="cmp-table" style="margin-top:8px">${[0,1,2].map(k=>`<div class="cmp-row"><div class="cmp-cell mine"><div class="note" style="font-size:17px"><b>第 ${k+1} 段｜${A.secs[k]}</b></div>${p.secs[k].items.map(it=>`<div>「${esc(it.text)}」</div>`).join("")||'<div class="note">（沒有拉句子）</div>'}</div>
+       <div class="cmp-cell sys"><div class="note" style="font-size:17px"><b>第 ${k+1} 段｜${A.secs[k]}</b></div><div>「${esc(sysIdx[k]>=0?SENTS[sysIdx[k]].t:OA.picks[k][o.focus])}」</div></div></div>`).join("")}</div>
      <div class="step-label" style="margin-top:18px"><b>照</b>回到課文：作者和老獵人的燈各照在哪裡？</div>
      <div class="lamp-tg" id="lampTg"><button data-lamp="both" class="on">兩盞一起亮</button><button data-lamp="only-mine">只開作者的燈</button><button data-lamp="only-sys">只開老獵人的燈</button></div>
      <div class="scene dual" id="dual"><div class="text">${sceneHTML(markFn,paras)}</div></div>
@@ -1125,7 +1125,7 @@ function p1Compare(nav,bindNav){
      <textarea id="cmpS" maxlength="3000">${esc(c.sentence)}</textarea>`;
   }
   app.innerHTML=`<div class="wrap">${p1Head(2)}<h2>對照老獵人的眼睛：同一段旅程，看法差在哪裡？</h2>
-   <p class="lead" style="font-size:16px">你已經用<b>作者</b>的眼睛拉好句子了。現在系統用<b>老獵人</b>的眼睛讀同樣的三段，左右對照看看。</p>${body}${nav("","下一步：主旨體悟")}</div>`;
+   <p class="lead" style="font-size:18px">你已經用<b>作者</b>的眼睛拉好句子了。現在系統用<b>老獵人</b>的眼睛讀同樣的三段，左右對照看看。</p>${body}${nav("","下一步：主旨體悟")}</div>`;
   const gate=()=>{const g=[];if(c.i<0)g.push("按「打開老獵人的燈」");else{if(!c.diffs.length)g.push("勾選差異點");const own=c.sentence.startsWith(c.tpl)?clen(c.sentence.slice(c.tpl.length)):(clen(c.sentence)>=20?8:0);if(own<8)g.push("把比較句寫完（8 字以上）")}
     $("#gate").textContent=g.length?"還差："+g.join("、"):"";bindNav(!g.length)};
   if($("#throwBtn")) $("#throwBtn").onclick=()=>{c.i=0;save();p1Compare(nav,bindNav)};
@@ -1142,7 +1142,7 @@ function p1Theme(nav,bindNav){
   if(!t.text) t.text=THEME_STARTER;
   const all=[];p.secs.forEach(s=>s.items.forEach(it=>all.push(it.text)));
   app.innerHTML=`<div class="wrap">${p1Head(3)}<h2>收束：這篇文章讓你體會到什麼？</h2>
-   <p class="lead" style="font-size:16px">回頭看看你拉過的句子，和系統丟給你的另一盞燈。把它們收成一句屬於你的體悟。</p>
+   <p class="lead" style="font-size:18px">回頭看看你拉過的句子，和系統丟給你的另一盞燈。把它們收成一句屬於你的體悟。</p>
    <div class="card" style="line-height:1.9;font-family:var(--serif)">${all.map(x=>`<span class="tag" style="font-family:var(--serif)">「${esc(x)}」</span>`).join("")}</div>
    <div class="step-label"><b>1</b>你覺得最重要的關鍵詞（可複選）</div>
    <div class="chips">${THEME_KEYS.map((k,i)=>`<button class="chip ${t.keys.includes(i)?"on":""}" data-k="${i}">${k}</button>`).join("")}</div>
@@ -1163,7 +1163,7 @@ function renderP2(){
   app.innerHTML=`<div class="wrap">
   <div class="kicker">第二部分｜獵人的遊戲</div>
   <h2>真假獵人轉盤 × 哲學反駁之箭</h2>
-  <p class="lead" style="font-size:16px">轉盤會抽出一句「假獵人」的說法。你的任務是<b>反駁他的想法</b>：先從四句課文中選一句當證據（你的箭），寫下你的反駁，再射出去看看準不準。射歪了可以修改一次。<br><span class="mute">完成 3 回，第二部分就算完成；想多玩幾回也可以。</span></p>
+  <p class="lead" style="font-size:18px">轉盤會抽出一句「假獵人」的說法。你的任務是<b>反駁他的想法</b>：先從四句課文中選一句當證據（你的箭），寫下你的反駁，再射出去看看準不準。射歪了可以修改一次。<br><span class="mute">完成 3 回，第二部分就算完成；想多玩幾回也可以。</span></p>
   <div class="p2-grid">
     <div class="wheel-box">
       <div class="wheel-wrap"><div class="pointer"></div>
@@ -1282,7 +1282,7 @@ async function shoot(aid){
 function drawReason(){}
 function drawRounds(){
   const P=state.p2;
-  $("#rounds").innerHTML=P.rounds.length?`<h3 style="font-size:18px;margin:0 0 4px">已完成 ${P.rounds.length} 回</h3>`+P.rounds.map((r,k)=>{
+  $("#rounds").innerHTML=P.rounds.length?`<h3 style="font-size:20px;margin:0 0 4px">已完成 ${P.rounds.length} 回</h3>`+P.rounds.map((r,k)=>{
     return `<div class="r"><b>第 ${k+1} 回｜${CLAIMS[r.id].tag}</b>　${r.shots.map(s=>ARROW_NAME[s.arrow].replace("之箭","")+(s.acc?"（"+ACC_NAME[s.acc]+"）":"")).join(" → ")}<br>${esc(r.reason)}</div>`}).join(""):"";
   const left=Math.max(0,3-P.rounds.length);
   $("#gate2").textContent=left?`再完成 ${left} 回，第二部分就完成了`:"第二部分完成！";
@@ -1309,7 +1309,7 @@ function renderP3(){
   app.innerHTML=`<div class="wrap">
   <div class="kicker">第三部分｜森林明信片</div>
   <h2>這張山林明信片，你想寄給誰？</h2>
-  <p class="lead" style="font-size:16px">讀完〈獵人〉，選一位你最想對他說話的人。系統會給你三句話的骨架，底線的地方用<b>你自己的話</b>填。</p>
+  <p class="lead" style="font-size:18px">讀完〈獵人〉，選一位你最想對他說話的人。系統會給你三句話的骨架，底線的地方用<b>你自己的話</b>填。</p>
   <div class="step-label"><b>1</b>選收件人</div>
   <div class="pick-grid three">${Object.keys(RECIP).map(k=>`<button class="pick ${P.to===k?"on":""}" data-to="${k}"><b>寫給${RECIP[k].name}</b><small>${RECIP[k].who}｜${RECIP[k].desc}</small></button>`).join("")}</div>
   ${R?`<div class="p3-grid">
@@ -1318,10 +1318,10 @@ function renderP3(){
       <div class="frame">
         <div class="frame-to">${esc(R.to)}</div>
         ${R.lines.map((line,li)=>`<div class="fline" id="fl${li}"><span class="fnum">${li+1}</span><div class="ftext"><div class="fpat">句型：${esc(line.map(x=>typeof x==="string"?x:"＿＿").join(""))}</div>${line.map(x=>typeof x==="string"?`<span>${esc(x)}</span>`:`<input class="blank ${x.q?"q":""}" data-k="${x.k}" aria-label="${esc(x.ph)}" value="${esc(P.blanks[x.k]||"")}" maxlength="120">`).join("")}</div><span class="fok" id="ok${li}"></span></div>
-          ${line.some(x=>x.q)?`<div class="chips" style="margin:-4px 0 8px 34px">${GOLDEN.map((g,k)=>`<button class="chip" data-gq="${line.find(x=>x.q).k}|${k}" style="font-size:13px;font-family:var(--serif)">${esc(g)}</button>`).join("")}</div>`:""}`).join("")}
+          ${line.some(x=>x.q)?`<div class="chips" style="margin:-4px 0 8px 34px">${GOLDEN.map((g,k)=>`<button class="chip" data-gq="${line.find(x=>x.q).k}|${k}" style="font-size:15px;font-family:var(--serif)">${esc(g)}</button>`).join("")}</div>`:""}`).join("")}
       </div>
       ${P.to!=="hunter"?`<div class="step-label"><b>3</b>（選做）選一句課文，支持你的話</div>
-      <div class="chips" id="quoteChips">${GOLDEN.map((g,k)=>`<button class="chip ${P.quote===k?"on":""}" data-qt="${k}" style="font-family:var(--serif);font-size:14px">${esc(g)}</button>`).join("")}</div>`:""}
+      <div class="chips" id="quoteChips">${GOLDEN.map((g,k)=>`<button class="chip ${P.quote===k?"on":""}" data-qt="${k}" style="font-family:var(--serif);font-size:16px">${esc(g)}</button>`).join("")}</div>`:""}
       <div class="step-label"><b>${P.to!=="hunter"?4:3}</b>（選做）還想多說的話</div>
       <textarea id="extra" maxlength="1000" style="min-height:80px" placeholder="想再多寫一點也可以">${esc(P.extra)}</textarea>
       <div class="orig" id="orig"></div>
@@ -1870,7 +1870,7 @@ function preTeacherHTML(rows){
   <div class="tbl-wrap" style="margin-top:8px"><table class="tbl"><tr><th>題目</th><th>層次</th><th>答對率</th><th>選項分布 A／B／C／D</th><th>正解</th></tr>
   ${QUESTIONS.map((q,i)=>{const right=pres.filter(b=>b.pretest.correct[i]).length;const dist=[0,1,2,3].map(k=>pres.filter(b=>b.pretest.answers[i]===k).length);
     return `<tr><td>第 ${i+1} 題</td><td>${q.level}</td><td>${pct(right)}%</td><td>${dist.join("／")}</td><td>${A[i]?"("+OPT[A[i].ans]+")":'<span class="err">後端未貼答案</span>'}</td></tr>`}).join("")}</table></div>
-  <h3 style="margin-top:18px;font-size:17px">第 6 題：全文重點（開放題）</h3>
+  <h3 style="margin-top:18px;font-size:19px">第 6 題：全文重點（開放題）</h3>
   <div class="bars">${KEYPOINTS.map((t,k)=>{const c=pres.filter(b=>b.pretest.open&&b.pretest.open.choice===k).length;return `<div class="b"><span>(${OPT[k]}) ${esc(t.slice(0,10))}…</span><div class="t"><i style="width:${n?c/n*100:0}%"></i></div><span>${c} 人</span></div>`}).join("")}</div>
   <details style="margin-top:8px"><summary style="cursor:pointer">逐一查看學生前測</summary>
   <div class="tbl-wrap" style="margin-top:8px"><table class="tbl"><tr><th>座號</th><th>姓名</th><th>得分</th><th>第1～5題</th><th>全文重點與原因</th><th>用時</th><th></th></tr>
