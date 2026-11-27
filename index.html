@@ -177,14 +177,21 @@ input:focus,textarea:focus{outline:2px solid var(--ember-l);border-color:var(--e
 .scene.dual .sn.sys{color:#c4e6ff;background:rgba(70,150,255,.18);border-bottom:3px dashed #4aa3ff}
 .scene.dual .sn.mine.sys{color:#fff;background:linear-gradient(90deg,rgba(255,166,60,.25),rgba(70,150,255,.25));border-bottom:3px solid #fff}
 .scene.dual .sn.mine::before,.scene.dual .sn.sys::before{display:inline-block;font-family:var(--sans);font-size:12px;font-weight:700;line-height:1;padding:4px 7px;border-radius:999px;margin-right:6px;vertical-align:middle}
-.scene.dual .sn.mine::before{content:"你";background:#f0a040;color:#2a1a08}
-.scene.dual .sn.sys::before{content:"系統";background:#4aa3ff;color:#06203a}
-.scene.dual .sn.mine.sys::before{content:"你＋系統";background:linear-gradient(90deg,#f0a040,#4aa3ff);color:#111}
+.scene.dual .sn.mine::before{content:"作者";background:#f0a040;color:#2a1a08}
+.scene.dual .sn.sys::before{content:"老獵人";background:#2f6b4f;color:#fff}
+.scene.dual .sn.mine.sys::before{content:"兩人都看到";background:linear-gradient(90deg,#f0a040,#2f6b4f);color:#111}
 .scene.dual.only-mine .sn.sys:not(.mine),.scene.dual.only-sys .sn.mine:not(.sys){color:#5d665f;background:none;border-bottom-color:transparent}
 .scene.dual.only-mine .sn.sys:not(.mine)::before,.scene.dual.only-sys .sn.mine:not(.sys)::before{display:none}
 .lamp-tg{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0}
 .lamp-tg button{border:1px solid var(--line);background:#fff;border-radius:999px;padding:8px 14px;font-size:15px;min-height:40px}
 .lamp-tg button.on{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+.who-banner{display:flex;gap:16px;align-items:center;background:#fff6ea;border:1px solid #f0d2ad;border-radius:14px;padding:14px 18px;margin:14px 0 4px;font-size:17px;line-height:1.8}
+.who{display:inline-block;font-family:var(--serif);font-weight:800;font-size:28px;border-radius:14px;padding:6px 18px;white-space:nowrap}
+.who-me{background:#f0a040;color:#2a1a08}
+.who-hunter{background:#2f6b4f;color:#fff}
+.who-head{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:16px;text-align:center}
+.who-head .who{display:block;font-size:30px;padding:10px}
+@media (max-width:760px){.who{font-size:22px}.who-head .who{font-size:22px}}
 .howto{background:#fff;border:1px solid var(--line);border-radius:12px;padding:12px 16px;line-height:1.9;font-size:16px;margin-top:12px}
 .howto .w{display:inline-block;background:#f0a040;color:#2a1a08;border-radius:999px;padding:0 9px;font-weight:700;font-size:14px}
 .howto .c{display:inline-block;background:#4aa3ff;color:#06203a;border-radius:999px;padding:0 9px;font-weight:700;font-size:14px}
@@ -421,14 +428,14 @@ const KEYPOINTS=["成年禮的意義不在獵到獵物，而在學會「勇敢�
 
 /* ============ 第一部分：選視角 ➔ 拉文句 ➔ 差異比對 ➔ 主旨體悟 ============ */
 const FOCUS={
-  me:{name:"「我」的行動、猶豫與內心想法",short:"「我」",lamp:"微距頭燈",r:170,ask:"「我」做了什麼、猶豫什麼、心裡怎麼想？"},
-  hunter:{name:"「獵人」的精準動作、沉默與背景底蘊",short:"獵人",lamp:"中距頭燈",r:220,ask:"老獵人做了什麼、說了（或沒說）什麼、背後有什麼文化？"},
+  me:{name:"作者（文中的「我」）的行動、猶豫與內心想法",short:"作者（我）",lamp:"作者的頭燈",r:200,ask:"作者（我）做了什麼、猶豫什麼、心裡怎麼想？"},
+  hunter:{name:"老獵人的精準動作、沉默與背景底蘊",short:"老獵人",lamp:"中距頭燈",r:220,ask:"老獵人做了什麼、說了（或沒說）什麼、背後有什麼文化？"},
   gap:{name:"「我」與「獵人」在山林裡的視角落差",short:"視角落差",lamp:"廣角頭燈",r:280,ask:"「我」和老獵人面對同一件事，看法有什麼不一樣？"}
 };
 const ANGLES={
   A:{name:"事件推進線",secs:["與獵人上山","入山打獵","沒有獵得的對話"],picks:[
     {me:"我希望能夠討好獵人",hunter:"把命令像流星拋進我的耳朵裡",gap:"仍是泰雅鍾愛的孩子"},
-    {me:"我便像是在大海中猶豫的扁舟",hunter:"似乎有一對眼睛審視著我",gap:"牠必然也感覺到我的存在"},
+    {me:"我便像是在大海中猶豫的扁舟",hunter:"「等待是獵人的美德」",gap:"牠必然也感覺到我的存在"},
     {me:"我用沉默代替回答",hunter:"你獵到了，以後泰雅的小孩要獵什麼",gap:"還懊惱著嗎"}]},
   B:{name:"空間與光影線",secs:["有營火的山林邊緣","漆黑無光的荒野","重返營地與歸途"],picks:[
     {me:"幾點星火緩緩地自柴堆中冒起",hunter:"老獵人吩咐不得讓篝火停息",gap:"只覺得徹夜出奇地溫暖"},
@@ -443,12 +450,13 @@ const ANGLES={
     {me:"把我的身軀像葉片般撥開",hunter:"「等待是獵人的美德」",gap:"還有三隻淘氣的小山豬"},
     {me:"我頹然地怨恨自己",hunter:"牠是這座山最後的山豬，也是最凶猛的",gap:"彷彿那是尊千百年來就在此庇佑山林的神祇"}]}
 };
-const PICK_FOCUS=["me","hunter"]; /* 學生只在「我」「老獵人」二選一；gap 僅保留給舊紀錄顯示，視角落差移到第 3 步比對 */
+/* 學生固定用作者（me）視角拉句子；第 3 步系統以老獵人（hunter）視角、同一種切法對照。gap 僅保留給舊紀錄顯示。 */
 const TAGS=["動作","想法","感情","背景說明"];
 const RELS=["順順承接","明顯轉折"];
-const DIFFS=["抓到的句子焦點完全不同","轉折點落在不同地方","一個看外在環境或行動，一個看內心轉變或文化意義","一個從「我」看，一個從「獵人」看","其實抓到相近的句子，只是切法不同"];
+const DIFFS=["抓到的句子焦點完全不同","轉折點落在不同地方","一個看外在環境或行動，一個看內心轉變或文化意義","一個從「我」看，一個從「獵人」看","其實抓到相近的句子，只是切法不同","作者在意自己的感受和表現，老獵人在意山林的規矩和經驗","作者比較急、想證明自己，老獵人比較沉著、有耐心","老獵人看重文化傳承，作者一開始還不太懂","作者重視有沒有獵到，老獵人重視懂不懂得節制與愛"];
+const DIFFS_SHOW=[5,6,7,8,2]; /* 0～4 為舊版選項，只留給舊紀錄顯示 */
 const THEME_KEYS=["尊重生命","承擔責任","自我成長","懂得節制","文化傳承"];
-const P1STEPS=["選三段結構","選焦點拉文句","差異比對","主旨體悟"];
+const P1STEPS=["選三段結構","用作者的眼睛拉文句","對照老獵人的眼睛","主旨體悟"];
 const SENTS=(()=>{const out=[];Object.keys(TEXT).forEach(n=>{(TEXT[n].match(/[^。！？]*[。！？]+」?|[^。！？]+$/g)||[]).forEach(t=>{if(t.trim())out.push({p:+n,t})})});return out})();
 const findSent=t=>SENTS.findIndex(x=>x.t.includes(t));
 function p1IsDone(p){return !!(p&&p.focus&&p.angle&&p.secs.every(s=>s.items.length)&&clen(p.cmp.sentence)>=10&&clen(p.theme.text)>=10)}
@@ -462,7 +470,7 @@ function partStatus(){
   ];
 }
 function freshP1(){return {focus:"",angle:"",secs:[0,1,2].map(()=>({items:[],rel:""})),cmp:{i:-1,angle:"",focus:"",diffs:[],sentence:"",tpl:""},theme:{keys:[],text:""}}}
-function sysOption(p,i){const oa=Object.keys(ANGLES).filter(k=>k!==p.angle),of=PICK_FOCUS.filter(k=>k!==p.focus);return {angle:oa[i%oa.length],focus:of[Math.floor(i/oa.length)%of.length]}}
+function sysOption(p,i){return {angle:p.angle,focus:"hunter"}} /* 同一種三段切法，只換成老獵人的視角 */
 
 /* ============ 第二部分（準度與回饋由後端判定，前端不放答案） ============ */
 const ARROWS = [
@@ -735,7 +743,7 @@ function homePage(){
   <h3>旅程怎麼走</h3>
   <ol class="steps" style="grid-template-columns:repeat(auto-fit,minmax(200px,1fr))">
     <li><b>前測</b>先回答 5 題選擇題，再選出你心中的全文重點、寫下原因。做完前測，後面三個部分可以照自己的順序走。</li>
-    <li><b>一｜頭燈與視角</b>先選一種三段結構，再選觀察焦點、用頭燈把課文句子拉進三段；系統會再點亮另一盞燈，讓你比較差在哪裡。</li>
+    <li><b>一｜頭燈與視角</b>先選一種三段結構，再戴上<b>作者</b>的頭燈把課文句子拉進三段；系統會用<b>老獵人</b>的眼睛讀同樣三段，讓你左右對照。</li>
     <li><b>二｜獵人的遊戲</b>轉盤抽出假獵人的說法。選一句課文當證據，寫下你的反駁，再射出去看看準不準。</li>
     <li><b>三｜森林明信片</b>選一位收件人（作者、老獵人或文中的「我」），用三句話寫一張明信片。</li>
     <li><b>後測</b>三個部分都完成後解鎖 5 題後測，看看走完旅程後，你的閱讀有什麼不一樣。</li>
@@ -873,7 +881,7 @@ function qHTMLq(q,i,chosen,name){
 function renderHub(){
   const ps=partStatus();
   const parts=[
-    {k:"1",t:"一｜頭燈與視角",d:"選一種三段結構和觀察焦點，用頭燈把課文句子拉進三段，再和另一盞燈比較、寫下主旨體悟。",go:()=>go(state.p1Last||"s0")},
+    {k:"1",t:"一｜頭燈與視角",d:"選一種三段結構，用作者的頭燈把句子拉進三段，再和老獵人的眼睛對照、寫下主旨體悟。",go:()=>go(state.p1Last||"s0")},
     {k:"2",t:"二｜獵人的遊戲",d:"轉盤抽出假獵人的說法，選一句課文當證據，寫下你的反駁，再射出去看準不準。完成 3 回就算完成。",go:()=>go("p2")},
     {k:"3",t:"三｜森林明信片",d:"選一位收件人（作者、老獵人或文中的「我」），用三句話寫一張明信片，寫得多還能拿到金色郵票。",go:()=>go("p3")}
   ];
@@ -994,19 +1002,18 @@ function p1Pull(nav,bindNav){
   const p=state.p1;
   if(!p.angle){go("s0");return}
   const A=ANGLES[p.angle];
-  const F=p.focus?FOCUS[p.focus]:null;
-  app.innerHTML=`<div class="wrap wide">${p1Head(1)}<h2>選好焦點，戴上頭燈拉文句</h2>
-   <div class="step-label"><b>A</b>觀察焦點：二選一，在每一段裡，你要找「我」的句子，還是「老獵人」的句子？（也決定你頭燈的光圈）</div>
-   <div class="pick-grid">${PICK_FOCUS.concat(p.focus==="gap"?["gap"]:[]).map(k=>`<button class="pick ${p.focus===k?"on":""}" data-f="${k}"><b>${FOCUS[k].name}</b><small>🔦 ${FOCUS[k].lamp}</small></button>`).join("")}</div>
-   <div class="combo" id="fbanner">${F?`🔦 <b>${F.lamp}｜在每一段裡找：</b>${F.ask}`:""}</div>
-   <div class="step-label"><b>B</b>照亮課文，把句子拉進你的三段（${A.name}）</div>
+  if(p.focus!=="me"){p.focus="me";save()}
+  const F=FOCUS.me;
+  app.innerHTML=`<div class="wrap wide">${p1Head(1)}<h2>戴上作者的頭燈，拉文句</h2>
+   <div class="who-banner"><span class="who who-me">作者（我）</span><span>這一步，你用<b>作者</b>的眼睛讀課文：在每一段裡找<b>作者做了什麼、猶豫什麼、心裡怎麼想</b>。<br><span class="note">下一步，系統會用<b>老獵人</b>的眼睛讀同樣的三段，讓你左右對照。</span></span></div>
+   <div class="step-label"><b>A</b>照亮課文，把句子拉進你的三段（${A.name}）</div>
    <p class="note" style="font-size:15px;margin-top:-4px">在暗處移動頭燈（平板可直接點），點一下被照亮的句子，選擇要放進哪一段。每段放 1～2 句。</p>
    <div class="campfire"><button id="fireBtn" class="${campfire?"on":""}">${campfire?"🔥 營火已點亮（再按一次回到頭燈）":"🔥 看不清楚？點亮營火，整頁都看得見"}</button></div>
    <div class="pull-grid">
      <div class="scene ${F?"lens-on":"lens-off"} ${F&&campfire?"lit":""}" id="scene"><div class="text">${sceneHTML()}</div><div class="shade"></div><div class="off-msg">${F?"":"先選上面的觀察焦點，頭燈就會亮起"}</div></div>
      <div class="cards" id="cards"></div>
    </div>
-   ${nav("","下一步：差異比對")}</div>`;
+   ${nav("","下一步：對照老獵人的眼睛")}</div>`;
   const scene=$("#scene");
   scene.style.setProperty("--r",(F?F.r:120)+"px");
   $("#fireBtn").onclick=()=>{campfire=!campfire;const b=$("#fireBtn");b.classList.toggle("on",campfire);
@@ -1083,7 +1090,7 @@ function p1Pull(nav,bindNav){
 }
 function closePullMenu(){const m=$("#pullmenu");if(m)m.remove()}
 document.addEventListener("pointerdown",e=>{const m=$("#pullmenu");if(m&&!m.contains(e.target)&&!e.target.closest(".sn"))m.remove()});
-/* 3. 系統丟出不同視角，雙燈比對 */
+/* 3. 對照老獵人的眼睛（同一切法，作者 vs 老獵人） */
 function p1Compare(nav,bindNav){
   const p=state.p1, c=p.cmp;
   if(!p.angle){go("s0");return}
@@ -1092,7 +1099,7 @@ function p1Compare(nav,bindNav){
   const mineFirst=(p.secs.find(s=>s.items.length)||{items:[{text:""}]}).items[0].text;
   let body="";
   if(c.i<0){
-    body=`<div class="card" style="text-align:center;padding:34px"><p class="lead" style="font-size:17px">同一篇課文，換個角度看，抓出來的句子會一樣嗎？</p><button class="btn ember big" id="throwBtn">比較其他切分法</button></div>`;
+    body=`<div class="card" style="text-align:center;padding:34px"><p class="lead" style="font-size:17px">同樣的三段，換成老獵人的眼睛來看，會注意到什麼？</p><div class="who-head" style="max-width:520px;margin:10px auto 18px"><span class="who who-me">作者（我）</span><span class="who who-hunter">老獵人</span></div><button class="btn ember big" id="throwBtn">打開老獵人的燈</button></div>`;
   }else{
     const o=sysOption(p,c.i), OA=ANGLES[o.angle], OF=FOCUS[o.focus];
     const sysIdx=OA.picks.map(pk=>findSent(pk[o.focus]));
@@ -1100,28 +1107,26 @@ function p1Compare(nav,bindNav){
     const paras=[...new Set([...mineIdx,...sysIdx].filter(k=>k>=0).map(k=>SENTS[k].p))].sort((a,b)=>a-b);
     const markFn=k=>(mineIdx.has(k)?"mine ":"")+(sysIdx.includes(k)?"sys":"");
     const short=t=>{t=String(t).replace(/^「|」$/g,"");return t.length>18?t.slice(0,18)+"……":t};
-    const tpl=`我原本選【${A.name}】，拉了「${short(mineFirst)}」這句；當系統丟出【${OA.name}】來對照「${short(sysIdx[0]>=0?SENTS[sysIdx[0]].t:OA.picks[0][o.focus])}」時，我發現最大的不同是`;
+    const tpl=`在「${A.secs[0]}」這一段，作者注意到「${short(mineFirst)||"……"}」，老獵人卻注意到「${short(sysIdx[0]>=0?SENTS[sysIdx[0]].t:OA.picks[0][o.focus])}」。我發現兩個人看法最大的不同是`;
     if(!c.sentence.trim()||c.sentence.trim()===c.tpl.trim()){c.sentence=tpl}
     c.tpl=tpl;c.angle=o.angle;c.focus=o.focus;save();
     const same=[...mineIdx].filter(k=>sysIdx.includes(k)).length;
-    body=`<div class="sysbar"><span>系統的另一盞燈：<b>${OA.name}</b>（${OA.secs.join(" ➔ ")}）× 焦點 <b>${OF.short}</b></span><button class="btn sm ghost" id="againBtn">換另一盞燈比較</button></div>
-     <div class="howto">怎麼看：<span class="w">你</span> 是你在上一步用<b>${A.name}</b>、焦點<b>${FOCUS[p.focus].short}</b>拉進來的句子；<span class="c">系統</span> 是如果換成<b>${OA.name}</b>、焦點<b>${OF.short}</b>來讀，會拉出來的句子。<br>
-       ${p.focus!==o.focus&&p.focus!=="gap"?`<b>想一想視角落差：</b>你看的是${FOCUS[p.focus].short}，系統看的是${OF.short}。面對同一段旅程，兩個人的看法哪裡不一樣？<br>`:""}
-       比一比：兩盞燈照到的地方一樣嗎？${same?`有 <b>${same}</b> 句兩盞燈都照到了（標「你＋系統」）。`:"這一次，兩盞燈<b>沒有照到同一句</b>——換個角度，抓到的重點完全不同。"}</div>
-     <div class="step-label" style="margin-top:18px"><b>看</b>三段並排比一比</div>
-     <div class="cmp-table" style="margin-top:0">${[0,1,2].map(k=>`<div class="cmp-row"><div class="cmp-cell mine"><div class="note">🔥 你的第 ${k+1} 段：${A.secs[k]}</div>${p.secs[k].items.map(it=>`<div>「${esc(it.text)}」</div>`).join("")||'<div class="note">（沒有拉句子）</div>'}</div>
-       <div class="cmp-cell sys"><div class="note">❄️ 系統的第 ${k+1} 段：${OA.secs[k]}</div><div>「${esc(sysIdx[k]>=0?SENTS[sysIdx[k]].t:OA.picks[k][o.focus])}」</div></div></div>`).join("")}</div>
-     <div class="step-label" style="margin-top:18px"><b>照</b>回到課文：兩盞燈各照在哪裡？</div>
-     <div class="lamp-tg" id="lampTg"><button data-lamp="both" class="on">兩盞一起亮</button><button data-lamp="only-mine">只開我的燈</button><button data-lamp="only-sys">只開系統的燈</button></div>
+    body=`<div class="howto" style="font-size:17px">左邊是你用<b>作者（我）</b>的眼睛拉進來的句子；右邊是同樣三段（${A.name}），換成<b>老獵人</b>的眼睛會注意到的句子。<br>
+       <b>想一想：</b>面對同一段旅程，作者和老獵人在意的東西一樣嗎？</div>
+     <div class="who-head"><span class="who who-me">🔥 作者（我）</span><span class="who who-hunter">🌲 老獵人</span></div>
+     <div class="cmp-table" style="margin-top:8px">${[0,1,2].map(k=>`<div class="cmp-row"><div class="cmp-cell mine"><div class="note" style="font-size:15px"><b>第 ${k+1} 段｜${A.secs[k]}</b></div>${p.secs[k].items.map(it=>`<div>「${esc(it.text)}」</div>`).join("")||'<div class="note">（沒有拉句子）</div>'}</div>
+       <div class="cmp-cell sys"><div class="note" style="font-size:15px"><b>第 ${k+1} 段｜${A.secs[k]}</b></div><div>「${esc(sysIdx[k]>=0?SENTS[sysIdx[k]].t:OA.picks[k][o.focus])}」</div></div></div>`).join("")}</div>
+     <div class="step-label" style="margin-top:18px"><b>照</b>回到課文：作者和老獵人的燈各照在哪裡？</div>
+     <div class="lamp-tg" id="lampTg"><button data-lamp="both" class="on">兩盞一起亮</button><button data-lamp="only-mine">只開作者的燈</button><button data-lamp="only-sys">只開老獵人的燈</button></div>
      <div class="scene dual" id="dual"><div class="text">${sceneHTML(markFn,paras)}</div></div>
-     <div class="step-label"><b>1</b>勾選差異點：這兩組文句與切法相比，最大的不同是什麼？（可複選）</div>
-     <div class="chips">${DIFFS.map((d,k)=>`<button class="chip ${c.diffs.includes(k)?"on":""}" data-d="${k}">${d}</button>`).join("")}</div>
+     <div class="step-label"><b>1</b>勾選差異點：作者和老獵人的看法，最大的不同是什麼？（可複選）</div>
+     <div class="chips">${DIFFS_SHOW.map(k=>`<button class="chip ${c.diffs.includes(k)?"on":""}" data-d="${k}">${DIFFS[k]}</button>`).join("")}</div>
      <div class="step-label"><b>2</b>一句話比較：把句子寫完</div>
      <textarea id="cmpS" maxlength="3000">${esc(c.sentence)}</textarea>`;
   }
-  app.innerHTML=`<div class="wrap">${p1Head(2)}<h2>換一盞燈看看：同一篇課文，差在哪裡？</h2>
-   <p class="lead" style="font-size:16px">你已經用自己的燈拉好句子了。現在系統換一種切法、換一個焦點，再點亮<b>第二盞燈</b>。比比看：同一篇課文，換個角度，抓到的句子一樣嗎？</p>${body}${nav("","下一步：主旨體悟")}</div>`;
-  const gate=()=>{const g=[];if(c.i<0)g.push("按「比較其他切分法」");else{if(!c.diffs.length)g.push("勾選差異點");const own=c.sentence.startsWith(c.tpl)?clen(c.sentence.slice(c.tpl.length)):clen(c.sentence)-clen(c.tpl);if(own<8)g.push("把比較句寫完（8 字以上）")}
+  app.innerHTML=`<div class="wrap">${p1Head(2)}<h2>對照老獵人的眼睛：同一段旅程，看法差在哪裡？</h2>
+   <p class="lead" style="font-size:16px">你已經用<b>作者</b>的眼睛拉好句子了。現在系統用<b>老獵人</b>的眼睛讀同樣的三段，左右對照看看。</p>${body}${nav("","下一步：主旨體悟")}</div>`;
+  const gate=()=>{const g=[];if(c.i<0)g.push("按「打開老獵人的燈」");else{if(!c.diffs.length)g.push("勾選差異點");const own=c.sentence.startsWith(c.tpl)?clen(c.sentence.slice(c.tpl.length)):(clen(c.sentence)>=20?8:0);if(own<8)g.push("把比較句寫完（8 字以上）")}
     $("#gate").textContent=g.length?"還差："+g.join("、"):"";bindNav(!g.length)};
   if($("#throwBtn")) $("#throwBtn").onclick=()=>{c.i=0;save();p1Compare(nav,bindNav)};
   if($("#againBtn")) $("#againBtn").onclick=()=>{c.i=(c.i+1)%6;save();p1Compare(nav,bindNav)};
