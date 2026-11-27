@@ -443,6 +443,7 @@ const ANGLES={
     {me:"把我的身軀像葉片般撥開",hunter:"「等待是獵人的美德」",gap:"還有三隻淘氣的小山豬"},
     {me:"我頹然地怨恨自己",hunter:"牠是這座山最後的山豬，也是最凶猛的",gap:"彷彿那是尊千百年來就在此庇佑山林的神祇"}]}
 };
+const PICK_FOCUS=["me","hunter"]; /* 學生只在「我」「老獵人」二選一；gap 僅保留給舊紀錄顯示，視角落差移到第 3 步比對 */
 const TAGS=["動作","想法","感情","背景說明"];
 const RELS=["順順承接","明顯轉折"];
 const DIFFS=["抓到的句子焦點完全不同","轉折點落在不同地方","一個看外在環境或行動，一個看內心轉變或文化意義","一個從「我」看，一個從「獵人」看","其實抓到相近的句子，只是切法不同"];
@@ -461,7 +462,7 @@ function partStatus(){
   ];
 }
 function freshP1(){return {focus:"",angle:"",secs:[0,1,2].map(()=>({items:[],rel:""})),cmp:{i:-1,angle:"",focus:"",diffs:[],sentence:"",tpl:""},theme:{keys:[],text:""}}}
-function sysOption(p,i){const oa=Object.keys(ANGLES).filter(k=>k!==p.angle),of=Object.keys(FOCUS).filter(k=>k!==p.focus);return {angle:oa[i%oa.length],focus:of[Math.floor(i/oa.length)%of.length]}}
+function sysOption(p,i){const oa=Object.keys(ANGLES).filter(k=>k!==p.angle),of=PICK_FOCUS.filter(k=>k!==p.focus);return {angle:oa[i%oa.length],focus:of[Math.floor(i/oa.length)%of.length]}}
 
 /* ============ 第二部分（準度與回饋由後端判定，前端不放答案） ============ */
 const ARROWS = [
@@ -995,8 +996,8 @@ function p1Pull(nav,bindNav){
   const A=ANGLES[p.angle];
   const F=p.focus?FOCUS[p.focus]:null;
   app.innerHTML=`<div class="wrap wide">${p1Head(1)}<h2>選好焦點，戴上頭燈拉文句</h2>
-   <div class="step-label"><b>A</b>觀察焦點：在每一段裡，你要找誰的句子？（也決定你頭燈的光圈）</div>
-   <div class="pick-grid three">${Object.keys(FOCUS).map(k=>`<button class="pick ${p.focus===k?"on":""}" data-f="${k}"><b>${FOCUS[k].name}</b><small>🔦 ${FOCUS[k].lamp}</small></button>`).join("")}</div>
+   <div class="step-label"><b>A</b>觀察焦點：二選一，在每一段裡，你要找「我」的句子，還是「老獵人」的句子？（也決定你頭燈的光圈）</div>
+   <div class="pick-grid">${PICK_FOCUS.concat(p.focus==="gap"?["gap"]:[]).map(k=>`<button class="pick ${p.focus===k?"on":""}" data-f="${k}"><b>${FOCUS[k].name}</b><small>🔦 ${FOCUS[k].lamp}</small></button>`).join("")}</div>
    <div class="combo" id="fbanner">${F?`🔦 <b>${F.lamp}｜在每一段裡找：</b>${F.ask}`:""}</div>
    <div class="step-label"><b>B</b>照亮課文，把句子拉進你的三段（${A.name}）</div>
    <p class="note" style="font-size:15px;margin-top:-4px">在暗處移動頭燈（平板可直接點），點一下被照亮的句子，選擇要放進哪一段。每段放 1～2 句。</p>
@@ -1105,6 +1106,7 @@ function p1Compare(nav,bindNav){
     const same=[...mineIdx].filter(k=>sysIdx.includes(k)).length;
     body=`<div class="sysbar"><span>系統的另一盞燈：<b>${OA.name}</b>（${OA.secs.join(" ➔ ")}）× 焦點 <b>${OF.short}</b></span><button class="btn sm ghost" id="againBtn">換另一盞燈比較</button></div>
      <div class="howto">怎麼看：<span class="w">你</span> 是你在上一步用<b>${A.name}</b>、焦點<b>${FOCUS[p.focus].short}</b>拉進來的句子；<span class="c">系統</span> 是如果換成<b>${OA.name}</b>、焦點<b>${OF.short}</b>來讀，會拉出來的句子。<br>
+       ${p.focus!==o.focus&&p.focus!=="gap"?`<b>想一想視角落差：</b>你看的是${FOCUS[p.focus].short}，系統看的是${OF.short}。面對同一段旅程，兩個人的看法哪裡不一樣？<br>`:""}
        比一比：兩盞燈照到的地方一樣嗎？${same?`有 <b>${same}</b> 句兩盞燈都照到了（標「你＋系統」）。`:"這一次，兩盞燈<b>沒有照到同一句</b>——換個角度，抓到的重點完全不同。"}</div>
      <div class="step-label" style="margin-top:18px"><b>看</b>三段並排比一比</div>
      <div class="cmp-table" style="margin-top:0">${[0,1,2].map(k=>`<div class="cmp-row"><div class="cmp-cell mine"><div class="note">🔥 你的第 ${k+1} 段：${A.secs[k]}</div>${p.secs[k].items.map(it=>`<div>「${esc(it.text)}」</div>`).join("")||'<div class="note">（沒有拉句子）</div>'}</div>
